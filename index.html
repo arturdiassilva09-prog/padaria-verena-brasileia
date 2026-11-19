@@ -121,47 +121,20 @@
     </section>
 
     <section class="reviews section" id="avaliacoes">
-      <div class="section-label">07 / QUEM JÁ CONHECE</div>
-      <div class="reviews-heading">
-        <div><span class="eyebrow">SUA OPINIÃO CONTA</span><h2>O que os clientes<br><em>querem compartilhar.</em></h2></div>
-        <p>Veja as opiniões publicadas por clientes no Google e compartilhe também como foi sua experiência na Padaria Verena.</p>
+      <div class="section-label">07 / EXPERIÊNCIA DOS CLIENTES</div>
+      <div class="reviews-heading"><div><span class="eyebrow">SUA OPINIÃO CONTA</span><h2>Conte como foi<br><em>sua experiência.</em></h2></div><p>Este espaço é um protótipo de avaliações próprias da Padaria Verena. Deixe sua nota e um comentário sobre sua visita.</p></div>
+      <div class="review-prototype">
+        <form class="review-form" id="reviewForm">
+          <span class="review-form-kicker">COMPARTILHE SUA EXPERIÊNCIA</span><h3>Como foi sua visita?</h3>
+          <label class="review-field">Seu nome<input id="reviewName" name="name" maxlength="50" placeholder="Como podemos chamar você?" required></label>
+          <label class="review-field">Sua nota<select id="reviewRating" name="rating" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muito bom</option><option value="3">★★★☆☆ — Bom</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Precisa melhorar</option></select></label>
+          <label class="review-field">Seu comentário<textarea id="reviewComment" name="comment" rows="4" maxlength="500" placeholder="Conte um pouco sobre atendimento, produtos ou ambiente..." required></textarea></label>
+          <button class="btn btn-primary" type="submit">Enviar avaliação <span>↗</span></button>
+          <p class="review-form-note">Protótipo: sua avaliação fica salva apenas neste navegador. Ela não é enviada à padaria nem aparece para outros visitantes.</p><p class="review-feedback" id="reviewFeedback" role="status" aria-live="polite"></p>
+        </form>
+        <div class="review-list-panel"><div class="review-list-heading"><div><span class="eyebrow">OPINIÕES COMPARTILHADAS</span><h3>O que acharam da visita</h3></div><span class="review-count" id="reviewCount">0 avaliações</span></div><div class="review-list" id="reviewList" aria-live="polite"><div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div></div></div>
       </div>
-      <div class="reviews-carousel" id="reviewsCarousel" aria-label="Destaques sobre avaliações">
-        <div class="reviews-window">
-          <div class="reviews-track">
-            <article class="review-card review-feature">
-              <span class="google-wordmark"><b>G</b> Google</span>
-              
-              <span class="review-source">AVALIAÇÕES NO GOOGLE</span>
-              <h3>Opiniões de quem já visitou</h3>
-              <p>Confira os comentários e as notas publicados pelos próprios clientes diretamente na página da unidade no Google.</p>
-              <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Ver avaliações reais ↗</a>
-            </article>
-            <article class="review-card review-note">
-              <span class="review-quote">“</span><span class="review-source">SUA EXPERIÊNCIA</span>
-              <h3>Já visitou a Padaria Verena?</h3>
-              <p>Conte como foi sua experiência! Leva só alguns instantes para deixar uma avaliação e compartilhar sua opinião com quem ainda não conhece a unidade.</p>
-              <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Escrever minha avaliação ↗</a>
-            </article>
-            <article class="review-card review-note">
-              <span class="review-quote">✦</span><span class="review-source">COMUNIDADE BRASILÉIA</span>
-              <h3>Ajude a comunidade</h3>
-              <p>Sua avaliação pode ajudar moradores do Brasiléia e visitantes de Betim a escolher onde comprar pães, tomar um café ou fazer um lanche.</p>
-              <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Compartilhar minha experiência ↗</a>
-            </article>
-          </div>
-        </div>
-        <div class="reviews-controls">
-          <button class="review-arrow" type="button" id="reviewPrev" aria-label="Avaliação anterior">←</button>
-          <div class="review-dots" id="reviewDots" aria-label="Selecionar cartão">
-            <button type="button" class="active" aria-label="Grupo 1" data-review-dot="0"></button>
-            <button type="button" aria-label="Grupo 2" data-review-dot="1"></button>
-          </div>
-          <button class="review-arrow" type="button" id="reviewNext" aria-label="Próxima avaliação">→</button>
-          <span class="review-auto-label">PASSAGEM AUTOMÁTICA</span>
-        </div>
-      </div>
-      <p class="reviews-disclaimer">As avaliações e notas dos clientes são exibidas no Google. Este site não reproduz nem inventa depoimentos.</p>
+      <p class="reviews-disclaimer">Esta é uma demonstração de avaliações próprias, independente das avaliações do Google. Não há banco de dados conectado nem publicação compartilhada nesta versão.</p>
     </section>
 
     <section class="contact-band"><div><span class="eyebrow">FICOU COM ALGUMA DÚVIDA?</span><h2>Fale com a Verena.</h2><p>Entre em contato para confirmar informações sobre produtos e atendimento.</p></div><a class="btn btn-light" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Abrir WhatsApp ↗</a></section>
