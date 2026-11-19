@@ -117,3 +117,21 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 .reviews-disclaimer{font-size:10px;color:#887d73;margin:18px 0 0}
 @media(max-width:850px){.reviews-heading{grid-template-columns:1fr;gap:12px}.reviews-track{grid-template-columns:1fr 1fr}.review-feature{grid-column:1/-1;min-height:220px}}
 @media(max-width:600px){.reviews{padding-top:62px;padding-bottom:65px}.reviews-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 15px;margin-right:-8%;scrollbar-width:thin}.review-card{flex:0 0 84%;min-height:250px;scroll-snap-align:start;padding:24px 22px}.reviews-heading>p{font-size:12px}}
+
+
+/* Carrossel de avaliações: avanço automático, controles e adaptação mobile */
+.reviews-window{overflow:hidden;width:100%}
+.reviews-track{display:flex;gap:16px;transition:transform .65s cubic-bezier(.22,.75,.25,1);will-change:transform}
+.reviews-track .review-card{flex:0 0 calc((100% - 32px)/3);min-width:0}
+.review-source{font-size:9px;letter-spacing:.16em;font-weight:700;color:var(--gold);margin:9px 0 4px}
+.review-feature .review-stars{margin:12px 0 5px}
+.reviews-controls{display:flex;align-items:center;justify-content:center;gap:15px;margin-top:24px}
+.review-arrow{width:36px;height:36px;border:1px solid #ddcbb8;background:var(--paper);color:var(--coffee);font-size:17px;cursor:pointer;transition:.2s}
+.review-arrow:hover{background:var(--coffee);color:#fff}
+.review-dots{display:flex;align-items:center;gap:7px}
+.review-dots button{width:7px;height:7px;border:0;border-radius:50%;padding:0;background:#d5c4b1;cursor:pointer}
+.review-dots button.active{width:20px;border-radius:10px;background:var(--gold)}
+.review-auto-label{font-size:8px;letter-spacing:.13em;color:#968779;margin-left:8px}
+@media(max-width:850px){.reviews-track .review-card{flex:0 0 calc((100% - 16px)/2)}}
+@media(max-width:600px){.reviews-track .review-card{flex:0 0 100%}.reviews-controls{gap:12px}.review-auto-label{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.reviews-track{transition:none}}
