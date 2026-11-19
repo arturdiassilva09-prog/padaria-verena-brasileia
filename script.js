@@ -43,25 +43,27 @@ $("cancelEdit").addEventListener("click",resetForm);
 const promo=load(PROMO,"");if(promo)$("promoText").textContent=promo;
 const reviewTrack=document.querySelector("#reviewsCarousel .reviews-track");
 if(reviewTrack){
+ const reviewCards=Array.from(reviewTrack.querySelectorAll(".review-card"));
+ const reviewDots=Array.from(document.querySelectorAll("#reviewDots [data-review-dot]"));
+ const prev=document.getElementById("reviewPrev"),next=document.getElementById("reviewNext");
  let reviewIndex=0,reviewTimer=null;
- const reviewCards=[...reviewTrack.children],reviewDots=[...document.querySelectorAll("[data-review-dot]")];
- const reviewVisible=()=>window.matchMedia("(max-width:600px)").matches?1:2;
+ const visibleCount=()=>window.matchMedia("(max-width:600px)").matches?1:2;
+ const maxIndex=()=>Math.max(0,reviewCards.length-visibleCount());
  function moveReviews(index){
-  const visible=reviewVisible(),max=Math.max(0,reviewCards.length-visible);
-  reviewIndex=Math.min(Math.max(index,0),max);
-  const cardWidth=reviewCards[0].getBoundingClientRect().width+16;
-  reviewTrack.style.transform="translateX(-"+(reviewIndex*cardWidth)+"px)";
-  reviewDots.forEach((dot,i)=>dot.classList.toggle("active",i===Math.min(reviewIndex,reviewDots.length-1)));
+  reviewIndex=(index+maxIndex()+1)%(maxIndex()+1);
+  const step=reviewCards.length>1?reviewCards[1].offsetLeft-reviewCards[0].offsetLeft:0;
+  reviewTrack.style.transform="translate3d(-"+(step*reviewIndex)+"px,0,0)";
+  reviewDots.forEach((dot,i)=>dot.classList.toggle("active",i===reviewIndex));
  }
- function stopReviewTimer(){if(reviewTimer)clearInterval(reviewTimer);reviewTimer=null}
- function startReviewTimer(){stopReviewTimer();if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)reviewTimer=setInterval(()=>{const max=Math.max(0,reviewCards.length-reviewVisible());moveReviews(reviewIndex>=max?0:reviewIndex+1)},4200)}
- $("reviewPrev").addEventListener("click",()=>{moveReviews(reviewIndex<=0?Math.max(0,reviewCards.length-reviewVisible()):reviewIndex-1);startReviewTimer()});
- $("reviewNext").addEventListener("click",()=>{const max=Math.max(0,reviewCards.length-reviewVisible());moveReviews(reviewIndex>=max?0:reviewIndex+1);startReviewTimer()});
- reviewDots.forEach(dot=>dot.addEventListener("click",()=>{moveReviews(Number(dot.dataset.reviewDot));startReviewTimer()}));
- const carousel=document.getElementById("reviewsCarousel");
- carousel.addEventListener("mouseenter",stopReviewTimer);carousel.addEventListener("mouseleave",startReviewTimer);
- carousel.addEventListener("focusin",stopReviewTimer);carousel.addEventListener("focusout",startReviewTimer);
- window.addEventListener("resize",()=>moveReviews(reviewIndex));
- moveReviews(0);startReviewTimer();
+ function restartAuto(){
+  if(reviewTimer)clearInterval(reviewTimer);
+  reviewTimer=setInterval(()=>moveReviews(reviewIndex>=maxIndex()?0:reviewIndex+1),3500);
+ }
+ if(prev)prev.addEventListener("click",()=>{moveReviews(reviewIndex<=0?maxIndex():reviewIndex-1);restartAuto()});
+ if(next)next.addEventListener("click",()=>{moveReviews(reviewIndex>=maxIndex()?0:reviewIndex+1);restartAuto()});
+ reviewDots.forEach(dot=>dot.addEventListener("click",()=>{moveReviews(Number(dot.dataset.reviewDot));restartAuto()}));
+ window.addEventListener("resize",()=>moveReviews(Math.min(reviewIndex,maxIndex())));
+ moveReviews(0);
+ restartAuto();
 }
 render();
