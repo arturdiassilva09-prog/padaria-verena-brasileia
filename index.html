@@ -137,6 +137,53 @@
       <p class="reviews-disclaimer">Esta é uma demonstração de avaliações próprias, independente das avaliações do Google. Não há banco de dados conectado nem publicação compartilhada nesta versão.</p>
     </section>
 
+    <section class="feedback-section section" id="sugestoes-reclamacoes">
+      <div class="section-label">08 / CANAL DE ATENDIMENTO</div>
+      <div class="feedback-heading">
+        <div><span class="eyebrow">QUEREMOS TE OUVIR</span><h2>Tem algo para<br><em>compartilhar?</em></h2></div>
+        <p>Envie um elogio, uma sugestão ou uma reclamação. Este canal é separado das avaliações públicas e foi criado para demonstrar como a comunicação com a padaria poderá funcionar.</p>
+      </div>
+      <div class="feedback-prototype">
+        <form class="feedback-form" id="feedbackForm">
+          <span class="review-form-kicker">FALE COM A GENTE</span>
+          <h3>Como podemos ajudar?</h3>
+          <label class="review-field">Tipo de mensagem
+            <select id="feedbackType" required>
+              <option value="Sugestão">💡 Sugestão</option>
+              <option value="Reclamação">⚠️ Reclamação</option>
+              <option value="Elogio">♡ Elogio</option>
+            </select>
+          </label>
+          <label class="review-field">Seu nome <span class="field-optional">(opcional)</span>
+            <input id="feedbackName" maxlength="60" placeholder="Como podemos chamar você?">
+          </label>
+          <label class="review-field">Sua mensagem
+            <textarea id="feedbackMessage" rows="5" maxlength="1000" placeholder="Conte o que aconteceu ou compartilhe sua ideia..." required></textarea>
+          </label>
+          <button class="btn btn-primary" type="submit">Registrar mensagem <span>↗</span></button>
+          <p class="review-form-note">Demonstração: a mensagem fica somente neste navegador. Ninguém da padaria recebe ou consegue visualizar este registro nesta versão.</p>
+          <p class="review-feedback" id="feedbackStatus" role="status" aria-live="polite"></p>
+        </form>
+        <div class="feedback-info">
+          <div class="feedback-icon">✉</div>
+          <span class="eyebrow">UM ESPAÇO PARA MELHORAR</span>
+          <h3>Sua opinião faz diferença.</h3>
+          <p>Este canal foi pensado para receber comentários mais específicos, sem misturá-los com as avaliações que outros visitantes podem consultar.</p>
+          <div class="feedback-types">
+            <div><span class="feedback-type-icon">💡</span><span><strong>Sugestão</strong><small>Uma ideia para melhorar produtos ou atendimento.</small></span></div>
+            <div><span class="feedback-type-icon">⚠</span><span><strong>Reclamação</strong><small>Conte sobre algo que não saiu como esperado.</small></span></div>
+            <div><span class="feedback-type-icon">♡</span><span><strong>Elogio</strong><small>Compartilhe algo de que você gostou.</small></span></div>
+          </div>
+          <div class="feedback-local-records">
+            <div><strong>Registros deste navegador</strong><span id="feedbackCount">0 mensagens</span></div>
+            <div id="feedbackLocalList" class="feedback-local-list"><p>Nenhuma mensagem registrada neste dispositivo.</p></div>
+            <button type="button" class="text-button" id="clearFeedback">Limpar registros locais</button>
+          </div>
+        </div>
+      </div>
+      <p class="reviews-disclaimer">Canal demonstrativo e independente do WhatsApp. Não envie dados pessoais ou informações sensíveis. A integração real será feita posteriormente, com armazenamento e acesso adequados pela padaria.</p>
+    </section>
+
     <section class="contact-band"><div><span class="eyebrow">FICOU COM ALGUMA DÚVIDA?</span><h2>Fale com a Verena.</h2><p>Entre em contato para confirmar informações sobre produtos e atendimento.</p></div><a class="btn btn-light" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Abrir WhatsApp ↗</a></section>
   </main>
 
