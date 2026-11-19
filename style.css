@@ -145,3 +145,11 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 .review-link{font-size:11px;padding-bottom:7px}
 @media(max-width:850px){.reviews-track .review-card{flex:0 0 calc((100% - 16px)/2)}}
 @media(max-width:600px){.reviews-track .review-card{flex:0 0 100%}.review-card{min-height:270px}}
+
+/* Correção de funcionamento: a trilha é controlada pelo JavaScript, sem scroll concorrente */
+#reviewsCarousel .reviews-window{overflow:hidden!important;position:relative}
+#reviewsCarousel .reviews-track{display:flex!important;overflow:visible!important;scroll-snap-type:none!important;margin:0!important;padding:0!important;gap:16px!important;transition:transform .55s ease!important}
+#reviewsCarousel .reviews-track .review-card{display:flex;flex:0 0 calc((100% - 16px)/2)!important;min-width:0}
+@media(max-width:600px){#reviewsCarousel .reviews-track .review-card{flex-basis:100%!important}}
+#reviewsCarousel .reviews-controls{position:relative;z-index:2}
+#reviewsCarousel .review-arrow,#reviewsCarousel .review-dots button{touch-action:manipulation}
