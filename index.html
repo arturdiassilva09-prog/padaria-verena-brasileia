@@ -126,24 +126,41 @@
         <div><span class="eyebrow">SUA OPINIÃO CONTA</span><h2>O que os clientes<br><em>querem compartilhar.</em></h2></div>
         <p>Veja as opiniões publicadas por clientes no Google e compartilhe também como foi sua experiência na Padaria Verena.</p>
       </div>
-      <div class="reviews-track" aria-label="Acesso às avaliações de clientes no Google">
-        <article class="review-card review-feature">
-          <span class="google-wordmark"><b>G</b> Google</span>
-          <div class="review-stars" aria-label="Avaliações por estrelas">★★★★★</div>
-          <h3>Experiências de verdade</h3>
-          <p>Consulte diretamente no Google as avaliações e comentários publicados pelos clientes. Assim, você confere as opiniões na fonte.</p>
-          <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Ver avaliações no Google ↗</a>
-        </article>
-        <article class="review-card review-note">
-          <span class="review-quote">“</span><h3>Já visitou a Verena?</h3>
-          <p>Conte como foi seu atendimento, o que experimentou e o que achou da sua visita. Sua avaliação pode ajudar outras pessoas do bairro.</p>
-          <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Escrever uma avaliação ↗</a>
-        </article>
-        <article class="review-card review-note">
-          <span class="review-quote">✦</span><h3>Ajude a comunidade</h3>
-          <p>Opiniões sinceras ajudam quem está procurando uma padaria na região a conhecer melhor o estabelecimento.</p>
-          <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Encontrar a unidade ↗</a>
-        </article>
+      <div class="reviews-carousel" id="reviewsCarousel" aria-label="Destaques sobre avaliações">
+        <div class="reviews-window">
+          <div class="reviews-track">
+            <article class="review-card review-feature">
+              <span class="google-wordmark"><b>G</b> Google</span>
+              <div class="review-stars" aria-label="Cinco estrelas ilustrativas">★★★★★</div>
+              <span class="review-source">AVALIAÇÕES NO GOOGLE</span>
+              <h3>Opiniões de quem já visitou</h3>
+              <p>Confira os comentários e as notas publicados pelos próprios clientes diretamente na página da unidade no Google.</p>
+              <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Ver avaliações reais ↗</a>
+            </article>
+            <article class="review-card review-note">
+              <span class="review-quote">“</span><span class="review-source">SUA EXPERIÊNCIA</span>
+              <h3>Já conhece a Verena?</h3>
+              <p>Compartilhe sua experiência com outros moradores do bairro. Sua opinião ajuda quem está escolhendo onde tomar um café ou fazer uma pausa.</p>
+              <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Escrever avaliação ↗</a>
+            </article>
+            <article class="review-card review-note">
+              <span class="review-quote">✦</span><span class="review-source">COMUNIDADE BRASILÉIA</span>
+              <h3>Ajude outras pessoas</h3>
+              <p>Avaliações sinceras sobre atendimento, produtos e experiência ajudam futuros clientes a conhecer melhor o estabelecimento.</p>
+              <a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Encontrar no Google ↗</a>
+            </article>
+          </div>
+        </div>
+        <div class="reviews-controls">
+          <button class="review-arrow" type="button" id="reviewPrev" aria-label="Avaliação anterior">←</button>
+          <div class="review-dots" id="reviewDots" aria-label="Selecionar cartão">
+            <button type="button" class="active" aria-label="Cartão 1" data-review-dot="0"></button>
+            <button type="button" aria-label="Cartão 2" data-review-dot="1"></button>
+            <button type="button" aria-label="Cartão 3" data-review-dot="2"></button>
+          </div>
+          <button class="review-arrow" type="button" id="reviewNext" aria-label="Próxima avaliação">→</button>
+          <span class="review-auto-label">PASSAGEM AUTOMÁTICA</span>
+        </div>
       </div>
       <p class="reviews-disclaimer">As avaliações e notas dos clientes são exibidas no Google. Este site não reproduz nem inventa depoimentos.</p>
     </section>
