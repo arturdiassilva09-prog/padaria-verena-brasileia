@@ -96,3 +96,24 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
  .qty-control{align-self:flex-end}
  .admin-entry{padding:16px 8px}
 }
+
+
+/* Avaliações: seção editorial com acesso direto às opiniões publicadas no Google */
+.reviews{background:#f7f1e8;padding-top:88px;padding-bottom:88px;overflow:hidden}
+.reviews-heading{display:grid;grid-template-columns:1fr .72fr;gap:8%;align-items:end;margin-bottom:34px}
+.reviews-heading h2{margin-bottom:0}
+.reviews-heading>p{font-size:13px;line-height:1.85;color:var(--muted);max-width:440px;margin:0 0 5px}
+.reviews-track{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px;align-items:stretch}
+.review-card{min-height:260px;background:var(--paper);border:1px solid #eadfd2;padding:27px 26px;box-shadow:0 7px 24px rgba(70,43,27,.045);position:relative;display:flex;flex-direction:column;align-items:flex-start}
+.review-feature{background:#fff;border-top:3px solid var(--gold)}
+.google-wordmark{font-size:13px;font-weight:700;color:#5f6368;letter-spacing:-.03em}
+.google-wordmark b{font-size:19px;color:#4285f4;margin-right:5px}
+.review-stars{color:#e3a33e;letter-spacing:3px;font-size:17px;margin:19px 0 9px}
+.review-card h3{font:700 21px "Playfair Display",serif;color:var(--coffee);margin:8px 0 10px}
+.review-card p{font-size:11px;line-height:1.8;color:var(--muted);margin:0 0 20px}
+.review-link{margin-top:auto;display:inline-block;color:var(--coffee);font-size:10px;font-weight:700;border-bottom:1px solid var(--gold);padding-bottom:6px}
+.review-link:hover{color:var(--gold)}
+.review-quote{font:700 35px "Playfair Display",serif;color:var(--gold);line-height:1}
+.reviews-disclaimer{font-size:10px;color:#887d73;margin:18px 0 0}
+@media(max-width:850px){.reviews-heading{grid-template-columns:1fr;gap:12px}.reviews-track{grid-template-columns:1fr 1fr}.review-feature{grid-column:1/-1;min-height:220px}}
+@media(max-width:600px){.reviews{padding-top:62px;padding-bottom:65px}.reviews-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 15px;margin-right:-8%;scrollbar-width:thin}.review-card{flex:0 0 84%;min-height:250px;scroll-snap-align:start;padding:24px 22px}.reviews-heading>p{font-size:12px}}
