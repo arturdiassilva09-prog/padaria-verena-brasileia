@@ -45,13 +45,13 @@ const reviewTrack=document.querySelector("#reviewsCarousel .reviews-track");
 if(reviewTrack){
  let reviewIndex=0,reviewTimer=null;
  const reviewCards=[...reviewTrack.children],reviewDots=[...document.querySelectorAll("[data-review-dot]")];
- const reviewVisible=()=>window.matchMedia("(max-width:600px)").matches?1:window.matchMedia("(max-width:850px)").matches?2:3;
+ const reviewVisible=()=>window.matchMedia("(max-width:600px)").matches?1:2;
  function moveReviews(index){
   const visible=reviewVisible(),max=Math.max(0,reviewCards.length-visible);
   reviewIndex=Math.min(Math.max(index,0),max);
   const cardWidth=reviewCards[0].getBoundingClientRect().width+16;
   reviewTrack.style.transform="translateX(-"+(reviewIndex*cardWidth)+"px)";
-  reviewDots.forEach((dot,i)=>dot.classList.toggle("active",i===reviewIndex));
+  reviewDots.forEach((dot,i)=>dot.classList.toggle("active",i===Math.min(reviewIndex,reviewDots.length-1)));
  }
  function stopReviewTimer(){if(reviewTimer)clearInterval(reviewTimer);reviewTimer=null}
  function startReviewTimer(){stopReviewTimer();if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)reviewTimer=setInterval(()=>{const max=Math.max(0,reviewCards.length-reviewVisible());moveReviews(reviewIndex>=max?0:reviewIndex+1)},4200)}
