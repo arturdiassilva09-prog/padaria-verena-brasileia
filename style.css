@@ -135,3 +135,13 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 @media(max-width:850px){.reviews-track .review-card{flex:0 0 calc((100% - 16px)/2)}}
 @media(max-width:600px){.reviews-track .review-card{flex:0 0 100%}.reviews-controls{gap:12px}.review-auto-label{font-size:7px}}
 @media(prefers-reduced-motion:reduce){.reviews-track{transition:none}}
+
+/* Ajuste final: convites de avaliação + carrossel realmente visível em telas grandes */
+.reviews-track .review-card{flex:0 0 calc((100% - 16px)/2);min-height:285px}
+.review-card:not(.review-feature){border-top:3px solid var(--gold)}
+.review-note .review-quote{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--cream);font-size:23px}
+.review-card h3{font-size:23px;line-height:1.2}
+.review-card p{font-size:12px;line-height:1.85}
+.review-link{font-size:11px;padding-bottom:7px}
+@media(max-width:850px){.reviews-track .review-card{flex:0 0 calc((100% - 16px)/2)}}
+@media(max-width:600px){.reviews-track .review-card{flex:0 0 100%}.review-card{min-height:270px}}
