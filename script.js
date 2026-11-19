@@ -90,4 +90,39 @@ if(reviewForm){
  renderReviews();
 }
 
+
+/* Sugestões e reclamações: protótipo local, sem envio para a padaria. */
+const FEEDBACK_KEY="verena_feedback_prototype_v1";
+function renderFeedback(){
+ const list=$("feedbackLocalList"),count=$("feedbackCount");
+ if(!list||!count)return;
+ const messages=load(FEEDBACK_KEY,[]);
+ count.textContent=messages.length+" "+(messages.length===1?"mensagem":"mensagens");
+ list.innerHTML=messages.length?messages.slice().reverse().map(item=>'<article class="feedback-local-item"><strong>'+escapeHtml(item.type)+(item.name?' · '+escapeHtml(item.name):'')+'</strong><time>'+escapeHtml(item.date)+'</time><p>'+escapeHtml(item.message)+'</p></article>').join(""):'<p>Nenhuma mensagem registrada neste dispositivo.</p>';
+}
+const feedbackForm=$("feedbackForm");
+if(feedbackForm){
+ feedbackForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  const type=$("feedbackType").value,name=$("feedbackName").value.trim(),message=$("feedbackMessage").value.trim();
+  if(!message)return;
+  const messages=load(FEEDBACK_KEY,[]);
+  messages.push({type,name,message,date:new Date().toLocaleDateString("pt-BR")});
+  save(FEEDBACK_KEY,messages);
+  feedbackForm.reset();
+  $("feedbackStatus").textContent="Mensagem registrada somente neste navegador (modo demonstração).";
+  renderFeedback();
+ });
+}
+const clearFeedbackButton=$("clearFeedback");
+if(clearFeedbackButton){
+ clearFeedbackButton.addEventListener("click",()=>{
+  if(!confirm("Apagar todas as mensagens demonstrativas salvas neste navegador?"))return;
+  save(FEEDBACK_KEY,[]);
+  $("feedbackStatus").textContent="Registros locais apagados.";
+  renderFeedback();
+ });
+}
+renderFeedback();
+
 render();
