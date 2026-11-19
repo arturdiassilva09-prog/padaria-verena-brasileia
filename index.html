@@ -21,7 +21,7 @@
     </a>
     <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
     <nav class="nav" id="mainNav">
-      <a href="#sobre">A padaria</a><a href="#produtos">Produtos</a><a href="#galeria">Galeria</a><a href="#visite">Como chegar</a>
+      <a href="#sobre">A padaria</a><a href="#produtos">Produtos</a><a href="#cardapio">Cardápio</a><a href="#galeria">Galeria</a><a href="#visite">Como chegar</a>
       <a class="nav-cta" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Fale conosco ↗</a>
     </nav>
   </header>
@@ -73,6 +73,34 @@
       <p class="disclaimer">As fotografias desta página são ilustrativas e não representam necessariamente os produtos ou o ambiente da unidade. Consulte a padaria para confirmar opções e disponibilidade.</p>
     </section>
 
+
+    <section class="catalog section" id="cardapio">
+      <div class="section-label">05 / CARDÁPIO DIGITAL</div>
+      <div class="section-heading"><div><span class="eyebrow">ESCOLHA COM CALMA</span><h2>Seu próximo<br><em>favorito está aqui.</em></h2></div><p>Catálogo demonstrativo. Consulte a unidade para confirmar preços, disponibilidade e opções do dia.</p></div>
+      <div class="catalog-tools">
+        <label class="search-box"><span>⌕</span><input id="productSearch" type="search" placeholder="Buscar produto..." aria-label="Buscar produto"></label>
+        <div class="category-filters" id="categoryFilters"><button class="filter-chip active" data-category="Todos">Todos</button><button class="filter-chip" data-category="Pães">Pães</button><button class="filter-chip" data-category="Salgados">Salgados</button><button class="filter-chip" data-category="Doces">Doces</button><button class="filter-chip" data-category="Bebidas">Bebidas</button></div>
+      </div>
+      <div class="catalog-grid" id="catalogGrid" aria-live="polite"></div>
+      <p class="disclaimer">Os produtos e valores são editáveis no painel de demonstração. Nenhum preço foi presumido como preço oficial da padaria.</p>
+    </section>
+    <section class="extras section" id="experiencias">
+      <div class="section-label">06 / EXPERIÊNCIA</div>
+      <div class="extras-grid">
+        <article class="extra-card"><span class="extra-symbol">♡</span><h3>Seus favoritos</h3><p>Marque os produtos que deseja encontrar mais rápido na próxima visita. Os favoritos ficam salvos neste navegador.</p><button class="text-button" id="showFavorites">Ver meus favoritos →</button></article>
+        <article class="extra-card"><span class="extra-symbol">✦</span><h3>Novidades e ofertas</h3><p id="promoText">Acompanhe os destaques e consulte a equipe sobre as ofertas disponíveis hoje.</p><a class="text-button" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Perguntar pelo WhatsApp →</a></article>
+        <article class="extra-card"><span class="extra-symbol">★</span><h3>Conte como foi</h3><p>Sua opinião ajuda outras pessoas do bairro a conhecerem o atendimento.</p><a class="text-button" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Ver local e avaliações →</a></article>
+      </div>
+    </section>
+    <section class="contact-band"><div><span class="eyebrow">PEDIDO OU DÚVIDA?</span><h2>Monte sua sacola.</h2><p>Envie sua seleção pelo WhatsApp e confirme valores, disponibilidade e retirada diretamente com a equipe.</p></div><button class="btn btn-light" id="openCart">Ver minha sacola <span id="cartCount">0</span> · ↗</button></section>
+    <section class="admin-entry"><span>Área de demonstração do projeto</span><button class="text-button" id="openAdmin">⚙ Painel administrativo</button></section>
+    <div class="overlay" id="cartOverlay" hidden><aside class="side-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle"><button class="close-panel" data-close="cartOverlay" aria-label="Fechar">×</button><span class="eyebrow">SELEÇÃO DE PRODUTOS</span><h2 id="cartTitle">Minha sacola</h2><div id="cartItems" class="cart-items"></div><div class="cart-footer"><p>Valores e disponibilidade serão confirmados pela padaria.</p><button class="btn btn-primary" id="sendOrder">Enviar pedido pelo WhatsApp ↗</button></div></aside></div>
+    <div class="overlay" id="adminOverlay" hidden><aside class="side-panel admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle"><button class="close-panel" data-close="adminOverlay" aria-label="Fechar">×</button><span class="eyebrow">GERENCIAMENTO LOCAL</span><h2 id="adminTitle">Painel administrativo</h2><div class="local-warning">Modo demonstração: alterações ficam salvas somente neste navegador. Não há login protegido nem sincronização entre dispositivos.</div>
+      <label class="admin-label">Aviso / promoção <textarea id="promoInput" rows="2" placeholder="Ex.: Consulte as novidades de hoje"></textarea></label><button class="btn btn-primary admin-save" id="savePromo">Salvar destaque</button>
+      <div class="admin-subhead"><h3>Produtos do cardápio</h3><span id="adminProductCount"></span></div>
+      <form id="productForm" class="product-form"><input type="hidden" id="editProductId"><label class="admin-label">Nome<input id="adminProductName" required maxlength="60" placeholder="Nome do produto"></label><div class="form-row"><label class="admin-label">Categoria<select id="adminProductCategory"><option>Pães</option><option>Salgados</option><option>Doces</option><option>Bebidas</option></select></label><label class="admin-label">Preço (opcional)<input id="adminProductPrice" inputmode="decimal" placeholder="Ex.: 5,00"></label></div><label class="admin-label">Descrição<input id="adminProductDescription" maxlength="100" placeholder="Descrição curta"></label><button class="btn btn-primary" type="submit" id="saveProduct">Adicionar produto</button><button class="btn btn-outline" type="button" id="cancelEdit" hidden>Cancelar edição</button></form><div id="adminProductList" class="admin-product-list"></div>
+    </aside></div>
+
     <section class="gallery section" id="galeria">
       <div class="section-label">03 / GALERIA</div>
       <div class="gallery-head"><div><span class="eyebrow">UM CLIMA DE PADARIA</span><h2>Pequenos prazeres,<br><em>grandes momentos.</em></h2></div><span class="gallery-caption">REFERÊNCIAS VISUAIS · IMAGENS ILUSTRATIVAS</span></div>
@@ -95,6 +123,6 @@
     <section class="contact-band"><div><span class="eyebrow">FICOU COM ALGUMA DÚVIDA?</span><h2>Fale com a Verena.</h2><p>Entre em contato para confirmar informações sobre produtos e atendimento.</p></div><a class="btn btn-light" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Abrir WhatsApp ↗</a></section>
   </main>
 
-  <footer class="footer"><a class="brand brand-footer" href="#inicio"><span class="brand-mark">V</span><span><strong>VERENA</strong><small>PADARIA · BRASILÉIA</small></span></a><p>Informações públicas reunidas para facilitar sua visita.</p><div class="footer-links"><a href="https://www.instagram.com/verenabrasileia/" target="_blank" rel="noopener">Instagram ↗</a><a href="https://wa.me/5531990905985" target="_blank" rel="noopener">WhatsApp ↗</a></div><small class="copyright">Projeto acadêmico · Betim Digital · 2026</small></footer>
+  <footer class="footer"><a class="brand brand-footer" href="#inicio"><span class="brand-mark">V</span><span><strong>VERENA</strong><small>PADARIA · BRASILÉIA</small></span></a><p>Informações públicas reunidas para facilitar sua visita.</p><div class="footer-links"><a href="#cardapio">Cardápio ↗</a><a href="https://www.instagram.com/verenabrasileia/" target="_blank" rel="noopener">Instagram ↗</a><a href="https://wa.me/5531990905985" target="_blank" rel="noopener">WhatsApp ↗</a></div><small class="copyright">Projeto acadêmico · Betim Digital · 2026</small></footer>
 </body>
 </html>
