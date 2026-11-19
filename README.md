@@ -30,3 +30,13 @@ As fotografias do site são imagens ilustrativas de banco de imagens, não fotos
 - Restaurant Guru: https://restaurantguru.com.br/Padaria-Verena-Unidade-Brasileia-Betim
 - Bendito Guia: https://www.benditoguia.com.br/empresa/padaria-verena-unidade-brasileia-betim-mg
 - Solutudo: https://www.solutudo.com.br/empresas/mg/betim/panificadoras-e-padarias/padaria-verena-unidade-brasileia-22332617
+
+
+## Recursos adicionados (versão ampliada)
+- Catálogo digital com busca, categorias e favoritos.
+- Sacola de seleção que monta uma mensagem e abre o WhatsApp da unidade; o pedido só é enviado depois de o cliente confirmar no WhatsApp.
+- Painel de demonstração para cadastrar, editar e excluir produtos e alterar o destaque promocional.
+- Layout responsivo, atalhos de contato e área de avaliações.
+
+### Limites importantes do painel
+O painel atual é uma demonstração front-end: os dados são gravados no armazenamento local do navegador. Isso significa que as alterações só aparecem no dispositivo/navegador em que foram feitas. Não existe autenticação segura, banco de dados compartilhado, processamento de pagamento ou recebimento automático de pedidos. Não coloque senhas, dados de clientes ou informações privadas nele. Para operação real, conecte um backend com autenticação e regras de acesso (por exemplo, Firebase Authentication + Firestore) e mantenha qualquer segredo no servidor. O GitHub Pages hospeda conteúdo estático e não executa código de servidor.
