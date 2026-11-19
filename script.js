@@ -41,4 +41,27 @@ $("productForm").addEventListener("submit",e=>{e.preventDefault();const id=$("ed
 $("adminProductList").addEventListener("click",e=>{const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");if(edit){const p=products.find(x=>x.id===edit.dataset.edit);$("editProductId").value=p.id;$("adminProductName").value=p.name;$("adminProductCategory").value=p.category;$("adminProductPrice").value=p.price;$("adminProductDescription").value=p.description;$("saveProduct").textContent="Salvar alterações";$("cancelEdit").hidden=false}if(del&&confirm("Excluir este produto do catálogo local?")){products=products.filter(p=>p.id!==del.dataset.delete);cart=cart.filter(x=>x.id!==del.dataset.delete);save(KEY,products);save(CART,cart);render();renderAdmin();renderCart()}});
 $("cancelEdit").addEventListener("click",resetForm);
 const promo=load(PROMO,"");if(promo)$("promoText").textContent=promo;
+const reviewTrack=document.querySelector("#reviewsCarousel .reviews-track");
+if(reviewTrack){
+ let reviewIndex=0,reviewTimer=null;
+ const reviewCards=[...reviewTrack.children],reviewDots=[...document.querySelectorAll("[data-review-dot]")];
+ const reviewVisible=()=>window.matchMedia("(max-width:600px)").matches?1:window.matchMedia("(max-width:850px)").matches?2:3;
+ function moveReviews(index){
+  const visible=reviewVisible(),max=Math.max(0,reviewCards.length-visible);
+  reviewIndex=Math.min(Math.max(index,0),max);
+  const cardWidth=reviewCards[0].getBoundingClientRect().width+16;
+  reviewTrack.style.transform="translateX(-"+(reviewIndex*cardWidth)+"px)";
+  reviewDots.forEach((dot,i)=>dot.classList.toggle("active",i===reviewIndex));
+ }
+ function stopReviewTimer(){if(reviewTimer)clearInterval(reviewTimer);reviewTimer=null}
+ function startReviewTimer(){stopReviewTimer();if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)reviewTimer=setInterval(()=>{const max=Math.max(0,reviewCards.length-reviewVisible());moveReviews(reviewIndex>=max?0:reviewIndex+1)},4200)}
+ $("reviewPrev").addEventListener("click",()=>{moveReviews(reviewIndex<=0?Math.max(0,reviewCards.length-reviewVisible()):reviewIndex-1);startReviewTimer()});
+ $("reviewNext").addEventListener("click",()=>{const max=Math.max(0,reviewCards.length-reviewVisible());moveReviews(reviewIndex>=max?0:reviewIndex+1);startReviewTimer()});
+ reviewDots.forEach(dot=>dot.addEventListener("click",()=>{moveReviews(Number(dot.dataset.reviewDot));startReviewTimer()}));
+ const carousel=document.getElementById("reviewsCarousel");
+ carousel.addEventListener("mouseenter",stopReviewTimer);carousel.addEventListener("mouseleave",startReviewTimer);
+ carousel.addEventListener("focusin",stopReviewTimer);carousel.addEventListener("focusout",startReviewTimer);
+ window.addEventListener("resize",()=>moveReviews(reviewIndex));
+ moveReviews(0);startReviewTimer();
+}
 render();
