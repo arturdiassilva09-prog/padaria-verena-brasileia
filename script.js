@@ -66,4 +66,28 @@ if(reviewTrack){
  moveReviews(0);
  restartAuto();
 }
+
+/* Avaliações: protótipo local. Substituir localStorage por API/backend no futuro. */
+const REVIEW_KEY="verena_reviews_prototype_v1";
+function renderReviews(){
+ const saved=load(REVIEW_KEY,[]),list=$("reviewList"),count=$("reviewCount");
+ if(!list||!count)return;
+ count.textContent=saved.length+" "+(saved.length===1?"avaliação":"avaliações");
+ list.innerHTML=saved.length?saved.slice().reverse().map(r=>'<article class="review-item"><div class="review-item-top"><span class="review-item-name">'+escapeHtml(r.name)+'</span><time class="review-item-date">'+escapeHtml(r.date)+'</time></div><div class="review-item-stars" aria-label="'+r.rating+' de 5 estrelas">'+("★".repeat(r.rating))+("☆".repeat(5-r.rating))+'</div><p>'+escapeHtml(r.comment)+'</p></article>').join(""):'<div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div>';
+}
+const reviewForm=$("reviewForm");
+if(reviewForm){
+ reviewForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value);
+  if(!name||!comment||rating<1||rating>5)return;
+  const saved=load(REVIEW_KEY,[]);
+  saved.push({name,comment,rating,date:new Date().toLocaleDateString("pt-BR")});
+  save(REVIEW_KEY,saved);reviewForm.reset();
+  $("reviewFeedback").textContent="Avaliação registrada apenas neste navegador (modo demonstração).";
+  renderReviews();
+ });
+ renderReviews();
+}
+
 render();
