@@ -1,0 +1,25 @@
+name: Site quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Verificar sintaxe JavaScript
+        run: |
+          node --check script.js
+          node --check firebase-config.js
+          node --check scripts/validate-site.cjs
+      - name: Verificar estrutura e referências do site
+        run: node scripts/validate-site.cjs
