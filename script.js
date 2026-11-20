@@ -171,7 +171,7 @@ function renderReviews(){
  list.innerHTML='<div class="review-empty"><p>Carregando avaliações...</p></div>';
  if(!db)return;
  db.collection("avaliacoes").where("status","==","aprovada").get().then(snap=>{
-  const saved=snap.docs.map(d=>d.data()).sort((a,b)=>(b.criadoEm||"").localeCompare(a.criadoEm||""));
+  const saved=snap.docs.map(d=>d.data());
   count.textContent=saved.length+" "+(saved.length===1?"avaliação":"avaliações");
   list.innerHTML=saved.length?saved.map(r=>'<article class="review-item"><div class="review-item-top"><span class="review-item-name">'+escapeHtml(r.nome)+'</span><time class="review-item-date">'+escapeHtml(r.data||"")+'</time></div><div class="review-item-stars" aria-label="'+r.nota+' de 5 estrelas">'+("★".repeat(r.nota))+("☆".repeat(5-r.nota))+'</div><p>'+escapeHtml(r.comentario)+'</p></article>').join(""):'<div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações aprovadas aparecerão aqui.</p></div>';
  }).catch(error=>{console.error(error);count.textContent="Avaliações";list.innerHTML='<p class="empty-state">Não foi possível carregar as avaliações agora.</p>'});
@@ -183,7 +183,7 @@ if(reviewForm){
   const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value);
   if(!name||!comment||rating<1||rating>5||!db)return;
   try{
-   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,data:new Date().toLocaleDateString("pt-BR"),criadoEm:new Date().toISOString(),status:"pendente"});
+   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,data:new Date().toLocaleDateString("pt-BR"),status:"pendente"});
    reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Obrigado por compartilhar sua experiência!";
   }catch(error){$("reviewFeedback").textContent="Não foi possível enviar sua avaliação. Tente novamente mais tarde."}
  });
