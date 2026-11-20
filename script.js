@@ -213,3 +213,59 @@ if(feedbackForm){
 }
 
 render();
+
+/* Ações explícitas nos atalhos de sugestão, reclamação e elogio. */
+document.querySelectorAll("[data-feedback-choice]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  const form=$("feedbackForm"),select=$("feedbackType");
+  if(!form||!select)return;
+  select.value=button.dataset.feedbackChoice;
+  form.scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(()=> $("feedbackMessage")?.focus({preventScroll:true}),350);
+ });
+});
+/* Mensagens e avaliações: ferramentas administrativas protegidas pelas regras Firestore. */
+async function loadAdminInbox(){
+ if(!isVerenaAdmin||!db)return;
+ const feedbackBox=$("adminFeedbackList"),reviewBox=$("adminReviewModeration");
+ if(feedbackBox)feedbackBox.innerHTML='<p class="empty-state">Carregando mensagens...</p>';
+ if(reviewBox)reviewBox.innerHTML='<p class="empty-state">Carregando avaliações...</p>';
+ try{
+  const [feedbackSnap,reviewSnap]=await Promise.all([
+   db.collection("feedbacks").get(),
+   db.collection("avaliacoes").where("status","==","pendente").get()
+  ]);
+  if(feedbackBox){
+   feedbackBox.innerHTML=feedbackSnap.empty?'<p class="empty-state">Nenhuma mensagem recebida.</p>':feedbackSnap.docs.map(doc=>{
+    const d=doc.data(),type=({sugestao:"Sugestão",reclamacao:"Reclamação",elogio:"Elogio"})[d.tipo]||"Mensagem";
+    return '<article class="admin-message"><div class="admin-message-head"><strong>'+escapeHtml(type)+' · '+escapeHtml(d.nome||"Visitante")+'</strong><small>'+escapeHtml(d.data||"")+'</small></div><p>'+escapeHtml(d.mensagem||"")+'</p><div class="admin-message-actions"><button type="button" data-feedback-delete="'+doc.id+'">Excluir mensagem</button></div></article>';
+   }).join("");
+  }
+  if(reviewBox){
+   reviewBox.innerHTML=reviewSnap.empty?'<p class="empty-state">Nenhuma avaliação aguardando aprovação.</p>':reviewSnap.docs.map(doc=>{
+    const d=doc.data();
+    return '<article class="admin-message"><div class="admin-message-head"><strong>'+escapeHtml(d.nome||"Visitante")+' · '+Number(d.nota||0)+'/5</strong><small>'+escapeHtml(d.data||"")+'</small></div><p>'+escapeHtml(d.comentario||"")+'</p><div class="admin-message-actions"><button type="button" data-review-approve="'+doc.id+'">Aprovar publicação</button><button type="button" data-review-reject="'+doc.id+'">Rejeitar</button></div></article>';
+   }).join("");
+  }
+ }catch(error){
+  console.error("Erro ao carregar caixa de entrada:",error);
+  if(feedbackBox)feedbackBox.innerHTML='<p class="empty-state">Não foi possível carregar mensagens. Verifique a conexão e as regras do Firestore.</p>';
+  if(reviewBox)reviewBox.innerHTML='<p class="empty-state">Não foi possível carregar avaliações pendentes.</p>';
+ }
+}
+$("adminFeedbackList")?.addEventListener("click",async e=>{
+ const b=e.target.closest("[data-feedback-delete]");if(!b||!isVerenaAdmin)return;
+ if(!confirm("Excluir esta mensagem permanentemente?"))return;
+ try{await db.collection("feedbacks").doc(b.dataset.feedbackDelete).delete();await loadAdminInbox()}
+ catch(error){alert("Não foi possível excluir: "+error.message)}
+});
+$("adminReviewModeration")?.addEventListener("click",async e=>{
+ const approve=e.target.closest("[data-review-approve]"),reject=e.target.closest("[data-review-reject]");
+ const button=approve||reject;if(!button||!isVerenaAdmin)return;
+ try{
+  await db.collection("avaliacoes").doc(button.dataset.reviewApprove||button.dataset.reviewReject).update({status:approve?"aprovada":"rejeitada"});
+  await loadAdminInbox();if(approve)renderReviews();
+ }catch(error){alert("Não foi possível moderar a avaliação: "+error.message)}
+});
+$("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
+$("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
