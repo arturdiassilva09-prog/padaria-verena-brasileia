@@ -300,3 +300,9 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 @media(max-width:1000px){.catalog-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.catalog{padding:65px 6% 72px}.catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.catalog-card{padding:15px 13px;min-height:270px}.catalog-card h3{font-size:16px}.catalog-card p{font-size:10px}.catalog-emoji{width:52px;height:52px;font-size:27px}.catalog-count-label{font-size:9px;padding:8px}.catalog-intro-strip{padding:13px;gap:10px}.catalog-intro-strip>span:first-child{width:40px;height:40px;flex-basis:40px}.catalog-intro-strip strong{font-size:14px}.catalog-intro-strip small{font-size:10px}.filter-chip{padding:10px 14px}}
 @media(max-width:380px){.catalog-grid{grid-template-columns:1fr}.catalog-card{min-height:unset}.catalog-card p{min-height:unset}}
+
+
+.cart-feedback{min-height:0;margin:0 auto 12px;text-align:center;color:#386b43;font-size:12px;font-weight:700;opacity:0;transition:opacity .2s}
+.cart-feedback.visible{min-height:20px;opacity:1}
+.add-button{min-height:38px;white-space:nowrap;touch-action:manipulation;cursor:pointer}
+.add-button:active{transform:scale(.96)}
