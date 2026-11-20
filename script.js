@@ -205,14 +205,25 @@ const feedbackForm=$("feedbackForm");
 if(feedbackForm){
  feedbackForm.addEventListener("submit",async e=>{
   e.preventDefault();
+  const status=$("feedbackStatus"),submit=feedbackForm.querySelector('button[type="submit"]');
   const typeMap={"Sugestão":"sugestao","Reclamação":"reclamacao","Elogio":"elogio"};
   const tipo=typeMap[$("feedbackType").value],nome=$("feedbackName").value.trim(),mensagem=$("feedbackMessage").value.trim();
-  if(!mensagem)return;
-  if(!db){$("feedbackStatus").textContent="Serviço temporariamente indisponível. Atualize a página e tente novamente.";return;}
+  if(!mensagem){status.textContent="Escreva sua mensagem antes de enviar.";return;}
+  if(!tipo){status.textContent="Selecione o tipo da mensagem.";return;}
+  if(!db){status.textContent="Firebase não foi inicializado. Recarregue a página e tente novamente.";return;}
+  if(submit){submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent="Enviando...";}
+  status.textContent="Enviando sua mensagem...";
   try{
    await db.collection("feedbacks").add({tipo,nome,mensagem,data:new Date().toISOString()});
-   feedbackForm.reset();$("feedbackStatus").textContent="Mensagem enviada à equipe da padaria. Obrigado pelo contato!";
-  }catch(error){$("feedbackStatus").textContent="Não foi possível enviar sua mensagem. Tente novamente mais tarde."}
+   feedbackForm.reset();
+   status.textContent="Mensagem enviada com sucesso à equipe da padaria. Obrigado pelo contato!";
+  }catch(error){
+   console.error("Falha ao registrar feedback no Firestore:",error);
+   const code=error?.code||"erro-desconhecido";
+   status.textContent="Falha ao enviar ("+code+"). "+(code==="permission-denied"?"As regras do Firebase bloquearam o envio.":code==="unavailable"?"O Firebase está temporariamente indisponível.":"Verifique a conexão e tente novamente.");
+  }finally{
+   if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalText||"Registrar mensagem ↗";}
+  }
  });
 }
 
