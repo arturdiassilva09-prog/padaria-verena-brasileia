@@ -51,7 +51,8 @@ document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{
 $("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});
 function renderCart(){$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
 $("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>v.id===q.dataset.qty);x.qty+=Number(q.dataset.delta);if(x.qty<=0)cart=cart.filter(v=>v.id!==q.dataset.qty)}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
-const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap");if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{addressWrap.hidden=orderMode.value!=="Entrega (consultar disponibilidade)"});\n$("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
+const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap");if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{addressWrap.hidden=orderMode.value!=="Entrega (consultar disponibilidade)"});
+$("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
 const fb=window.verenaFirebase||null;
 const db=fb?.db||null,auth=fb?.auth||null;
 const ADMIN_UID="A4N9gGjLF4WKwY6N1Uzz0jyPWns2";
@@ -61,7 +62,9 @@ async function loadPublicProducts(){
  try{
   const snap=await db.collection("produtos").where("ativo","==",true).get();
   if(!snap.empty){
-   products=snap.docs.map(d=>({id:d.id,...d.data()}));
+   const remote=snap.docs.map(d=>({id:d.id,...d.data()}));
+   const known=new Set(remote.map(p=>String(p.name||"").toLocaleLowerCase("pt-BR")));
+   products=[...remote,...seed.filter(p=>!known.has(p.name.toLocaleLowerCase("pt-BR")))];
    render();
   }else{
    $("catalogGrid").innerHTML='<p class="empty-state">O catálogo está sendo atualizado. Em breve, confira os produtos disponíveis.</p>';
@@ -303,7 +306,7 @@ $("adminReviewModeration")?.addEventListener("click",async e=>{
 });
 $("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
 $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
-\n
+
 /* Atendimento virtual demonstrativo: respostas locais, sem IA externa ou coleta de dados. */
 (function(){
  const panel=$("assistantPanel"),launcher=$("assistantLauncher"),messages=$("assistantMessages"),form=$("assistantForm"),input=$("assistantInput");
