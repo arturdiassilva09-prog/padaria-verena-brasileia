@@ -61,12 +61,19 @@ async function loadAdminProducts(){
  products=all.docs.map(d=>({id:d.id,...d.data()}));
  render();renderAdmin();
 }
-$("openAdmin").addEventListener("click",()=>{
+$("openAdmin").addEventListener("click",async()=>{
  $("adminLoginStatus").textContent="";
  $("adminPassword").value="";
  $("adminLoginForm").hidden=!!isVerenaAdmin;
  $("adminTools").hidden=!isVerenaAdmin;
- if(isVerenaAdmin){renderAdmin();$("promoInput").value=load(PROMO,"")}
+ if(isVerenaAdmin){
+  try{
+   await loadAdminProducts();
+   const config=await db.collection("configuracoes").doc("geral").get();
+   const promoText=config.exists?(config.data().promo||""):"";
+   $("promoInput").value=promoText;
+  }catch(error){$("adminLoginStatus").textContent="Não foi possível carregar o painel: "+error.message}
+ }
  show("adminOverlay");
 });
 $("adminLoginForm").addEventListener("submit",async e=>{
