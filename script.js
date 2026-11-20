@@ -69,6 +69,7 @@ $("openAdmin").addEventListener("click",async()=>{
  if(isVerenaAdmin){
   try{
    await loadAdminProducts();
+   await loadAdminInbox();
    const config=await db.collection("configuracoes").doc("geral").get();
    const promoText=config.exists?(config.data().promo||""):"";
    $("promoInput").value=promoText;
@@ -90,6 +91,7 @@ $("adminLoginForm").addEventListener("submit",async e=>{
   $("adminLoginForm").hidden=true;$("adminTools").hidden=false;
   $("adminSessionEmail").textContent=credential.user.email||"Administrador conectado";
   await loadAdminProducts();
+  await loadAdminInbox();
   const config=await db.collection("configuracoes").doc("geral").get();
   const promoText=config.exists?(config.data().promo||""):"";
   $("promoInput").value=promoText;$("promoText").textContent=promoText||"Acompanhe os destaques e consulte a equipe sobre as ofertas disponíveis hoje.";
@@ -188,7 +190,8 @@ if(reviewForm){
  reviewForm.addEventListener("submit",async e=>{
   e.preventDefault();
   const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value);
-  if(!name||!comment||rating<1||rating>5||!db)return;
+  if(!name||!comment||rating<1||rating>5)return;
+  if(!db){$("reviewFeedback").textContent="Serviço temporariamente indisponível. Atualize a página e tente novamente.";return;}
   try{
    await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,data:new Date().toLocaleDateString("pt-BR"),status:"pendente"});
    reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Obrigado por compartilhar sua experiência!";
@@ -204,7 +207,8 @@ if(feedbackForm){
   e.preventDefault();
   const typeMap={"Sugestão":"sugestao","Reclamação":"reclamacao","Elogio":"elogio"};
   const tipo=typeMap[$("feedbackType").value],nome=$("feedbackName").value.trim(),mensagem=$("feedbackMessage").value.trim();
-  if(!mensagem||!db)return;
+  if(!mensagem)return;
+  if(!db){$("feedbackStatus").textContent="Serviço temporariamente indisponível. Atualize a página e tente novamente.";return;}
   try{
    await db.collection("feedbacks").add({tipo,nome,mensagem,data:new Date().toISOString()});
    feedbackForm.reset();$("feedbackStatus").textContent="Mensagem enviada à equipe da padaria. Obrigado pelo contato!";
