@@ -33,14 +33,109 @@ $("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});
 function renderCart(){$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
 $("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>v.id===q.dataset.qty);x.qty+=Number(q.dataset.delta);if(x.qty<=0)cart=cart.filter(v=>v.id!==q.dataset.qty)}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
 $("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const msg="Olá! Gostaria de consultar disponibilidade e valores para:\n"+lines.join("\n")+"\n\nPodem confirmar, por favor?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
-$("openAdmin").addEventListener("click",()=>{renderAdmin();$("promoInput").value=load(PROMO,"");show("adminOverlay")});
-$("savePromo").addEventListener("click",()=>{save(PROMO,$("promoInput").value.trim());$("promoText").textContent=$("promoInput").value.trim()||"Acompanhe os destaques e consulte a equipe sobre as ofertas disponíveis hoje.";alert("Destaque salvo neste navegador.")});
-function renderAdmin(){$("adminProductCount").textContent=products.length+" itens";$("adminProductList").innerHTML=products.map(p=>'<div class="admin-product"><span><strong>'+escapeHtml(p.name)+'</strong><small>'+escapeHtml(p.category)+' · '+money(p.price)+'</small></span><span><button data-edit="'+p.id+'">Editar</button><button data-delete="'+p.id+'">Excluir</button></span></div>').join("")}
+const fb=window.verenaFirebase||null;
+const db=fb?.db||null,auth=fb?.auth||null;
+const ADMIN_UID="A4N9gGjLF4WKwY6N1Uzz0jyPWns2";
+let isVerenaAdmin=false;
+async function loadPublicProducts(){
+ if(!db)return;
+ try{
+  const snap=await db.collection("produtos").where("ativo","==",true).get();
+  if(!snap.empty){
+   products=snap.docs.map(d=>({id:d.id,...d.data()}));
+   render();
+  }else{
+   $("catalogGrid").innerHTML='<p class="empty-state">O catálogo está sendo atualizado. Em breve, confira os produtos disponíveis.</p>';
+  }
+ }catch(error){console.error("Erro ao carregar catálogo:",error)}
+}
+async function loadAdminProducts(){
+ const snap=await db.collection("produtos").get();
+ if(snap.empty){
+  for(const p of seed){
+   const {id,...data}=p;
+   await db.collection("produtos").doc(id).set({...data,ativo:true});
+  }
+ }
+ const all=await db.collection("produtos").get();
+ products=all.docs.map(d=>({id:d.id,...d.data()}));
+ render();renderAdmin();
+}
+$("openAdmin").addEventListener("click",()=>{
+ $("adminLoginStatus").textContent="";
+ $("adminPassword").value="";
+ $("adminLoginForm").hidden=!!isVerenaAdmin;
+ $("adminTools").hidden=!isVerenaAdmin;
+ if(isVerenaAdmin){renderAdmin();$("promoInput").value=load(PROMO,"")}
+ show("adminOverlay");
+});
+$("adminLoginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!auth||!db){$("adminLoginStatus").textContent="Firebase indisponível. Atualize a página e tente novamente.";return}
+ const button=$("adminLoginButton");button.disabled=true;button.textContent="Verificando...";
+ try{
+  const credential=await auth.signInWithEmailAndPassword($("adminEmail").value.trim(),$("adminPassword").value);
+  if(credential.user.uid!==ADMIN_UID){
+   await auth.signOut();
+   throw new Error("Esta conta não tem autorização para administrar o site.");
+  }
+  isVerenaAdmin=true;
+  $("adminLoginForm").hidden=true;$("adminTools").hidden=false;
+  $("adminSessionEmail").textContent=credential.user.email||"Administrador conectado";
+  await loadAdminProducts();
+  const config=await db.collection("configuracoes").doc("geral").get();
+  const promoText=config.exists?(config.data().promo||""):"";
+  $("promoInput").value=promoText;$("promoText").textContent=promoText||"Acompanhe os destaques e consulte a equipe sobre as ofertas disponíveis hoje.";
+  $("adminLoginStatus").textContent="";
+ }catch(error){$("adminLoginStatus").textContent=error.message||"Não foi possível entrar."}
+ finally{button.disabled=false;button.textContent="Entrar no painel"}
+});
+$("adminLogout").addEventListener("click",async()=>{
+ isVerenaAdmin=false;if(auth)await auth.signOut();
+ $("adminTools").hidden=true;$("adminLoginForm").hidden=false;
+ $("adminEmail").value="";$("adminPassword").value="";
+});
+if(auth)auth.onAuthStateChanged(user=>{
+ isVerenaAdmin=!!(user&&user.uid===ADMIN_UID);
+ if(user&&!isVerenaAdmin)auth.signOut().catch(console.error);
+});
+$("savePromo").addEventListener("click",async()=>{
+ if(!isVerenaAdmin)return;
+ const promo=$("promoInput").value.trim();
+ try{
+  await db.collection("configuracoes").doc("geral").set({promo,publico:true,atualizadoEm:new Date().toISOString()},{merge:true});
+  $("promoText").textContent=promo||"Acompanhe os destaques e consulte a equipe sobre as ofertas disponíveis hoje.";
+  alert("Destaque atualizado para todos os visitantes.");
+ }catch(error){alert("Não foi possível salvar o destaque: "+error.message)}
+});
+function renderAdmin(){
+ $("adminProductCount").textContent=products.length+" itens";
+ $("adminProductList").innerHTML=products.map(p=>'<div class="admin-product"><span><strong>'+escapeHtml(p.name)+'</strong><small>'+escapeHtml(p.category)+' · '+money(p.price)+'</small></span><span><button data-edit="'+p.id+'">Editar</button><button data-delete="'+p.id+'">Excluir</button></span></div>').join("");
+}
 function resetForm(){$("productForm").reset();$("editProductId").value="";$("saveProduct").textContent="Adicionar produto";$("cancelEdit").hidden=true}
-$("productForm").addEventListener("submit",e=>{e.preventDefault();const id=$("editProductId").value;const data={id:id||"p"+Date.now(),name:$("adminProductName").value.trim(),category:$("adminProductCategory").value,price:$("adminProductPrice").value.trim(),description:$("adminProductDescription").value.trim(),emoji:"🥐"};if(id)products=products.map(p=>p.id===id?data:p);else products.push(data);save(KEY,products);resetForm();render();renderAdmin()});
-$("adminProductList").addEventListener("click",e=>{const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");if(edit){const p=products.find(x=>x.id===edit.dataset.edit);$("editProductId").value=p.id;$("adminProductName").value=p.name;$("adminProductCategory").value=p.category;$("adminProductPrice").value=p.price;$("adminProductDescription").value=p.description;$("saveProduct").textContent="Salvar alterações";$("cancelEdit").hidden=false}if(del&&confirm("Excluir este produto do catálogo local?")){products=products.filter(p=>p.id!==del.dataset.delete);cart=cart.filter(x=>x.id!==del.dataset.delete);save(KEY,products);save(CART,cart);render();renderAdmin();renderCart()}});
+$("productForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!isVerenaAdmin)return;
+ const id=$("editProductId").value;
+ const data={name:$("adminProductName").value.trim(),category:$("adminProductCategory").value,price:$("adminProductPrice").value.trim(),description:$("adminProductDescription").value.trim(),emoji:"🥐",ativo:true};
+ try{
+  if(id)await db.collection("produtos").doc(id).set(data,{merge:true});
+  else await db.collection("produtos").add(data);
+  const snap=await db.collection("produtos").get();products=snap.docs.map(d=>({id:d.id,...d.data()}));
+  resetForm();render();renderAdmin();
+ }catch(error){alert("Erro ao salvar produto: "+error.message)}
+});
+$("adminProductList").addEventListener("click",async e=>{
+ const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");
+ if(edit){const p=products.find(x=>x.id===edit.dataset.edit);if(!p)return;$("editProductId").value=p.id;$("adminProductName").value=p.name;$("adminProductCategory").value=p.category;$("adminProductPrice").value=p.price;$("adminProductDescription").value=p.description;$("saveProduct").textContent="Salvar alterações";$("cancelEdit").hidden=false}
+ if(del&&confirm("Excluir este produto do catálogo compartilhado?")){
+  try{await db.collection("produtos").doc(del.dataset.delete).delete();products=products.filter(p=>p.id!==del.dataset.delete);cart=cart.filter(x=>x.id!==del.dataset.delete);save(CART,cart);render();renderAdmin();renderCart()}
+  catch(error){alert("Erro ao excluir produto: "+error.message)}
+ }
+});
 $("cancelEdit").addEventListener("click",resetForm);
 const promo=load(PROMO,"");if(promo)$("promoText").textContent=promo;
+if(auth&&auth.currentUser&&auth.currentUser.uid===ADMIN_UID){isVerenaAdmin=true}
+loadPublicProducts();
 const reviewTrack=document.querySelector("#reviewsCarousel .reviews-track");
 if(reviewTrack){
  const reviewCards=Array.from(reviewTrack.querySelectorAll(".review-card"));
@@ -67,62 +162,47 @@ if(reviewTrack){
  restartAuto();
 }
 
-/* Avaliações: protótipo local. Substituir localStorage por API/backend no futuro. */
+/* Avaliações públicas: envio ao Firestore com moderação. */
 const REVIEW_KEY="verena_reviews_prototype_v1";
 function renderReviews(){
- const saved=load(REVIEW_KEY,[]),list=$("reviewList"),count=$("reviewCount");
+ const list=$("reviewList"),count=$("reviewCount");
  if(!list||!count)return;
- count.textContent=saved.length+" "+(saved.length===1?"avaliação":"avaliações");
- list.innerHTML=saved.length?saved.slice().reverse().map(r=>'<article class="review-item"><div class="review-item-top"><span class="review-item-name">'+escapeHtml(r.name)+'</span><time class="review-item-date">'+escapeHtml(r.date)+'</time></div><div class="review-item-stars" aria-label="'+r.rating+' de 5 estrelas">'+("★".repeat(r.rating))+("☆".repeat(5-r.rating))+'</div><p>'+escapeHtml(r.comment)+'</p></article>').join(""):'<div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div>';
+ count.textContent="Carregando avaliações...";
+ list.innerHTML='<div class="review-empty"><p>Carregando avaliações...</p></div>';
+ if(!db)return;
+ db.collection("avaliacoes").where("status","==","aprovada").get().then(snap=>{
+  const saved=snap.docs.map(d=>d.data()).sort((a,b)=>(b.criadoEm||"").localeCompare(a.criadoEm||""));
+  count.textContent=saved.length+" "+(saved.length===1?"avaliação":"avaliações");
+  list.innerHTML=saved.length?saved.map(r=>'<article class="review-item"><div class="review-item-top"><span class="review-item-name">'+escapeHtml(r.nome)+'</span><time class="review-item-date">'+escapeHtml(r.data||"")+'</time></div><div class="review-item-stars" aria-label="'+r.nota+' de 5 estrelas">'+("★".repeat(r.nota))+("☆".repeat(5-r.nota))+'</div><p>'+escapeHtml(r.comentario)+'</p></article>').join(""):'<div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações aprovadas aparecerão aqui.</p></div>';
+ }).catch(error=>{console.error(error);count.textContent="Avaliações";list.innerHTML='<p class="empty-state">Não foi possível carregar as avaliações agora.</p>'});
 }
 const reviewForm=$("reviewForm");
 if(reviewForm){
- reviewForm.addEventListener("submit",e=>{
+ reviewForm.addEventListener("submit",async e=>{
   e.preventDefault();
   const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value);
-  if(!name||!comment||rating<1||rating>5)return;
-  const saved=load(REVIEW_KEY,[]);
-  saved.push({name,comment,rating,date:new Date().toLocaleDateString("pt-BR")});
-  save(REVIEW_KEY,saved);reviewForm.reset();
-  $("reviewFeedback").textContent="Avaliação registrada apenas neste navegador (modo demonstração).";
-  renderReviews();
+  if(!name||!comment||rating<1||rating>5||!db)return;
+  try{
+   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,data:new Date().toLocaleDateString("pt-BR"),criadoEm:new Date().toISOString(),status:"pendente"});
+   reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Obrigado por compartilhar sua experiência!";
+  }catch(error){$("reviewFeedback").textContent="Não foi possível enviar sua avaliação. Tente novamente mais tarde."}
  });
  renderReviews();
 }
 
-
-/* Sugestões e reclamações: protótipo local, sem envio para a padaria. */
-const FEEDBACK_KEY="verena_feedback_prototype_v1";
-function renderFeedback(){
- const list=$("feedbackLocalList"),count=$("feedbackCount");
- if(!list||!count)return;
- const messages=load(FEEDBACK_KEY,[]);
- count.textContent=messages.length+" "+(messages.length===1?"mensagem":"mensagens");
- list.innerHTML=messages.length?messages.slice().reverse().map(item=>'<article class="feedback-local-item"><strong>'+escapeHtml(item.type)+(item.name?' · '+escapeHtml(item.name):'')+'</strong><time>'+escapeHtml(item.date)+'</time><p>'+escapeHtml(item.message)+'</p></article>').join(""):'<p>Nenhuma mensagem registrada neste dispositivo.</p>';
-}
+/* Sugestões e reclamações privadas no Firestore. */
 const feedbackForm=$("feedbackForm");
 if(feedbackForm){
- feedbackForm.addEventListener("submit",e=>{
+ feedbackForm.addEventListener("submit",async e=>{
   e.preventDefault();
-  const type=$("feedbackType").value,name=$("feedbackName").value.trim(),message=$("feedbackMessage").value.trim();
-  if(!message)return;
-  const messages=load(FEEDBACK_KEY,[]);
-  messages.push({type,name,message,date:new Date().toLocaleDateString("pt-BR")});
-  save(FEEDBACK_KEY,messages);
-  feedbackForm.reset();
-  $("feedbackStatus").textContent="Mensagem registrada somente neste navegador (modo demonstração).";
-  renderFeedback();
+  const typeMap={"Sugestão":"sugestao","Reclamação":"reclamacao","Elogio":"elogio"};
+  const tipo=typeMap[$("feedbackType").value],nome=$("feedbackName").value.trim(),mensagem=$("feedbackMessage").value.trim();
+  if(!mensagem||!db)return;
+  try{
+   await db.collection("feedbacks").add({tipo,nome,mensagem,data:new Date().toISOString()});
+   feedbackForm.reset();$("feedbackStatus").textContent="Mensagem enviada à equipe da padaria. Obrigado pelo contato!";
+  }catch(error){$("feedbackStatus").textContent="Não foi possível enviar sua mensagem. Tente novamente mais tarde."}
  });
 }
-const clearFeedbackButton=$("clearFeedback");
-if(clearFeedbackButton){
- clearFeedbackButton.addEventListener("click",()=>{
-  if(!confirm("Apagar todas as mensagens demonstrativas salvas neste navegador?"))return;
-  save(FEEDBACK_KEY,[]);
-  $("feedbackStatus").textContent="Registros locais apagados.";
-  renderFeedback();
- });
-}
-renderFeedback();
 
 render();
