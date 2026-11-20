@@ -99,10 +99,21 @@
     <section class="contact-band"><div><span class="eyebrow">PEDIDO OU DÚVIDA?</span><h2>Monte sua sacola.</h2><p>Envie sua seleção pelo WhatsApp e confirme valores, disponibilidade e retirada diretamente com a equipe.</p></div><button class="btn btn-light" id="openCart">Ver minha sacola <span id="cartCount">0</span> · ↗</button></section>
     <section class="admin-entry"><span>Área de demonstração do projeto</span><button class="text-button" id="openAdmin">⚙ Painel administrativo</button></section>
     <div class="overlay" id="cartOverlay" hidden><aside class="side-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle"><button class="close-panel" data-close="cartOverlay" aria-label="Fechar">×</button><span class="eyebrow">SELEÇÃO DE PRODUTOS</span><h2 id="cartTitle">Minha sacola</h2><div id="cartItems" class="cart-items"></div><div class="cart-footer"><p>Valores e disponibilidade serão confirmados pela padaria.</p><button class="btn btn-primary" id="sendOrder">Enviar pedido pelo WhatsApp ↗</button></div></aside></div>
-    <div class="overlay" id="adminOverlay" hidden><aside class="side-panel admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle"><button class="close-panel" data-close="adminOverlay" aria-label="Fechar">×</button><span class="eyebrow">GERENCIAMENTO LOCAL</span><h2 id="adminTitle">Painel administrativo</h2><div class="local-warning">Modo demonstração: alterações ficam salvas somente neste navegador. Não há login protegido nem sincronização entre dispositivos.</div>
-      <label class="admin-label">Aviso / promoção <textarea id="promoInput" rows="2" placeholder="Ex.: Consulte as novidades de hoje"></textarea></label><button class="btn btn-primary admin-save" id="savePromo">Salvar destaque</button>
-      <div class="admin-subhead"><h3>Produtos do cardápio</h3><span id="adminProductCount"></span></div>
-      <form id="productForm" class="product-form"><input type="hidden" id="editProductId"><label class="admin-label">Nome<input id="adminProductName" required maxlength="60" placeholder="Nome do produto"></label><div class="form-row"><label class="admin-label">Categoria<select id="adminProductCategory"><option>Pães</option><option>Salgados</option><option>Doces</option><option>Bebidas</option></select></label><label class="admin-label">Preço (opcional)<input id="adminProductPrice" inputmode="decimal" placeholder="Ex.: 5,00"></label></div><label class="admin-label">Descrição<input id="adminProductDescription" maxlength="100" placeholder="Descrição curta"></label><button class="btn btn-primary" type="submit" id="saveProduct">Adicionar produto</button><button class="btn btn-outline" type="button" id="cancelEdit" hidden>Cancelar edição</button></form><div id="adminProductList" class="admin-product-list"></div>
+    <div class="overlay" id="adminOverlay" hidden><aside class="side-panel admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle"><button class="close-panel" data-close="adminOverlay" aria-label="Fechar">×</button><span class="eyebrow">ACESSO RESTRITO</span><h2 id="adminTitle">Painel administrativo</h2>
+      <form id="adminLoginForm" class="admin-login-form">
+        <p>Entre com a conta autorizada da Padaria Verena.</p>
+        <label class="admin-label">E-mail<input id="adminEmail" type="email" autocomplete="username" required placeholder="E-mail do administrador"></label>
+        <label class="admin-label">Senha<input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Sua senha"></label>
+        <button class="btn btn-primary" type="submit" id="adminLoginButton">Entrar no painel</button>
+        <p class="review-feedback" id="adminLoginStatus" role="status" aria-live="polite"></p>
+      </form>
+      <div id="adminTools" hidden>
+        <div class="admin-session-bar"><span id="adminSessionEmail"></span><button type="button" class="text-button" id="adminLogout">Sair</button></div>
+        <div class="local-warning">Painel conectado ao Firebase. As alterações salvas aqui serão compartilhadas com os visitantes.</div>
+        <label class="admin-label">Aviso / promoção <textarea id="promoInput" rows="2" placeholder="Ex.: Consulte as novidades de hoje"></textarea></label><button class="btn btn-primary admin-save" id="savePromo">Salvar destaque</button>
+        <div class="admin-subhead"><h3>Produtos do cardápio</h3><span id="adminProductCount"></span></div>
+        <form id="productForm" class="product-form"><input type="hidden" id="editProductId"><label class="admin-label">Nome<input id="adminProductName" required maxlength="60" placeholder="Nome do produto"></label><div class="form-row"><label class="admin-label">Categoria<select id="adminProductCategory"><option>Pães</option><option>Salgados</option><option>Doces</option><option>Bebidas</option></select></label><label class="admin-label">Preço (opcional)<input id="adminProductPrice" inputmode="decimal" placeholder="Ex.: 5,00"></label></div><label class="admin-label">Descrição<input id="adminProductDescription" maxlength="100" placeholder="Descrição curta"></label><button class="btn btn-primary" type="submit" id="saveProduct">Adicionar produto</button><button class="btn btn-outline" type="button" id="cancelEdit" hidden>Cancelar edição</button></form><div id="adminProductList" class="admin-product-list"></div>
+      </div>
     </aside></div>
 
     <section class="gallery section" id="galeria">
@@ -134,11 +145,11 @@
           <label class="review-field">Sua nota<select id="reviewRating" name="rating" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muito bom</option><option value="3">★★★☆☆ — Bom</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Precisa melhorar</option></select></label>
           <label class="review-field">Seu comentário<textarea id="reviewComment" name="comment" rows="4" maxlength="500" placeholder="Conte um pouco sobre atendimento, produtos ou ambiente..." required></textarea></label>
           <button class="btn btn-primary" type="submit">Enviar avaliação <span>↗</span></button>
-          <p class="review-form-note">Protótipo: sua avaliação fica salva apenas neste navegador. Ela não é enviada à padaria nem aparece para outros visitantes.</p><p class="review-feedback" id="reviewFeedback" role="status" aria-live="polite"></p>
+          <p class="review-form-note">As avaliações serão enviadas para análise e só aparecerão publicamente após aprovação.</p><p class="review-feedback" id="reviewFeedback" role="status" aria-live="polite"></p>
         </form>
         <div class="review-list-panel"><div class="review-list-heading"><div><span class="eyebrow">OPINIÕES COMPARTILHADAS</span><h3>O que acharam da visita</h3></div><span class="review-count" id="reviewCount">0 avaliações</span></div><div class="review-list" id="reviewList" aria-live="polite"><div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div></div></div>
       </div>
-      <p class="reviews-disclaimer">Esta é uma demonstração de avaliações próprias, independente das avaliações do Google. Não há banco de dados conectado nem publicação compartilhada nesta versão.</p>
+      <p class="reviews-disclaimer">As avaliações são próprias e independentes das avaliações do Google. Comentários passam por aprovação antes da publicação.</p>
     </section>
 
     <section class="feedback-section section" id="sugestoes-reclamacoes">
@@ -165,7 +176,7 @@
             <textarea id="feedbackMessage" rows="5" maxlength="1000" placeholder="Conte o que aconteceu ou compartilhe sua ideia..." required></textarea>
           </label>
           <button class="btn btn-primary" type="submit">Registrar mensagem <span>↗</span></button>
-          <p class="review-form-note">Demonstração: a mensagem fica somente neste navegador. Ninguém da padaria recebe ou consegue visualizar este registro nesta versão.</p>
+          <p class="review-form-note">Sua mensagem será enviada à equipe da padaria por este formulário. Evite incluir dados pessoais sensíveis.</p>
           <p class="review-feedback" id="feedbackStatus" role="status" aria-live="polite"></p>
         </form>
         <div class="feedback-info">
@@ -178,11 +189,7 @@
             <div><span class="feedback-type-icon">⚠</span><span><strong>Reclamação</strong><small>Conte sobre algo que não saiu como esperado.</small></span></div>
             <div><span class="feedback-type-icon">♡</span><span><strong>Elogio</strong><small>Compartilhe algo de que você gostou.</small></span></div>
           </div>
-          <div class="feedback-local-records">
-            <div><strong>Registros deste navegador</strong><span id="feedbackCount">0 mensagens</span></div>
-            <div id="feedbackLocalList" class="feedback-local-list"><p>Nenhuma mensagem registrada neste dispositivo.</p></div>
-            <button type="button" class="text-button" id="clearFeedback">Limpar registros locais</button>
-          </div>
+          <p class="review-form-note">As mensagens são privadas e só podem ser consultadas pela administração autorizada.</p>
         </div>
       </div>
       <p class="reviews-disclaimer">Canal demonstrativo e independente do WhatsApp. Não envie dados pessoais ou informações sensíveis. A integração real será feita posteriormente, com armazenamento e acesso adequados pela padaria.</p>
