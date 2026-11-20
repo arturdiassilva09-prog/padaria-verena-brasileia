@@ -6,7 +6,7 @@ const js = fs.readFileSync("script.js", "utf8");
 const css = fs.readFileSync("style.css", "utf8");
 
 const fail = (message) => { console.error("FALHA:", message); process.exitCode = 1; };
-const ids = [...html.matchAll(/\\bid=["']([^"']+)["']/g)].map((match) => match[1]);
+const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map((match) => match[1]);
 const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
 if (duplicateIds.length) fail("IDs HTML duplicados: " + [...new Set(duplicateIds)].join(", "));
 
@@ -15,17 +15,17 @@ const missingAnchors = [...html.matchAll(/href=["']#([^"']+)["']/g)]
   .map((match) => match[1]).filter((id) => !idSet.has(id));
 if (missingAnchors.length) fail("Links internos sem destino: " + [...new Set(missingAnchors)].join(", "));
 
-const missingScriptIds = [...js.matchAll(/\\$\\(["']([^"']+)["']\\)/g)]
+const missingScriptIds = [...js.matchAll(/\$\(["']([^"']+)["']\)/g)]
   .map((match) => match[1]).filter((id) => !idSet.has(id));
 if (missingScriptIds.length) fail("IDs usados no JavaScript e ausentes do HTML: " + [...new Set(missingScriptIds)].join(", "));
 
-const localAssets = [...html.matchAll(/(?:src|href)=["']([^"'#]+\\.(?:js|css))(?:\\?[^"']*)?["']/g)]
-  .map((match) => match[1]).filter((asset) => !/^https?:\\/\\//.test(asset));
+const localAssets = [...html.matchAll(/(?:src|href)=["']([^"'#]+\.(?:js|css))(?:\?[^"']*)?["']/g)]
+  .map((match) => match[1]).filter((asset) => !/^https?:\/\//.test(asset));
 for (const asset of localAssets) {
   if (!fs.existsSync(path.join(process.cwd(), asset))) fail("Arquivo local não encontrado: " + asset);
 }
 
-const productIds = [...js.matchAll(/\\{id:"([^"]+)",name:/g)].map((match) => match[1]);
+const productIds = [...js.matchAll(/\{id:"([^"]+)",name:/g)].map((match) => match[1]);
 const duplicateProducts = productIds.filter((id, index) => productIds.indexOf(id) !== index);
 if (duplicateProducts.length) fail("IDs de produtos duplicados no catálogo inicial: " + [...new Set(duplicateProducts)].join(", "));
 
