@@ -170,7 +170,21 @@ document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{
 $("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});
 function renderCart(){cart=normalizeCart(cart).filter(x=>products.some(p=>String(p.id)===String(x.id)));$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>String(p.id)===String(x.id));return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
 $("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>String(v.id)===String(q.dataset.qty));if(x){x.qty=Math.min(99,x.qty+Number(q.dataset.delta));if(x.qty<=0)cart=cart.filter(v=>String(v.id)!==String(q.dataset.qty))}}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
-const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap");if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{addressWrap.hidden=orderMode.value!=="Entrega (consultar disponibilidade)"});
+const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap"),deliveryEstimator=$("deliveryEstimator"),deliveryZone=$("deliveryZone");
+function updateDeliveryEstimate(){
+ const result=$("deliveryEstimateResult");if(!result||!deliveryZone)return;
+ const ranges={near:[30,45],medium:[40,60],far:[50,75]};
+ if(deliveryZone.value==="outside"){result.textContent="Não há previsão para essa região. Consulte a unidade para verificar a cobertura.";return;}
+ const [min,max]=ranges[deliveryZone.value],now=Date.now();
+ const fmt=ms=>new Date(ms).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+ result.innerHTML='<strong>'+min+'–'+max+' min</strong><span>Chegada estimada entre '+fmt(now+min*60000)+' e '+fmt(now+max*60000)+'</span>';
+}
+if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{
+ const isDelivery=orderMode.value.startsWith("Entrega");
+ addressWrap.hidden=!isDelivery;if(deliveryEstimator)deliveryEstimator.hidden=!isDelivery;
+ if(isDelivery)updateDeliveryEstimate();
+});
+deliveryZone?.addEventListener("change",updateDeliveryEstimate);
 $("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
 const fb=window.verenaFirebase||null;
 const db=fb?.db||null,auth=fb?.auth||null;
@@ -427,7 +441,7 @@ $("adminReviewModeration")?.addEventListener("click",async e=>{
 $("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
 $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
 
-/* Atendimento virtual demonstrativo: respostas locais, sem IA externa ou coleta de dados. */
+/* Atendimento virtual demonstrativo: respostas locais baseadas nas informações do site; não é um modelo generativo. */
 (function(){
  const panel=$("assistantPanel"),launcher=$("assistantLauncher"),messages=$("assistantMessages"),form=$("assistantForm"),input=$("assistantInput");
  if(!panel||!launcher||!messages||!form||!input)return;
@@ -437,16 +451,22 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
  $("closeAssistant")?.addEventListener("click",()=>toggle(false));
  function add(text,who){const p=document.createElement("p");p.className="assistant-bubble"+(who==="user"?" user":"");p.textContent=text;messages.appendChild(p);messages.scrollTop=messages.scrollHeight}
  function answer(q){
-  const t=q.toLocaleLowerCase("pt-BR");
-  if(/hor[aá]rio|abre|fecha|funciona/.test(t))return "O horário divulgado para a unidade é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme pelo WhatsApp.";
-  if(/endere[cç]o|onde fica|localiza|mapa/.test(t))return "A unidade fica na Praça José Lino da Silva, 101, Brasiléia, Betim–MG. Você pode abrir o mapa na seção Como chegar.";
-  if(/entrega|delivery|self.?service|buffet/.test(t))return "A disponibilidade de entrega e self-service ainda precisa ser confirmada pela equipe. Toque em Falar com a equipe ou consulte a seção Formas de atendimento.";
-  if(/pedido|comprar|sacola|retirada/.test(t))return "Adicione produtos ao cardápio, abra sua sacola e escolha retirada, consumo no local ou uma modalidade para consultar. O WhatsApp será aberto para confirmar tudo com a equipe.";
-  if(/pre[cç]o|valor|quanto custa/.test(t))return "Os preços não confirmados aparecem como “Consultar”. Envie sua seleção pelo WhatsApp para receber valores atualizados.";
-  if(/card[aá]pio|comida|produto|bebida|bolo|p[aã]o|salgado/.test(t))return "O cardápio tem categorias de pães, salgados, doces, bebidas, lanches, refeições e encomendas. Os itens são sugestões e a disponibilidade deve ser confirmada.";
-  if(/reclama|sugest|elogio|mensagem|ajuda|suporte/.test(t))return "Você pode enviar uma mensagem privada pelo Canal de atendimento ou falar com a equipe pelo WhatsApp.";
-  if(/whats|telefone|contato|falar/.test(t))return "O WhatsApp divulgado da unidade é (31) 99090-5985. Use o botão Falar com a equipe para iniciar a conversa.";
-  return "Posso orientar sobre horários, endereço, cardápio, preços, pedidos, entrega, self-service e contato. Para confirmar informações específicas, fale com a equipe pelo WhatsApp.";
+  const t=q.toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
+  if(/oi|ola|bom dia|boa tarde|boa noite|tudo bem/.test(t))return "Olá! ☕ Sou o atendimento virtual demonstrativo da Padaria Verena – Brasiléia. Posso ajudar com horários, localização, cardápio, bebidas, pedidos, entrega, encomendas e avaliações. O que gostaria de saber?";
+  if(/horario|abre|fecha|funciona|domingo|feriado/.test(t))return "O horário divulgado é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme com a equipe, pois pode haver alterações.";
+  if(/endereco|onde fica|localiza|mapa|chegar/.test(t))return "A unidade fica na Praça José Lino da Silva, 101, Brasiléia, Betim–MG. Na seção Como chegar você encontra o acesso ao mapa.";
+  if(/telefone|whats|contato|falar com|numero/.test(t))return "O telefone/WhatsApp divulgado é (31) 99090-5985. O contato é uma alternativa para confirmar informações que ainda não estão disponíveis no site.";
+  if(/entrega|delivery|prazo|demora|tempo.*chegar|chega.*quanto/.test(t))return "Na sacola há uma simulação ilustrativa de prazo: escolha Entrega e uma faixa de distância aproximada. Ela não consulta trânsito, entregadores, distância real nem fila de pedidos. Cobertura, taxa e prazo precisam ser confirmados pela padaria.";
+  if(/self.?service|buffet/.test(t))return "Não tenho confirmação de que o self-service esteja disponível. Consulte a unidade sobre existência, dias, horários e valores.";
+  if(/pedido|comprar|sacola|retirada|encomenda/.test(t))return "Para montar uma seleção, adicione produtos no cardápio e abra Minha sacola. A finalização ainda é uma consulta à equipe; o site não registra nem acompanha um pedido confirmado no Firebase. Para encomendas, confirme antecedência, sabores e quantidades.";
+  if(/preco|valor|quanto custa|taxa/.test(t))return "Os preços e taxas não foram confirmados e aparecem como Consultar. Não vou inventar valores. A equipe precisa confirmar o preço e eventual taxa de entrega.";
+  if(/cappuccino|capuccino|cafe|mocha|latte|chocolate quente/.test(t))return "No catálogo demonstrativo há cappuccino tradicional, cappuccino com chocolate, cappuccino cremoso, cappuccino gelado, mocha, latte, macchiato, café espresso, café coado e chocolate quente. A unidade precisa confirmar quais prepara e os preços.";
+  if(/cardapio|comida|produto|bebida|bolo|pao|salgado|suco|vitamina|doce|lanche/.test(t))return "O catálogo demonstrativo está organizado em pães, salgados, bolos, doces, lanches, cafés, sucos e vitaminas, bebidas, refeições e encomendas. Pesquise o nome ou use os filtros. Os itens são sugestões, não estoque confirmado.";
+  if(/reclama|sugest|elogio|mensagem|ajuda|suporte/.test(t))return "Você pode enviar uma sugestão, elogio ou reclamação pelo formulário Sua opinião faz diferença no site. As mensagens ficam sujeitas à análise da equipe.";
+  if(/avaliacao|nota|estrela|comentario/.test(t))return "A seção de avaliações permite enviar uma opinião. As avaliações podem passar por moderação antes de aparecer publicamente.";
+  if(/instagram|rede social|foto/.test(t))return "O perfil divulgado da unidade é @verenabrasileia no Instagram. O link está na parte inferior do site.";
+  if(/obrigad/.test(t))return "Por nada! ☕ Se precisar, posso ajudar a encontrar informações no cardápio ou explicar como usar a sacola.";
+  return "Não encontrei uma resposta segura para essa pergunta nas informações cadastradas. Posso ajudar com horários, endereço, contato, cardápio, cafés, cappuccinos, preços, pedidos, entrega simulada, self-service, encomendas e avaliações. Para detalhes específicos da operação, confirme com a equipe pelo (31) 99090-5985.";
  }
  function send(q){const clean=String(q||"").trim();if(!clean)return;add(clean,"user");input.value="";window.setTimeout(()=>add(answer(clean),"bot"),180)}
  form.addEventListener("submit",e=>{e.preventDefault();send(input.value)});
