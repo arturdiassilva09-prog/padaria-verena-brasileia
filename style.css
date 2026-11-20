@@ -306,3 +306,13 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .cart-feedback.visible{min-height:20px;opacity:1}
 .add-button{min-height:38px;white-space:nowrap;touch-action:manipulation;cursor:pointer}
 .add-button:active{transform:scale(.96)}
+
+.delivery-estimator{margin:14px 0;padding:16px;background:#fbf5ec;border:1px solid #e8d9c7;border-radius:15px}
+.delivery-estimator-title{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.delivery-estimator-title>span{font-size:25px}
+.delivery-estimator-title strong,.delivery-estimator-title small{display:block}
+.delivery-estimator-title strong{color:#542d20;font-size:14px}
+.delivery-estimator-title small{color:#897968;font-size:10px;margin-top:3px}
+.delivery-estimate-result{display:flex;flex-direction:column;gap:4px;padding:12px;margin-top:10px;background:#fff;border-radius:11px;color:#5c4534;font-size:12px}
+.delivery-estimate-result strong{font-size:22px;color:#4d754e}
+.delivery-note{display:block;margin-top:10px;color:#897968;font-size:10px;line-height:1.55}
