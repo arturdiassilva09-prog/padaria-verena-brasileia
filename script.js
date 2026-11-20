@@ -6,13 +6,32 @@ const seed=[
 {id:"p2",name:"Pão de queijo",category:"Pães",description:"Um clássico mineiro",price:"",emoji:"🧀"},
 {id:"p3",name:"Baguete",category:"Pães",description:"Opção tradicional para compartilhar",price:"",emoji:"🥖"},
 {id:"p4",name:"Coxinha",category:"Salgados",description:"Consulte os sabores disponíveis",price:"",emoji:"🥟"},
-{id:"p5",name:"Salgado do dia",category:"Salgados",description:"Consulte as opções no balcão",price:"",emoji:"🥐"},
-{id:"p6",name:"Bolo",category:"Doces",description:"Consulte os sabores disponíveis",price:"",emoji:"🍰"},
-{id:"p7",name:"Café",category:"Bebidas",description:"Para acompanhar seu lanche",price:"",emoji:"☕"}
+{id:"p5",name:"Salgado assado",category:"Salgados",description:"Consulte as opções do dia",price:"",emoji:"🥐"},
+{id:"p6",name:"Bolo caseiro",category:"Doces",description:"Consulte os sabores disponíveis",price:"",emoji:"🍰"},
+{id:"p7",name:"Café",category:"Bebidas",description:"Para acompanhar seu lanche",price:"",emoji:"☕"},
+{id:"p8",name:"Pão de batata",category:"Pães",description:"Consulte disponibilidade",price:"",emoji:"🥯"},
+{id:"p9",name:"Sonho",category:"Doces",description:"Consulte os recheios disponíveis",price:"",emoji:"🍩"},
+{id:"p10",name:"Pudim",category:"Doces",description:"Sobremesa tradicional; consulte disponibilidade",price:"",emoji:"🍮"},
+{id:"p11",name:"Torta doce",category:"Doces",description:"Consulte sabores e fatias disponíveis",price:"",emoji:"🥧"},
+{id:"p12",name:"Pão de mel",category:"Doces",description:"Consulte disponibilidade",price:"",emoji:"🍯"},
+{id:"p13",name:"Suco",category:"Bebidas",description:"Consulte sabores e tamanhos",price:"",emoji:"🧃"},
+{id:"p14",name:"Refrigerante",category:"Bebidas",description:"Consulte marcas e tamanhos",price:"",emoji:"🥤"},
+{id:"p15",name:"Água",category:"Bebidas",description:"Consulte opções disponíveis",price:"",emoji:"💧"},
+{id:"p16",name:"Chocolate quente",category:"Bebidas",description:"Consulte disponibilidade",price:"",emoji:"🍫"},
+{id:"p17",name:"Misto quente",category:"Lanches",description:"Consulte montagem e disponibilidade",price:"",emoji:"🥪"},
+{id:"p18",name:"Sanduíche natural",category:"Lanches",description:"Consulte sabores disponíveis",price:"",emoji:"🥪"},
+{id:"p19",name:"Hambúrguer",category:"Lanches",description:"Sugestão de cardápio; confirme com a unidade",price:"",emoji:"🍔"},
+{id:"p20",name:"Pizza em fatia",category:"Lanches",description:"Consulte se há disponibilidade no dia",price:"",emoji:"🍕"},
+{id:"p21",name:"Prato feito",category:"Refeições",description:"Consulte se há refeições disponíveis",price:"",emoji:"🍛"},
+{id:"p22",name:"Self-service",category:"Refeições",description:"Consulte existência, dias, horários e valores",price:"",emoji:"🥗"},
+{id:"p23",name:"Marmita",category:"Refeições",description:"Consulte disponibilidade e opções",price:"",emoji:"🍱"},
+{id:"p24",name:"Kit café da manhã",category:"Encomendas",description:"Consulte composição, prazo e valores",price:"",emoji:"🧺"},
+{id:"p25",name:"Bolo por encomenda",category:"Encomendas",description:"Consulte tamanhos, sabores e antecedência",price:"",emoji:"🎂"},
+{id:"p26",name:"Salgados para festas",category:"Encomendas",description:"Consulte quantidade mínima e prazo",price:"",emoji:"🥟"}
 ];
 let products=load(KEY,seed),cart=load(CART,[]),category="Todos",favorites=new Set(load("verena_favs_v1",[]));
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
-function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
 function money(v){return v?"R$ "+v:"Consultar"}
 function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
@@ -32,7 +51,7 @@ document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{
 $("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});
 function renderCart(){$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
 $("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>v.id===q.dataset.qty);x.qty+=Number(q.dataset.delta);if(x.qty<=0)cart=cart.filter(v=>v.id!==q.dataset.qty)}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
-$("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const msg="Olá! Gostaria de consultar disponibilidade e valores para:\n"+lines.join("\n")+"\n\nPodem confirmar, por favor?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
+const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap");if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{addressWrap.hidden=orderMode.value!=="Entrega (consultar disponibilidade)"});\n$("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
 const fb=window.verenaFirebase||null;
 const db=fb?.db||null,auth=fb?.auth||null;
 const ADMIN_UID="A4N9gGjLF4WKwY6N1Uzz0jyPWns2";
@@ -195,7 +214,7 @@ if(reviewForm){
   try{
    await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,data:new Date().toLocaleDateString("pt-BR"),status:"pendente"});
    reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Obrigado por compartilhar sua experiência!";
-  }catch(error){$("reviewFeedback").textContent="Não foi possível enviar sua avaliação. Tente novamente mais tarde."}
+  }catch(error){console.error("Falha ao enviar avaliação:",error);$("reviewFeedback").textContent="Falha ao enviar ("+(error?.code||"erro")+"): "+(error?.message||"Tente novamente.")}
  });
  renderReviews();
 }
@@ -220,7 +239,7 @@ if(feedbackForm){
   }catch(error){
    console.error("Falha ao registrar feedback no Firestore:",error);
    const code=error?.code||"erro-desconhecido";
-   status.textContent="Falha ao enviar ("+code+"). "+(code==="permission-denied"?"As regras do Firebase bloquearam o envio.":code==="unavailable"?"O Firebase está temporariamente indisponível.":"Verifique a conexão e tente novamente.");
+   status.textContent="Falha ao enviar ("+code+"): "+(error?.message||"Verifique as regras do Firestore e tente novamente.");
   }finally{
    if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalText||"Registrar mensagem ↗";}
   }
@@ -284,3 +303,30 @@ $("adminReviewModeration")?.addEventListener("click",async e=>{
 });
 $("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
 $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
+\n
+/* Atendimento virtual demonstrativo: respostas locais, sem IA externa ou coleta de dados. */
+(function(){
+ const panel=$("assistantPanel"),launcher=$("assistantLauncher"),messages=$("assistantMessages"),form=$("assistantForm"),input=$("assistantInput");
+ if(!panel||!launcher||!messages||!form||!input)return;
+ function toggle(open){panel.hidden=!open;launcher.setAttribute("aria-expanded",String(open));if(open)input.focus()}
+ launcher.addEventListener("click",()=>toggle(panel.hidden));
+ $("openVirtualAssistant")?.addEventListener("click",()=>{toggle(true);$("virtualAssistant").scrollIntoView({behavior:"smooth",block:"end"})});
+ $("closeAssistant")?.addEventListener("click",()=>toggle(false));
+ function add(text,who){const p=document.createElement("p");p.className="assistant-bubble"+(who==="user"?" user":"");p.textContent=text;messages.appendChild(p);messages.scrollTop=messages.scrollHeight}
+ function answer(q){
+  const t=q.toLocaleLowerCase("pt-BR");
+  if(/hor[aá]rio|abre|fecha|funciona/.test(t))return "O horário divulgado para a unidade é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme pelo WhatsApp.";
+  if(/endere[cç]o|onde fica|localiza|mapa/.test(t))return "A unidade fica na Praça José Lino da Silva, 101, Brasiléia, Betim–MG. Você pode abrir o mapa na seção Como chegar.";
+  if(/entrega|delivery|self.?service|buffet/.test(t))return "A disponibilidade de entrega e self-service ainda precisa ser confirmada pela equipe. Toque em Falar com a equipe ou consulte a seção Formas de atendimento.";
+  if(/pedido|comprar|sacola|retirada/.test(t))return "Adicione produtos ao cardápio, abra sua sacola e escolha retirada, consumo no local ou uma modalidade para consultar. O WhatsApp será aberto para confirmar tudo com a equipe.";
+  if(/pre[cç]o|valor|quanto custa/.test(t))return "Os preços não confirmados aparecem como “Consultar”. Envie sua seleção pelo WhatsApp para receber valores atualizados.";
+  if(/card[aá]pio|comida|produto|bebida|bolo|p[aã]o|salgado/.test(t))return "O cardápio tem categorias de pães, salgados, doces, bebidas, lanches, refeições e encomendas. Os itens são sugestões e a disponibilidade deve ser confirmada.";
+  if(/reclama|sugest|elogio|mensagem|ajuda|suporte/.test(t))return "Você pode enviar uma mensagem privada pelo Canal de atendimento ou falar com a equipe pelo WhatsApp.";
+  if(/whats|telefone|contato|falar/.test(t))return "O WhatsApp divulgado da unidade é (31) 99090-5985. Use o botão Falar com a equipe para iniciar a conversa.";
+  return "Posso orientar sobre horários, endereço, cardápio, preços, pedidos, entrega, self-service e contato. Para confirmar informações específicas, fale com a equipe pelo WhatsApp.";
+ }
+ function send(q){const clean=String(q||"").trim();if(!clean)return;add(clean,"user");input.value="";window.setTimeout(()=>add(answer(clean),"bot"),180)}
+ form.addEventListener("submit",e=>{e.preventDefault();send(input.value)});
+ document.querySelectorAll("[data-assistant-question]").forEach(b=>b.addEventListener("click",()=>send(b.dataset.assistantQuestion)));
+})();
+document.querySelectorAll("[data-menu-jump]").forEach(link=>link.addEventListener("click",()=>{const categoryName=link.dataset.menuJump;const chip=document.querySelector('[data-category="'+categoryName+'"]');if(chip)chip.click()}));
