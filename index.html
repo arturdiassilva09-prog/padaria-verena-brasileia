@@ -1,232 +1,68 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#542d20">
-  <meta name="description" content="Padaria Verena – Unidade Brasiléia, em Betim. Consulte endereço, horário de funcionamento e fale pelo WhatsApp.">
-  <title>Padaria Verena | Unidade Brasiléia</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261120-delivery-ai1">
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
-  <script src="firebase-config.js" defer></script>
-  <script src="script.js?v=20261120-delivery-ai1" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#573629">
+<meta name="description" content="Informações da Padaria Verena – Unidade Brasiléia, em Betim: endereço, horário, produtos e contato.">
+<title>Padaria Verena | Unidade Brasiléia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20261120-real1">
+<script src="script.js?v=20261120-real1" defer></script>
 </head>
 <body>
-  <div class="topline"><span>Feito para o bairro Brasiléia</span><span>Betim · Minas Gerais</span></div>
-  <header class="header" id="inicio">
-    <a class="brand" href="#inicio" aria-label="Padaria Verena - início">
-      <span class="brand-mark">V</span>
-      <span><strong>VERENA</strong><small>PADARIA · BRASILÉIA</small></span>
-    </a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
-    <nav class="nav" id="mainNav">
-      <a href="#sobre">A padaria</a><a href="#produtos">Produtos</a><a href="#cardapio">Cardápio</a><a href="#galeria">Galeria</a><a href="#visite">Como chegar</a><a href="#avaliacoes">Avaliações</a><a href="#atendimento">Atendimento</a><a href="#ajuda">Ajuda</a>
-      <a class="nav-cta" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Fale conosco ↗</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow"><i></i> SUA PADARIA NO BRASILÉIA</span>
-        <h1>Um bom dia<br>começa com <em>Verena.</em></h1>
-        <p>Pães, quitandas, salgados e aquele café para acompanhar os momentos do dia. Estamos na Praça José Lino da Silva, em Betim.</p>
-        <div class="hero-actions"><a class="btn btn-primary" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Conversar no WhatsApp <span>↗</span></a><a class="text-link" href="#visite">Ver endereço <span>↓</span></a></div>
-        <div class="hero-note"><span class="note-icon">✳</span><span><strong>Unidade Brasiléia</strong><small>Praça José Lino da Silva, 101 · Betim/MG</small></span></div>
-      </div>
-      <div class="hero-visual">
-        <div class="real-photo hero-real-photo" role="img" aria-label="Interior e balcão da Padaria Verena Unidade Brasiléia, foto publicada no perfil público do estabelecimento"></div>
-        <div class="photo-tag"><span>☼</span> Um convite para fazer uma pausa</div>
-        <div class="round-stamp">FEITO<br>PARA O<br>SEU DIA</div>
-      </div>
-    </section>
-
-    <section class="quick-info" aria-label="Informações rápidas">
-      <div><span class="info-icon">◷</span><span><small>HORÁRIO DIVULGADO</small><strong>Seg. a sáb. · 6h às 21h20</strong><strong>Dom. · 6h às 13h30</strong></span></div>
-      <div><span class="info-icon">⌖</span><span><small>ONDE ESTAMOS</small><strong>Praça José Lino da Silva, 101</strong><strong>Brasiléia · Betim/MG</strong></span></div>
-      <div><span class="info-icon">☏</span><span><small>FALE COM A UNIDADE</small><strong>(31) 99090-5985</strong><strong>WhatsApp</strong></span></div>
-    </section>
-
-    <section class="section about" id="sobre">
-      <div class="section-label">01 / CONHEÇA</div>
-      <div class="about-content">
-        <div><span class="eyebrow">UM PONTO DE ENCONTRO NO BAIRRO</span><h2>Mais que uma pausa.<br><em>Um sabor de todo dia.</em></h2></div>
-        <div class="about-text"><p>A Padaria Verena – Unidade Brasiléia é uma opção local para quem procura itens tradicionais de padaria, café da manhã e lanches em Betim.</p><p>Este site reúne em um só lugar as informações mais úteis para planejar sua visita e entrar em contato com a unidade.</p><a class="text-link" href="#visite">Planeje sua visita <span>→</span></a></div>
-      </div>
-      <div class="values">
-        <article><span>01</span><h3>Para começar o dia</h3><p>Uma parada para o café da manhã e os itens clássicos da padaria.</p></article>
-        <article><span>02</span><h3>Para matar a fome</h3><p>Alternativas de lanches e salgados para diferentes momentos.</p></article>
-        <article><span>03</span><h3>Perto de você</h3><p>Localização no bairro Brasiléia, com acesso pelo mapa.</p></article>
-      </div>
-    </section>
-
-    <section class="products section" id="produtos">
-      <div class="section-label">02 / SABORES</div>
-      <div class="section-heading"><div><span class="eyebrow">UM POUCO DO QUE VOCÊ ENCONTRA</span><h2>Clássicos que dão<br><em>água na boca.</em></h2></div><p>Confira algumas categorias associadas à unidade em diretórios públicos. A disponibilidade pode variar ao longo do dia.</p></div>
-      <div class="product-grid">
-        <article class="product-card"><div class="product-photo real-photo product-real-1" role="img" aria-label="Pães assados da unidade, foto pública"></div><div><small>PADARIA</small><h3>Pães e baguetes</h3><p>Opções tradicionais para levar para casa.</p></div></article>
-        <article class="product-card"><div class="product-photo real-photo product-real-2" role="img" aria-label="Produtos de confeitaria da unidade, foto pública"></div><div><small>TRADIÇÃO MINEIRA</small><h3>Pão de queijo</h3><p>Um clássico para acompanhar o café.</p></div></article>
-        <article class="product-card"><div class="product-photo real-photo product-real-3" role="img" aria-label="Salgados e produtos assados da unidade, foto pública"></div><div><small>LANCHES</small><h3>Salgados e coxinhas</h3><p>Alternativas práticas para seu lanche.</p></div></article>
-        <article class="product-card"><div class="product-photo real-photo product-real-4" role="img" aria-label="Ambiente interno da unidade, foto pública"></div><div><small>PAUSA DO DIA</small><h3>Café e bebidas</h3><p>Para acompanhar seu momento na padaria.</p></div></article>
-      </div>
-      <p class="disclaimer">Fotografias reais publicadas publicamente e associadas à Padaria Verena – Unidade Brasiléia. Produtos e disponibilidade podem variar.</p>
-    </section>
-
-
-    <section class="catalog section" id="cardapio">
-      <div class="section-label">03 / CARDÁPIO DIGITAL</div>
-      <div class="section-heading"><div><span class="eyebrow">ESCOLHA COM CALMA</span><h2>Seu próximo<br><em>favorito está aqui.</em></h2></div><p>Explore mais de 100 sugestões de produtos em categorias. Este catálogo é demonstrativo: confirme com a padaria o que está disponível e os preços atuais.</p></div>
-      <div class="catalog-intro-strip"><span>🥐</span><div><strong>Encontre seu próximo favorito</strong><small>Pesquise pelo nome, explore as categorias e monte sua seleção.</small></div><span class="catalog-count-label">100+ ideias de produtos</span></div>
-      <div class="catalog-tools">
-        <label class="search-box"><span>⌕</span><input id="productSearch" type="search" placeholder="Buscar produto..." aria-label="Buscar produto"></label>
-        <div class="category-filters" id="categoryFilters"><button class="filter-chip active" data-category="Todos">Todos</button><button class="filter-chip" data-category="Pães">Pães</button><button class="filter-chip" data-category="Salgados">Salgados</button><button class="filter-chip" data-category="Doces">Doces</button><button class="filter-chip" data-category="Bebidas">Bebidas</button><button class="filter-chip" data-category="Lanches">Lanches</button><button class="filter-chip" data-category="Refeições">Refeições</button><button class="filter-chip" data-category="Encomendas">Encomendas</button></div>
-      </div>
-      <p id="cartFeedback" class="cart-feedback" role="status" aria-live="polite"></p>
-       <div class="catalog-grid" id="catalogGrid" aria-live="polite"></div>
-      <p class="disclaimer">Mais de 100 opções ilustrativas para explorar. Produtos, sabores, preços e disponibilidade precisam ser confirmados pela unidade.</p>
-    </section>
-
-    <section class="service-options section" id="atendimento">
-      <div class="section-label">04 / FORMAS DE ATENDIMENTO</div>
-      <div class="section-heading"><div><span class="eyebrow">DO SEU JEITO</span><h2>Escolha como<br><em>quer aproveitar.</em></h2></div><p>Selecione uma modalidade na sacola. A equipe confirma quais opções estão disponíveis para a unidade.</p></div>
-      <div class="service-grid">
-        <article class="service-card"><span>🛍️</span><h3>Retirada no balcão</h3><p>Monte sua seleção e envie seu pedido pelo próprio site quando o pedido online estiver habilitado.</p><a href="#cardapio" class="text-link">Escolher produtos →</a></article>
-        <article class="service-card"><span>🚗</span><h3>Entrega</h3><p>Consulte pelo WhatsApp se há entrega disponível para seu endereço e região.</p><a href="https://wa.me/5531990905985?text=Ol%C3%A1!%20Gostaria%20de%20consultar%20a%20disponibilidade%20de%20entrega." target="_blank" rel="noopener" class="text-link">Consultar entrega →</a></article>
-        <article class="service-card"><span>🍽️</span><h3>Consumo no local</h3><p>Consulte opções para aproveitar seu café ou lanche na unidade.</p><a href="https://wa.me/5531990905985?text=Ol%C3%A1!%20Gostaria%20de%20consultar%20as%20op%C3%A7%C3%B5es%20para%20consumo%20no%20local." target="_blank" rel="noopener" class="text-link">Consultar opções →</a></article>
-        <article class="service-card"><span>🥗</span><h3>Self-service</h3><p>Consulte a equipe sobre existência, dias, horários e valores do serviço.</p><a href="https://wa.me/5531990905985?text=Ol%C3%A1!%20Voc%C3%AAs%20oferecem%20self-service%3F%20Gostaria%20de%20saber%20dias%20e%20hor%C3%A1rios." target="_blank" rel="noopener" class="text-link">Consultar self-service →</a></article>
-      </div>
-      <div class="menu-highlights"><div><span class="eyebrow">MENUS PARA EXPLORAR</span><h3>Um cardápio para cada momento</h3></div><div class="menu-pills"><a href="#cardapio" data-menu-jump="Pães">Café da manhã</a><a href="#cardapio" data-menu-jump="Lanches">Lanches</a><a href="#cardapio" data-menu-jump="Refeições">Almoço e refeições</a><a href="#cardapio" data-menu-jump="Doces">Doces e sobremesas</a><a href="#cardapio" data-menu-jump="Bebidas">Bebidas</a><a href="#cardapio" data-menu-jump="Encomendas">Encomendas</a></div></div>
-    </section>
-    <section class="help-center section" id="ajuda">
-      <div class="section-label">05 / CENTRAL DE AJUDA</div>
-      <div class="section-heading"><div><span class="eyebrow">PRECISA DE UMA INFORMAÇÃO?</span><h2>Estamos aqui<br><em>para ajudar.</em></h2></div><p>Consulte respostas rápidas ou fale diretamente com a unidade.</p></div>
-      <div class="help-grid">
-        <details><summary>Como confirmo preços e disponibilidade?</summary><p>Os valores não confirmados ficam como “Consultar”. Envie sua seleção pelo WhatsApp para receber a confirmação da equipe.</p></details>
-        <details><summary>A padaria faz entrega?</summary><p>Consulte a unidade informando seu bairro e endereço. O site não confirma cobertura ou taxa de entrega.</p></details>
-        <details><summary>Existe self-service?</summary><p>Consulte diretamente a equipe para confirmar se há serviço, dias, horários e valores.</p></details>
-        <details><summary>Como faço uma encomenda?</summary><p>Escolha a categoria Encomendas no cardápio e envie sua consulta pelo WhatsApp com antecedência.</p></details>
-        <details><summary>Onde fica a unidade?</summary><p>Praça José Lino da Silva, 101, Brasiléia, Betim–MG. Use o botão Como chegar para abrir o mapa.</p></details>
-        <details><summary>Como envio uma sugestão ou reclamação?</summary><p>Use o canal de atendimento do site. A mensagem é encaminhada ao banco de dados para consulta administrativa.</p></details>
-      </div>
-      <div class="help-actions"><a class="btn btn-primary" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Falar com a equipe ↗</a><a class="btn btn-outline" href="#sugestoes-reclamacoes">Enviar mensagem pelo site</a><button class="btn btn-outline" type="button" id="openVirtualAssistant">Conversar com atendimento virtual</button></div>
-    </section>
-\n    <section class="extras section" id="experiencias">
-      <div class="section-label">04 / EXPERIÊNCIA</div>
-      <div class="extras-grid">
-        <article class="extra-card"><span class="extra-symbol">♡</span><h3>Seus favoritos</h3><p>Marque os produtos que deseja encontrar mais rápido na próxima visita. Os favoritos ficam salvos neste navegador.</p><button class="text-button" id="showFavorites">Ver meus favoritos →</button></article>
-        <article class="extra-card"><span class="extra-symbol">✦</span><h3>Novidades e ofertas</h3><p id="promoText">Acompanhe os destaques e consulte a equipe sobre as ofertas disponíveis hoje.</p><a class="text-button" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Perguntar pelo WhatsApp →</a></article>
-        <article class="extra-card"><span class="extra-symbol">★</span><h3>Conte como foi</h3><p>Sua opinião ajuda outras pessoas do bairro a conhecerem o atendimento.</p><a class="text-button" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Betim" target="_blank" rel="noopener">Ver local e avaliações →</a></article>
-      </div>
-    </section>
-    <section class="contact-band"><div><span class="eyebrow">PEDIDO OU DÚVIDA?</span><h2>Monte sua sacola.</h2><p>Explore o cardápio, monte sua seleção e consulte as opções de atendimento. O contato com a equipe continua disponível como alternativa.</p></div><button class="btn btn-light" id="openCart">Ver minha sacola <span id="cartCount">0</span> · ↗</button></section>
-    <section class="admin-entry"><span>Área de demonstração do projeto</span><button class="text-button" id="openAdmin">⚙ Painel administrativo</button></section>
-    <div class="overlay" id="cartOverlay" hidden><aside class="side-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle"><button class="close-panel" data-close="cartOverlay" aria-label="Fechar">×</button><span class="eyebrow">SELEÇÃO DE PRODUTOS</span><h2 id="cartTitle">Minha sacola</h2><div id="cartItems" class="cart-items"></div><div class="cart-footer"><label class="admin-label">Como deseja receber? <select id="orderMode"><option value="Retirada no balcão">Retirada no balcão</option><option value="Consumo no local">Consumo no local</option><option value="Entrega (consultar disponibilidade)">Entrega (consultar disponibilidade)</option><option value="Self-service (consultar disponibilidade)">Self-service (consultar disponibilidade)</option></select></label><label class="admin-label" id="deliveryAddressWrap" hidden>Endereço para simular a entrega<input id="deliveryAddress" maxlength="180" placeholder="Rua, número e bairro"></label><div class="delivery-estimator" id="deliveryEstimator" hidden><div class="delivery-estimator-title"><span>🛵</span><div><strong>Previsão de entrega</strong><small>Simulação ilustrativa, como nos apps de delivery</small></div></div><label class="admin-label">Distância aproximada<select id="deliveryZone"><option value="near">Região próxima · até 2 km</option><option value="medium">Região intermediária · 2 a 5 km</option><option value="far">Região mais distante · 5 a 8 km</option><option value="outside">Acima de 8 km / não sei</option></select></label><div id="deliveryEstimateResult" class="delivery-estimate-result" aria-live="polite">Selecione a região para ver uma previsão.</div><small class="delivery-note">Tempo fictício para demonstração. Não consulta entregadores, trânsito, distância real ou fila de pedidos. A equipe precisa confirmar a disponibilidade e o prazo.</small></div><label class="admin-label">Observações (opcional)<input id="orderNotes" maxlength="180" placeholder="Ex.: horário desejado, detalhes do pedido"></label><p>Valores, disponibilidade, entrega e self-service serão confirmados pela equipe.</p><button class="btn btn-primary" id="sendOrder">Enviar consulta pelo WhatsApp ↗</button></div></aside></div>
-    <div class="overlay" id="adminOverlay" hidden><aside class="side-panel admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle"><button class="close-panel" data-close="adminOverlay" aria-label="Fechar">×</button><span class="eyebrow">ACESSO RESTRITO</span><h2 id="adminTitle">Painel administrativo</h2>
-      <form id="adminLoginForm" class="admin-login-form">
-        <p>Entre com a conta autorizada da Padaria Verena.</p>
-        <label class="admin-label">E-mail<input id="adminEmail" type="email" autocomplete="username" required placeholder="E-mail do administrador"></label>
-        <label class="admin-label">Senha<input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Sua senha"></label>
-        <button class="btn btn-primary" type="submit" id="adminLoginButton">Entrar no painel</button>
-        <p class="review-feedback" id="adminLoginStatus" role="status" aria-live="polite"></p>
-      </form>
-      <div id="adminTools" hidden>
-        <div class="admin-session-bar"><span id="adminSessionEmail"></span><button type="button" class="text-button" id="adminLogout">Sair</button></div>
-        <div class="local-warning">Painel conectado ao Firebase. As alterações salvas aqui serão compartilhadas com os visitantes.</div>
-        <label class="admin-label">Aviso / promoção <textarea id="promoInput" rows="2" placeholder="Ex.: Consulte as novidades de hoje"></textarea></label><button class="btn btn-primary admin-save" id="savePromo">Salvar destaque</button>
-        <div class="admin-subhead"><h3>Produtos do cardápio</h3><span id="adminProductCount"></span></div>
-        <form id="productForm" class="product-form"><input type="hidden" id="editProductId"><label class="admin-label">Nome<input id="adminProductName" required maxlength="60" placeholder="Nome do produto"></label><div class="form-row"><label class="admin-label">Categoria<select id="adminProductCategory"><option>Pães</option><option>Salgados</option><option>Bolos</option><option>Doces</option><option>Lanches</option><option>Cafés</option><option>Sucos e vitaminas</option><option>Bebidas</option><option>Refeições</option><option>Encomendas</option></select></label><label class="admin-label">Preço (opcional)<input id="adminProductPrice" inputmode="decimal" placeholder="Ex.: 5,00"></label></div><label class="admin-label">Descrição<input id="adminProductDescription" maxlength="100" placeholder="Descrição curta"></label><button class="btn btn-primary" type="submit" id="saveProduct">Adicionar produto</button><button class="btn btn-outline" type="button" id="cancelEdit" hidden>Cancelar edição</button></form><div id="adminProductList" class="admin-product-list"></div>
-        <section class="admin-inbox" aria-labelledby="adminFeedbackTitle"><div class="admin-subhead"><h3 id="adminFeedbackTitle">Mensagens recebidas</h3><button type="button" class="text-button" id="refreshAdminInbox">Atualizar</button></div><div id="adminFeedbackList" class="admin-message-list"><p class="empty-state">Entre no painel para carregar as mensagens.</p></div></section>
-        <section class="admin-inbox" aria-labelledby="adminReviewsTitle"><div class="admin-subhead"><h3 id="adminReviewsTitle">Avaliações para moderar</h3><button type="button" class="text-button" id="refreshAdminReviews">Atualizar</button></div><div id="adminReviewModeration" class="admin-message-list"><p class="empty-state">Entre no painel para carregar as avaliações.</p></div></section>
-      </div>
-    </aside></div>
-
-    <section class="gallery section" id="galeria">
-      <div class="section-label">05 / GALERIA</div>
-      <div class="gallery-head"><div><span class="eyebrow">UM CLIMA DE PADARIA</span><h2>Pequenos prazeres,<br><em>grandes momentos.</em></h2></div><a class="gallery-caption" href="https://restaurantguru.com.br/Padaria-Verena-Unidade-Brasileia-Betim" target="_blank" rel="noopener">FOTOS PÚBLICAS DA UNIDADE · FONTE: RESTAURANT GURU ↗</a></div>
-      <div class="gallery-grid">
-        <div class="gallery-real gallery-large real-photo gallery-real-1" role="img" aria-label="Produtos de confeitaria fotografados na unidade"></div>
-        <div class="gallery-real real-photo gallery-real-2" role="img" aria-label="Pães assados fotografados na unidade"></div>
-        <div class="gallery-real real-photo gallery-real-3" role="img" aria-label="Balcão e ambiente interno da unidade"></div>
-      </div>
-    </section>
-
-    <section class="visit section" id="visite">
-      <div class="section-label">06 / VISITE</div>
-      <div class="visit-grid">
-        <div class="visit-copy"><span class="eyebrow">VAMOS TE ESPERAR</span><h2>Estamos no<br><em>Brasiléia.</em></h2><p>Praça José Lino da Silva, 101<br>Brasiléia · Betim – MG<br>CEP 32600-308</p><div class="visit-actions"><a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Praca+Jose+Lino+da+Silva+101+Betim+MG" target="_blank" rel="noopener">Abrir no Google Maps ↗</a><a class="btn btn-outline" href="tel:+5531990905985">Ligar para a unidade</a></div></div>
-        <div class="map-wrap"><iframe title="Mapa da Padaria Verena Unidade Brasiléia" src="https://www.google.com/maps?q=Pra%C3%A7a%20Jos%C3%A9%20Lino%20da%20Silva%2C%20101%2C%20Betim%20MG&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-      </div>
-      <div class="hours"><div><span class="eyebrow">HORÁRIOS DE FUNCIONAMENTO</span><h3>Organize sua visita</h3></div><div class="hours-list"><p><span>Segunda a sábado</span><strong>06:00 – 21:20</strong></p><p><span>Domingo</span><strong>06:00 – 13:30</strong></p><small>Horários encontrados em diretório público; podem mudar em feriados. Confirme pelo WhatsApp antes de sair.</small></div></div>
-    </section>
-
-    <section class="reviews section" id="avaliacoes">
-      <div class="section-label">07 / EXPERIÊNCIA DOS CLIENTES</div>
-      <div class="reviews-heading"><div><span class="eyebrow">SUA OPINIÃO CONTA</span><h2>Conte como foi<br><em>sua experiência.</em></h2></div><p>Este espaço é um protótipo de avaliações próprias da Padaria Verena. Deixe sua nota e um comentário sobre sua visita.</p></div>
-      <div class="review-prototype">
-        <form class="review-form" id="reviewForm">
-          <span class="review-form-kicker">COMPARTILHE SUA EXPERIÊNCIA</span><h3>Como foi sua visita?</h3>
-          <label class="review-field">Seu nome<input id="reviewName" name="name" maxlength="50" placeholder="Como podemos chamar você?" required></label>
-          <label class="review-field">Sua nota<select id="reviewRating" name="rating" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muito bom</option><option value="3">★★★☆☆ — Bom</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Precisa melhorar</option></select></label>
-          <label class="review-field">Seu comentário<textarea id="reviewComment" name="comment" rows="4" maxlength="500" placeholder="Conte um pouco sobre atendimento, produtos ou ambiente..." required></textarea></label>
-          <button class="btn btn-primary" type="submit">Enviar avaliação <span>↗</span></button>
-          <p class="review-form-note">As avaliações serão enviadas para análise e só aparecerão publicamente após aprovação.</p><p class="review-feedback" id="reviewFeedback" role="status" aria-live="polite"></p>
-        </form>
-        <div class="review-list-panel"><div class="review-list-heading"><div><span class="eyebrow">OPINIÕES COMPARTILHADAS</span><h3>O que acharam da visita</h3></div><span class="review-count" id="reviewCount">0 avaliações</span></div><div class="review-list" id="reviewList" aria-live="polite"><div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div></div></div>
-      </div>
-      <p class="reviews-disclaimer">As avaliações são próprias e independentes das avaliações do Google. Comentários passam por aprovação antes da publicação.</p>
-    </section>
-
-    <section class="feedback-section section" id="sugestoes-reclamacoes">
-      <div class="section-label">08 / CANAL DE ATENDIMENTO</div>
-      <div class="feedback-heading">
-        <div><span class="eyebrow">QUEREMOS TE OUVIR</span><h2>Tem algo para<br><em>compartilhar?</em></h2></div>
-        <p>Envie um elogio, uma sugestão ou uma reclamação. Este canal é separado das avaliações públicas e foi criado para demonstrar como a comunicação com a padaria poderá funcionar.</p>
-      </div>
-      <div class="feedback-prototype">
-        <form class="feedback-form" id="feedbackForm">
-          <span class="review-form-kicker">FALE COM A GENTE</span>
-          <h3>Como podemos ajudar?</h3>
-          <label class="review-field">Tipo de mensagem
-            <select id="feedbackType" required>
-              <option value="Sugestão">💡 Sugestão</option>
-              <option value="Reclamação">⚠️ Reclamação</option>
-              <option value="Elogio">♡ Elogio</option>
-            </select>
-          </label>
-          <label class="review-field">Seu nome <span class="field-optional">(opcional)</span>
-            <input id="feedbackName" maxlength="60" placeholder="Como podemos chamar você?">
-          </label>
-          <label class="review-field">Sua mensagem
-            <textarea id="feedbackMessage" rows="5" maxlength="1000" placeholder="Conte o que aconteceu ou compartilhe sua ideia..." required></textarea>
-          </label>
-          <button class="btn btn-primary" type="submit">Registrar mensagem <span>↗</span></button>
-          <p class="review-form-note">Sua mensagem será registrada para a equipe responsável. Não inclua senhas ou dados pessoais sensíveis.</p>
-          <p class="review-feedback" id="feedbackStatus" role="status" aria-live="polite"></p>
-        </form>
-        <div class="feedback-info">
-          <div class="feedback-icon">✉</div>
-          <span class="eyebrow">UM ESPAÇO PARA MELHORAR</span>
-          <h3>Sua opinião faz diferença.</h3>
-          <p>Este canal recebe mensagens privadas diretamente no banco de dados da padaria. Somente a administração autorizada pode consultá-las.</p>
-          <div class="feedback-types" aria-label="Escolha o tipo de mensagem">
-            <button type="button" class="feedback-type-choice" data-feedback-choice="Sugestão"><span class="feedback-type-icon">💡</span><span><strong>Sugestão</strong><small>Uma ideia para melhorar produtos ou atendimento.</small></span><span aria-hidden="true">→</span></button>
-            <button type="button" class="feedback-type-choice" data-feedback-choice="Reclamação"><span class="feedback-type-icon">⚠</span><span><strong>Reclamação</strong><small>Conte sobre algo que não saiu como esperado.</small></span><span aria-hidden="true">→</span></button>
-            <button type="button" class="feedback-type-choice" data-feedback-choice="Elogio"><span class="feedback-type-icon">♡</span><span><strong>Elogio</strong><small>Compartilhe algo de que você gostou.</small></span><span aria-hidden="true">→</span></button>
-          </div>
-          <p class="review-form-note">As mensagens são privadas e só podem ser consultadas pela administração autorizada.</p>
-        </div>
-      </div>
-      <p class="reviews-disclaimer">Canal digital integrado ao Firebase. As mensagens são privadas e acessíveis somente à administração autorizada.</p>
-    </section>
-
-    <section class="contact-band"><div><span class="eyebrow">FICOU COM ALGUMA DÚVIDA?</span><h2>Fale com a Verena.</h2><p>Entre em contato para confirmar informações sobre produtos e atendimento.</p></div><a class="btn btn-light" href="https://wa.me/5531990905985" target="_blank" rel="noopener">Abrir WhatsApp ↗</a></section>
-  </main>
-
-  <div class="virtual-assistant" id="virtualAssistant"><button type="button" class="assistant-launcher" id="assistantLauncher" aria-expanded="false">✦ Atendimento virtual</button><section class="assistant-panel" id="assistantPanel" hidden aria-label="Atendimento virtual"><div class="assistant-head"><div><small>PADARIA VERENA</small><strong>Assistente virtual</strong></div><button type="button" id="closeAssistant" aria-label="Fechar atendimento">×</button></div><div class="assistant-messages" id="assistantMessages" aria-live="polite"><p class="assistant-bubble">Olá! Posso ajudar com endereço, horários, cardápio, pedidos, entrega e self-service. O que deseja saber?</p></div><div class="assistant-quick"><button type="button" data-assistant-question="Qual é o horário de funcionamento?">Horários</button><button type="button" data-assistant-question="Onde fica a padaria?">Endereço</button><button type="button" data-assistant-question="Como faço um pedido?">Pedidos</button><button type="button" data-assistant-question="Tem entrega ou self-service?">Entrega / self-service</button></div><form id="assistantForm"><input id="assistantInput" maxlength="240" placeholder="Digite sua dúvida..." aria-label="Digite sua dúvida" required><button type="submit" aria-label="Enviar mensagem">➤</button></form><small class="assistant-disclaimer">Assistente demonstrativo com respostas sobre as informações cadastradas. Não substitui a confirmação da equipe.</small></section></div>\n  <footer class="footer"><a class="brand brand-footer" href="#inicio"><span class="brand-mark">V</span><span><strong>VERENA</strong><small>PADARIA · BRASILÉIA</small></span></a><p>Informações públicas reunidas para facilitar sua visita.</p><div class="footer-links"><a href="#cardapio">Cardápio ↗</a><a href="#ajuda">Ajuda ↗</a><a href="https://www.instagram.com/verenabrasileia/" target="_blank" rel="noopener">Instagram ↗</a><a href="https://wa.me/5531990905985" target="_blank" rel="noopener">WhatsApp ↗</a></div><small class="copyright">Projeto acadêmico · Betim Digital · 2026</small></footer>
+<header class="site-header">
+ <a class="brand" href="#inicio" aria-label="Padaria Verena, início"><span class="brand-mark">V</span><span><strong>VERENA</strong><small>UNIDADE BRASILÉIA</small></span></a>
+ <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Abrir menu">☰</button>
+ <nav id="mainNav" class="nav">
+  <a href="#sobre">A padaria</a><a href="#produtos">Produtos</a><a href="#galeria">Galeria</a><a href="#visite">Como chegar</a>
+  <a class="nav-contact" href="https://wa.me/5531990905985" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+ </nav>
+</header>
+<main id="inicio">
+ <section class="hero">
+  <div class="hero-copy">
+   <span class="eyebrow">PADARIA · BRASILÉIA · BETIM</span>
+   <h1>Padaria Verena<br><em>Unidade Brasiléia</em></h1>
+   <p>Informações para você conhecer a unidade, consultar os produtos e encontrar a padaria.</p>
+   <div class="hero-actions"><a class="button" href="https://wa.me/5531990905985" target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp ↗</a><a class="plain-link" href="#visite">Ver endereço ↓</a></div>
+  </div>
+  <div class="hero-photo"><img src="https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg" alt="Fotografia publicada na página pública da Padaria Verena – Unidade Brasiléia" fetchpriority="high"></div>
+ </section>
+ <section class="quick-info" aria-label="Informações da unidade">
+  <article><span>ENDEREÇO</span><strong>Praça José Lino da Silva, 101</strong><small>Brasiléia · Betim/MG · CEP 32600-308</small></article>
+  <article><span>HORÁRIO DIVULGADO</span><strong>Segunda a sábado: 06h às 21h20</strong><small>Domingo: 06h às 13h30</small></article>
+  <article><span>TELEFONE / WHATSAPP</span><strong>(31) 99090-5985</strong><small>Contato da unidade</small></article>
+ </section>
+ <section class="section about" id="sobre">
+  <div class="section-kicker">01 · SOBRE A UNIDADE</div>
+  <div class="section-heading"><div><span class="eyebrow">PADARIA VERENA</span><h2>Conheça a<br><em>unidade Brasiléia.</em></h2></div><p>A Padaria Verena – Unidade Brasiléia está localizada na Praça José Lino da Silva, no bairro Brasiléia, em Betim. Este site reúne informações práticas para quem deseja visitar ou entrar em contato com a unidade.</p></div>
+ </section>
+ <section class="section products" id="produtos">
+  <div class="section-kicker">02 · PRODUTOS</div>
+  <div class="section-heading"><div><span class="eyebrow">ITENS ASSOCIADOS À UNIDADE EM DIRETÓRIOS PÚBLICOS</span><h2>Produtos de<br><em>padaria.</em></h2></div><p>Os itens abaixo aparecem em listagens públicas relacionadas à unidade. A variedade e a disponibilidade podem mudar; confirme diretamente com a padaria.</p></div>
+  <ul class="product-list">
+   <li>Pão francês</li><li>Pão de forma</li><li>Pão integral</li><li>Pão de milho</li><li>Pão de centeio</li><li>Pão de queijo</li><li>Baguete</li><li>Pão doce</li><li>Croissant</li><li>Coxinha</li><li>Café</li>
+  </ul>
+  <p class="note">Não exibimos preços ou estoque porque essas informações não estão confirmadas para consulta online.</p>
+ </section>
+ <section class="section gallery" id="galeria">
+  <div class="section-kicker">03 · GALERIA</div>
+  <div class="section-heading"><div><span class="eyebrow">FOTOS PÚBLICAS</span><h2>Imagens da<br><em>unidade.</em></h2></div><p>Fotografias exibidas publicamente na página da Padaria Verena – Unidade Brasiléia.</p></div>
+  <div class="gallery-grid">
+   <img src="https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg" alt="Foto de alimento publicada na página da unidade" loading="lazy">
+   <img src="https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg" alt="Outra foto de alimento publicada na página da unidade" loading="lazy">
+   <img src="https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg" alt="Foto publicada na galeria da unidade" loading="lazy">
+  </div>
+ </section>
+ <section class="section visit" id="visite">
+  <div class="section-kicker">04 · LOCALIZAÇÃO E CONTATO</div>
+  <div class="visit-card"><div><span class="eyebrow">VENHA CONHECER</span><h2>Estamos no<br><em>Brasiléia.</em></h2><p>Praça José Lino da Silva, 101<br>Brasiléia, Betim – MG<br>CEP 32600-308</p><p><strong>Telefone/WhatsApp:</strong><br>(31) 99090-5985</p><p><strong>Horário divulgado:</strong><br>Segunda a sábado: 06h às 21h20<br>Domingo: 06h às 13h30</p><div class="hero-actions"><a class="button" href="https://www.google.com/maps/search/?api=1&query=Padaria+Verena+Unidade+Brasileia+Praca+Jose+Lino+da+Silva+101+Betim+MG" target="_blank" rel="noopener noreferrer">Abrir localização ↗</a><a class="plain-link" href="https://wa.me/5531990905985" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div></div>
+  <div class="social"><span class="eyebrow">REDE SOCIAL</span><a href="https://www.instagram.com/verenabrasileia/" target="_blank" rel="noopener noreferrer">@verenabrasileia no Instagram ↗</a></div>
+ </section>
+</main>
+<footer><a class="brand footer-brand" href="#inicio"><span class="brand-mark">V</span><span><strong>VERENA</strong><small>UNIDADE BRASILÉIA</small></span></a><p>Padaria Verena – Unidade Brasiléia · Betim/MG</p><a href="https://wa.me/5531990905985" target="_blank" rel="noopener noreferrer">(31) 99090-5985</a></footer>
 </body>
 </html>
