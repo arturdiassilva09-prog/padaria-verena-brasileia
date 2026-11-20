@@ -117,7 +117,20 @@ const seed=[
  {id:"extra86",name:"Kit lanche",category:"Encomendas",description:"Para compartilhar, consulte antecedência",price:"",emoji:"🧺"},
  {id:"extra87",name:"Centos de salgados",category:"Encomendas",description:"Consulte sabores, quantidade e prazo",price:"",emoji:"🥟"},
  {id:"extra88",name:"Torta salgada inteira",category:"Encomendas",description:"Consulte sabores e tamanhos",price:"",emoji:"🥧"},
- {id:"extra89",name:"Kit festa",category:"Encomendas",description:"Consulte composição e antecedência",price:"",emoji:"🎉"}
+ {id:"extra89",name:"Kit festa",category:"Encomendas",description:"Consulte composição e antecedência",price:"",emoji:"🎉"},
+ {id:"cafe1",name:"Cappuccino tradicional",category:"Cafés",description:"Café cremoso com leite vaporizado; confirme a receita da casa",price:"",emoji:"☕"},
+ {id:"cafe2",name:"Cappuccino com chocolate",category:"Cafés",description:"Cappuccino com toque de chocolate",price:"",emoji:"🍫"},
+ {id:"cafe3",name:"Cappuccino cremoso",category:"Cafés",description:"Versão cremosa, consulte tamanho",price:"",emoji:"☕"},
+ {id:"cafe4",name:"Cappuccino gelado",category:"Cafés",description:"Bebida gelada à base de café, consulte disponibilidade",price:"",emoji:"🧋"},
+ {id:"cafe5",name:"Mocha",category:"Cafés",description:"Café com leite e chocolate",price:"",emoji:"🍫"},
+ {id:"cafe6",name:"Latte",category:"Cafés",description:"Café espresso com leite",price:"",emoji:"☕"},
+ {id:"cafe7",name:"Macchiato",category:"Cafés",description:"Espresso com toque de leite",price:"",emoji:"☕"},
+ {id:"cafe8",name:"Café coado",category:"Cafés",description:"Café tradicional passado na hora",price:"",emoji:"☕"},
+ {id:"cafe9",name:"Café duplo",category:"Cafés",description:"Consulte tamanho e disponibilidade",price:"",emoji:"☕"},
+ {id:"cafe10",name:"Chocolate quente cremoso",category:"Cafés",description:"Bebida quente de chocolate",price:"",emoji:"🍫"},
+ {id:"cafe11",name:"Chocolate quente com chantilly",category:"Cafés",description:"Consulte adicionais disponíveis",price:"",emoji:"🍫"},
+ {id:"cafe12",name:"Leite com canela",category:"Cafés",description:"Bebida quente, consulte disponibilidade",price:"",emoji:"🥛"},
+ {id:"cafe13",name:"Café com doce de leite",category:"Cafés",description:"Sugestão especial, confirme disponibilidade",price:"",emoji:"☕"}
 ]);
 let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>p.id));return [...saved,...seed.filter(p=>!ids.has(p.id))]})(),cart=load(CART,[]),category="Todos",favorites=new Set(load("verena_favs_v1",[]));
 save(KEY,products);
@@ -129,13 +142,25 @@ $("categoryFilters").innerHTML=catalogCategories.map((name,i)=>`<button class="f
 function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
  const list=products.filter(p=>(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
- $("catalogGrid").innerHTML=list.length?list.map(p=>'<article class="catalog-card"><div class="catalog-emoji">'+p.emoji+'</div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>').join(""):'<p class="empty-state">Nenhum produto encontrado nesta seleção.</p>';
+ $("catalogGrid").innerHTML=list.length?list.map(p=>'<article class="catalog-card"><div class="catalog-emoji">'+p.emoji+'</div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>').join(""):'<p class="empty-state">Nenhum produto encontrado nesta seleção.</p>';
  $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 $("productSearch").addEventListener("input",()=>{window.onlyFavorites=false;render()});
 $("categoryFilters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;category=b.dataset.category;window.onlyFavorites=false;document.querySelectorAll(".filter-chip").forEach(x=>x.classList.toggle("active",x===b));render()});
-$("catalogGrid").addEventListener("click",e=>{const f=e.target.closest("[data-fav]"),a=e.target.closest("[data-add]");if(f){const id=f.dataset.fav;favorites.has(id)?favorites.delete(id):favorites.add(id);save("verena_favs_v1",[...favorites]);render()}if(a){const id=a.dataset.add,found=cart.find(x=>x.id===id);found?found.qty++:cart.push({id,qty:1});save(CART,cart);render();renderCart();}});
+function addToCart(id){
+ const product=products.find(p=>String(p.id)===String(id));
+ if(!product){console.error("Produto não encontrado:",id);return}
+ const found=cart.find(x=>String(x.id)===String(id));
+ if(found)found.qty=Number(found.qty||0)+1;else cart.push({id:product.id,qty:1});
+ save(CART,cart);render();renderCart();
+ const status=$("cartFeedback");if(status){status.textContent=product.name+" adicionado à sacola";status.classList.add("visible");}
+}
+document.addEventListener("click",e=>{
+ const fav=e.target.closest("[data-fav]"),add=e.target.closest("[data-add]");
+ if(fav){e.preventDefault();e.stopPropagation();const id=fav.dataset.fav;favorites.has(id)?favorites.delete(id):favorites.add(id);save("verena_favs_v1",[...favorites]);render();return;}
+ if(add){e.preventDefault();e.stopPropagation();addToCart(add.dataset.add);}
+},true);
 $("showFavorites").addEventListener("click",()=>{window.onlyFavorites=true;category="Todos";$("productSearch").value="";document.querySelectorAll(".filter-chip").forEach((x,i)=>x.classList.toggle("active",i===0));render();$("cardapio").scrollIntoView({behavior:"smooth"});});
 function show(id){$(id).hidden=false;document.body.classList.add("modal-open")}
 function hide(id){$(id).hidden=true;if(document.querySelectorAll(".overlay:not([hidden])").length===0)document.body.classList.remove("modal-open")}
