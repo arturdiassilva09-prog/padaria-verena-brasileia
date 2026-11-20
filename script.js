@@ -50,7 +50,7 @@ const seed=[
  {id:"extra19",name:"Pastel frito",category:"Salgados",description:"Consulte sabores do dia",price:"",emoji:"🥟"},
  {id:"extra20",name:"Quibe",category:"Salgados",description:"Consulte disponibilidade",price:"",emoji:"🧆"},
  {id:"extra21",name:"Bolinha de queijo",category:"Salgados",description:"Porção ou unidade, consulte",price:"",emoji:"🧀"},
- {id:"extra22",name:" risole",category:"Salgados",description:"Consulte recheios disponíveis",price:"",emoji:"🥟"},
+ {id:"extra22",name:"Risole",category:"Salgados",description:"Consulte recheios disponíveis",price:"",emoji:"🥟"},
  {id:"extra23",name:"Pão de queijo recheado",category:"Salgados",description:"Consulte recheios do dia",price:"",emoji:"🧀"},
  {id:"extra24",name:"Mini salgados",category:"Salgados",description:"Para reuniões e festas",price:"",emoji:"🥟"},
  {id:"extra25",name:"Bolo de cenoura",category:"Bolos",description:"Consulte cobertura e fatias",price:"",emoji:"🍰"},
@@ -119,7 +119,8 @@ const seed=[
  {id:"extra88",name:"Torta salgada inteira",category:"Encomendas",description:"Consulte sabores e tamanhos",price:"",emoji:"🥧"},
  {id:"extra89",name:"Kit festa",category:"Encomendas",description:"Consulte composição e antecedência",price:"",emoji:"🎉"}
 ]);
-let products=load(KEY,seed),cart=load(CART,[]),category="Todos",favorites=new Set(load("verena_favs_v1",[]));
+let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>p.id));return [...saved,...seed.filter(p=>!ids.has(p.id))]})(),cart=load(CART,[]),category="Todos",favorites=new Set(load("verena_favs_v1",[]));
+save(KEY,products);
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
 function money(v){return v?"R$ "+v:"Consultar"}
