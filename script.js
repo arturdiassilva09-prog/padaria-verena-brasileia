@@ -67,7 +67,8 @@ async function loadPublicProducts(){
    products=[...remote,...seed.filter(p=>!known.has(p.name.toLocaleLowerCase("pt-BR")))];
    render();
   }else{
-   $("catalogGrid").innerHTML='<p class="empty-state">O catálogo está sendo atualizado. Em breve, confira os produtos disponíveis.</p>';
+   products=seed.slice();
+   render();
   }
  }catch(error){console.error("Erro ao carregar catálogo:",error)}
 }
