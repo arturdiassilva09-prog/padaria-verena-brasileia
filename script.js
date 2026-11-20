@@ -132,11 +132,12 @@ const seed=[
  {id:"cafe12",name:"Leite com canela",category:"Cafés",description:"Bebida quente, consulte disponibilidade",price:"",emoji:"🥛"},
  {id:"cafe13",name:"Café com doce de leite",category:"Cafés",description:"Sugestão especial, confirme disponibilidade",price:"",emoji:"☕"}
 ]);
-let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>p.id));return [...saved,...seed.filter(p=>!ids.has(p.id))]})(),cart=load(CART,[]),category="Todos",favorites=new Set(load("verena_favs_v1",[]));
+function normalizeCart(value){if(!Array.isArray(value))return[];return value.filter(x=>x&&x.id!==undefined&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).map(x=>({id:String(x.id),qty:Number(x.qty)}));}
+let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>String(p.id)));return [...saved,...seed.filter(p=>!ids.has(String(p.id)))]})(),cart=normalizeCart(load(CART,[])),category="Todos",favorites=new Set(Array.isArray(load("verena_favs_v1",[]))?load("verena_favs_v1",[]).map(String):[]);
 save(KEY,products);
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
-function money(v){return v?"R$ "+v:"Consultar"}
+function money(v){return v!==undefined&&v!==null&&String(v).trim()!==""?"R$ "+escapeHtml(String(v).trim()):"Consultar"}
 const catalogCategories=["Todos","Pães","Salgados","Bolos","Doces","Lanches","Cafés","Sucos e vitaminas","Bebidas","Refeições","Encomendas"];
 $("categoryFilters").innerHTML=catalogCategories.map((name,i)=>`<button class="filter-chip${i===0?" active":""}" data-category="${name}">${name}</button>`).join("");
 function render(){
@@ -167,8 +168,8 @@ function hide(id){$(id).hidden=true;if(document.querySelectorAll(".overlay:not([
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>hide(b.dataset.close)));
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)hide(o.id)}));
 $("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});
-function renderCart(){$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
-$("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>v.id===q.dataset.qty);x.qty+=Number(q.dataset.delta);if(x.qty<=0)cart=cart.filter(v=>v.id!==q.dataset.qty)}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
+function renderCart(){cart=normalizeCart(cart).filter(x=>products.some(p=>String(p.id)===String(x.id)));$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>String(p.id)===String(x.id));return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
+$("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>String(v.id)===String(q.dataset.qty));if(x){x.qty=Math.min(99,x.qty+Number(q.dataset.delta));if(x.qty<=0)cart=cart.filter(v=>String(v.id)!==String(q.dataset.qty))}}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
 const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap");if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{addressWrap.hidden=orderMode.value!=="Entrega (consultar disponibilidade)"});
 $("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
 const fb=window.verenaFirebase||null;
@@ -181,7 +182,7 @@ async function loadPublicProducts(){
   const snap=await db.collection("produtos").where("ativo","==",true).get();
   if(!snap.empty){
    const remote=snap.docs.map(d=>({id:d.id,...d.data()}));
-   const known=new Set(remote.map(p=>String(p.name||"").toLocaleLowerCase("pt-BR")));
+   
    products=[...remote,...seed.filter(p=>!known.has(p.name.toLocaleLowerCase("pt-BR")))];
    render();
   }else{
