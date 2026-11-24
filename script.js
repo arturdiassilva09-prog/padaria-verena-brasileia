@@ -390,8 +390,8 @@ if(reviewForm){
   if(!db){$("reviewFeedback").textContent="Serviço temporariamente indisponível. Atualize a página e tente novamente.";return;}
   if(submit){submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent="Enviando...";}
   try{
-   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,categoria,data:new Date().toLocaleDateString("pt-BR"),status:"aprovada"});
-   reviewForm.reset();$("reviewFeedback").textContent="Avaliação publicada com sucesso! Obrigado por compartilhar sua experiência.";
+   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,categoria,data:new Date().toLocaleDateString("pt-BR"),status:"pendente"});
+   reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Ela aparecerá publicamente após aprovação da equipe. Obrigado por compartilhar sua experiência.";
   }catch(error){console.error("Falha ao enviar avaliação:",error);$("reviewFeedback").textContent="Falha ao enviar ("+(error?.code||"erro")+"): "+(error?.message||"Tente novamente.")}
   finally{if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalText||"Enviar avaliação ↗";}}
  });
