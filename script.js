@@ -20,7 +20,7 @@ const catalogCategories=["Todos","Pães","Salgados","Bolos","Doces","Cafés","Su
 const productPhotos={
  bread:{url:"https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=85",alt:"Pães artesanais"},
  croissant:{url:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=85",alt:"Croissants"},
- cheeseBread:{url:"https://images.unsplash.com/photo-1608198093002-ad4e0054841a?auto=format&fit=crop&w=900&q=85",alt:"Pães assados"},
+ cheeseBread:{url:"https://images.unsplash.com/photo-1559141680-d0bd7bc5af84?auto=format&fit=crop&w=900&q=85",alt:"Pão de queijo brasileiro"},
  savory:{url:"https://images.unsplash.com/photo-1641848421554-f692b9dc9d8e?auto=format&fit=crop&w=900&q=85",alt:"Salgado brasileiro"},
  cake:{url:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85",alt:"Bolo decorado"},
  dessert:{url:"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=85",alt:"Sobremesa"},
@@ -38,6 +38,7 @@ function productPhoto(product){
  const name=String(product?.name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
  const category=String(product?.category||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
  let key="bread";
+ if(/pao de que?ijo/.test(name))key="cheeseBread";
  if(/cento de salgados|salgados para festas|torta salgada/.test(name))key="savory";
  else if(/kit|encomenda|festa/.test(name))key="order";
  else if(/pao de mel/.test(name))key="dessert";
@@ -51,7 +52,7 @@ function productPhoto(product){
  else if(/refrigerante|energetico|cha gelado|achocolatado|iogurte/.test(name))key="soda";
  else if(/bolo/.test(name))key="cake";
  else if(/croissant/.test(name))key="croissant";
- else if(/pao de queijo/.test(name))key="cheeseBread";
+ else if(/pao de que?ijo/.test(name))key="cheeseBread";
  else if(/pao|baguete|broa|rosca|bisnaguinha/.test(name))key="bread";
  else if(/pudim|brigadeiro|beijinho|torta|sonho|rocambole|quindim|gelatina|mousse|cookie|brownie|churros|pave|cupcake|doce|sobremesa/.test(name))key="dessert";
  else if(/prato|self-service|marmita|arroz|frango|bife|omelete|salada|refeicao/.test(name))key="meal";
