@@ -453,6 +453,13 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
  function answer(q){
   const t=q.toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
   if(/oi|ola|bom dia|boa tarde|boa noite|tudo bem/.test(t))return "Olá! ☕ Sou o atendimento virtual demonstrativo da Padaria Verena – Brasiléia. Posso ajudar com horários, localização, cardápio, bebidas, pedidos, entrega, encomendas e avaliações. O que gostaria de saber?";
+  // Perguntas gerais não devem cair no bloqueio de informações operacionais da padaria.
+  if(/pao|paes/.test(t) && /lista|tipos|exemplos|quais|sugest|ideias|aleatorio|aleatorios/.test(t)){
+   return "Claro! 🥖 Aqui estão 5 tipos de pães como exemplos gerais:\\n1. Pão francês\\n2. Pão de queijo\\n3. Pão australiano\\n4. Pão integral\\n5. Pão de batata\\n\\nEsses são exemplos; não significa que todos estejam disponíveis na Padaria Verena.";
+  }
+  if(/lista|tipos|exemplos|ideias|sugestoes/.test(t) && /bolo|salgado|doce|bebida|cafe|lanche/.test(t)){
+   return "Posso sugerir opções gerais! Para saber se algum desses itens é vendido hoje na Padaria Verena, confirme diretamente com a equipe pelo (31) 99090-5985.";
+  }
   if(/horario|abre|fecha|funciona|domingo|feriado/.test(t))return "O horário divulgado é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme com a equipe, pois pode haver alterações.";
   if(/endereco|onde fica|localiza|mapa|chegar/.test(t))return "A unidade fica na Praça José Lino da Silva, 101, Brasiléia, Betim–MG. Na seção Como chegar você encontra o acesso ao mapa.";
   if(/telefone|whats|contato|falar com|numero/.test(t))return "O telefone/WhatsApp divulgado é (31) 99090-5985. O contato é uma alternativa para confirmar informações que ainda não estão disponíveis no site.";
@@ -466,7 +473,7 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
   if(/avaliacao|nota|estrela|comentario/.test(t))return "A seção de avaliações permite enviar uma opinião. As avaliações podem passar por moderação antes de aparecer publicamente.";
   if(/instagram|rede social|foto/.test(t))return "O perfil divulgado da unidade é @verenabrasileia no Instagram. O link está na parte inferior do site.";
   if(/obrigad/.test(t))return "Por nada! ☕ Se precisar, posso ajudar a encontrar informações no cardápio ou explicar como usar a sacola.";
-  return "Não encontrei uma resposta segura para essa pergunta nas informações cadastradas. Posso ajudar com horários, endereço, contato, cardápio, cafés, cappuccinos, preços, pedidos, entrega simulada, self-service, encomendas e avaliações. Para detalhes específicos da operação, confirme com a equipe pelo (31) 99090-5985.";
+  return "Posso ajudar com perguntas gerais e sugestões. ☕ Se sua dúvida for sobre a operação da Padaria Verena — como disponibilidade, preço, estoque, entrega ou horário especial — não vou inventar informações: confirme com a equipe pelo (31) 99090-5985. Você também pode perguntar sobre endereço, horários, cardápio e como usar a sacola.";
  }
  function send(q){const clean=String(q||"").trim();if(!clean)return;add(clean,"user");input.value="";window.setTimeout(()=>add(answer(clean),"bot"),180)}
  form.addEventListener("submit",e=>{e.preventDefault();send(input.value)});
