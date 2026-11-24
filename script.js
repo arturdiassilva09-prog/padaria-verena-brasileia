@@ -282,31 +282,49 @@ if(reviewTrack){
  restartAuto();
 }
 
-/* Avaliações públicas: envio ao Firestore com moderação. */
+/* Avaliações públicas: leitura para visitantes e moderação antes da publicação. */
 const REVIEW_KEY="verena_reviews_prototype_v1";
+let publicReviews=[];
 function renderReviews(){
- const list=$("reviewList"),count=$("reviewCount");
+ const list=$("reviewList"),count=$("reviewCount"),filter=$("reviewCategoryFilter");
  if(!list||!count)return;
  count.textContent="Carregando avaliações...";
  list.innerHTML='<div class="review-empty"><p>Carregando avaliações...</p></div>';
- if(!db)return;
+ if(!db){count.textContent="Avaliações indisponíveis";list.innerHTML='<p class="empty-state">Não foi possível conectar ao serviço de avaliações.</p>';return;}
  db.collection("avaliacoes").where("status","==","aprovada").get().then(snap=>{
-  const saved=snap.docs.map(d=>d.data());
-  count.textContent=saved.length+" "+(saved.length===1?"avaliação":"avaliações");
-  list.innerHTML=saved.length?saved.map(r=>'<article class="review-item"><div class="review-item-top"><span class="review-item-name">'+escapeHtml(r.nome)+'</span><time class="review-item-date">'+escapeHtml(r.data||"")+'</time></div><div class="review-item-stars" aria-label="'+r.nota+' de 5 estrelas">'+("★".repeat(r.nota))+("☆".repeat(5-r.nota))+'</div><p>'+escapeHtml(r.comentario)+'</p></article>').join(""):'<div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações aprovadas aparecerão aqui.</p></div>';
- }).catch(error=>{console.error(error);count.textContent="Avaliações";list.innerHTML='<p class="empty-state">Não foi possível carregar as avaliações agora.</p>'});
+  publicReviews=snap.docs.map(doc=>({id:doc.id,...doc.data()}));
+  drawPublicReviews();
+ }).catch(error=>{console.error("Erro ao carregar avaliações públicas:",error);count.textContent="Avaliações";list.innerHTML='<p class="empty-state">Não foi possível carregar as avaliações. Verifique se a leitura pública da coleção avaliações está permitida nas regras do Firebase.</p>'});
 }
+function drawPublicReviews(){
+ const list=$("reviewList"),count=$("reviewCount"),filter=$("reviewCategoryFilter");
+ if(!list||!count)return;
+ const selected=filter?.value||"Todos";
+ const visible=selected==="Todos"?publicReviews:publicReviews.filter(r=>(r.categoria||"Geral")===selected);
+ count.textContent=selected==="Todos"
+  ?publicReviews.length+" "+(publicReviews.length===1?"avaliação":"avaliações")
+  :visible.length+" de "+publicReviews.length+" avaliações";
+ list.innerHTML=visible.length?visible.map(r=>{
+  const rating=Math.max(0,Math.min(5,Number(r.nota)||0));
+  const category=r.categoria||"Geral";
+  return '<article class="review-item"><div class="review-item-top"><span class="review-item-name">'+escapeHtml(r.nome||"Visitante")+'</span><time class="review-item-date">'+escapeHtml(r.data||"")+'</time></div><span class="review-category-tag">'+escapeHtml(category)+'</span><div class="review-item-stars" aria-label="'+rating+' de 5 estrelas">'+("★".repeat(rating))+("☆".repeat(5-rating))+'</div><p>'+escapeHtml(r.comentario||"")+'</p></article>';
+ }).join(""):'<div class="review-empty"><span>✦</span><strong>'+(publicReviews.length?"Nenhuma avaliação neste assunto":"Seja a primeira pessoa a avaliar")+'</strong><p>'+(publicReviews.length?"Escolha outro assunto no filtro para ver mais opiniões.":"As avaliações aprovadas aparecerão aqui para todos os visitantes.")+'</p></div>';
+}
+$("reviewCategoryFilter")?.addEventListener("change",drawPublicReviews);
 const reviewForm=$("reviewForm");
 if(reviewForm){
  reviewForm.addEventListener("submit",async e=>{
   e.preventDefault();
-  const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value);
-  if(!name||!comment||rating<1||rating>5)return;
+  const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value),categoria=$("reviewCategory").value;
+  const submit=reviewForm.querySelector('button[type="submit"]');
+  if(!name||!comment||rating<1||rating>5||!categoria)return;
   if(!db){$("reviewFeedback").textContent="Serviço temporariamente indisponível. Atualize a página e tente novamente.";return;}
+  if(submit){submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent="Enviando...";}
   try{
-   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,data:new Date().toLocaleDateString("pt-BR"),status:"pendente"});
-   reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Obrigado por compartilhar sua experiência!";
+   await db.collection("avaliacoes").add({nome:name,comentario:comment,nota:rating,categoria,data:new Date().toLocaleDateString("pt-BR"),status:"pendente"});
+   reviewForm.reset();$("reviewFeedback").textContent="Avaliação enviada para análise. Depois da aprovação, ela ficará visível para todos os visitantes.";
   }catch(error){console.error("Falha ao enviar avaliação:",error);$("reviewFeedback").textContent="Falha ao enviar ("+(error?.code||"erro")+"): "+(error?.message||"Tente novamente.")}
+  finally{if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalText||"Enviar avaliação ↗";}}
  });
  renderReviews();
 }
@@ -370,7 +388,7 @@ async function loadAdminInbox(){
   if(reviewBox){
    reviewBox.innerHTML=reviewSnap.empty?'<p class="empty-state">Nenhuma avaliação aguardando aprovação.</p>':reviewSnap.docs.map(doc=>{
     const d=doc.data();
-    return '<article class="admin-message"><div class="admin-message-head"><strong>'+escapeHtml(d.nome||"Visitante")+' · '+Number(d.nota||0)+'/5</strong><small>'+escapeHtml(d.data||"")+'</small></div><p>'+escapeHtml(d.comentario||"")+'</p><div class="admin-message-actions"><button type="button" data-review-approve="'+doc.id+'">Aprovar publicação</button><button type="button" data-review-reject="'+doc.id+'">Rejeitar</button></div></article>';
+    return '<article class="admin-message"><div class="admin-message-head"><strong>'+escapeHtml(d.nome||"Visitante")+' · '+Number(d.nota||0)+'/5 · '+escapeHtml(d.categoria||"Geral")+'</strong><small>'+escapeHtml(d.data||"")+'</small></div><p>'+escapeHtml(d.comentario||"")+'</p><div class="admin-message-actions"><button type="button" data-review-approve="'+doc.id+'">Aprovar publicação</button><button type="button" data-review-reject="'+doc.id+'">Rejeitar</button></div></article>';
    }).join("");
   }
  }catch(error){
