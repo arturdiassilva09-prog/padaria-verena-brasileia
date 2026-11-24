@@ -404,12 +404,38 @@ $("adminFeedbackList")?.addEventListener("click",async e=>{
  catch(error){alert("Não foi possível excluir: "+error.message)}
 });
 $("adminReviewModeration")?.addEventListener("click",async e=>{
- const approve=e.target.closest("[data-review-approve]"),reject=e.target.closest("[data-review-reject]");
- const button=approve||reject;if(!button||!isVerenaAdmin)return;
+ const target=e.target instanceof Element?e.target:null;
+ const approve=target?.closest("[data-review-approve]"),reject=target?.closest("[data-review-reject]");
+ const button=approve||reject;
+ if(!button)return;
+ const user=auth?.currentUser;
+ if(!user||user.uid!==ADMIN_UID){
+  isVerenaAdmin=false;
+  alert("Sua sessão administrativa não está ativa. Saia do painel e entre novamente com a conta administradora.");
+  return;
+ }
+ const reviewId=approve?button.dataset.reviewApprove:button.dataset.reviewReject;
+ if(!reviewId)return;
+ const nextStatus=approve?"aprovada":"rejeitada";
+ const originalText=button.textContent;
+ button.disabled=true;
+ button.textContent=approve?"Aprovando...":"Rejeitando...";
  try{
-  await db.collection("avaliacoes").doc(button.dataset.reviewApprove||button.dataset.reviewReject).update({status:approve?"aprovada":"rejeitada"});
-  await loadAdminInbox();if(approve)renderReviews();
- }catch(error){alert("Não foi possível moderar a avaliação: "+error.message)}
+  const reviewRef=db.collection("avaliacoes").doc(reviewId);
+  await reviewRef.update({status:nextStatus});
+  const updated=await reviewRef.get();
+  if(!updated.exists||updated.data().status!==nextStatus){
+   throw new Error("O Firebase não confirmou a alteração do status.");
+  }
+  await loadAdminInbox();
+  if(approve)renderReviews();
+  alert(approve?"Avaliação aprovada e publicada!":"Avaliação rejeitada.");
+ }catch(error){
+  console.error("Falha ao moderar avaliação:",error);
+  alert("Não foi possível "+(approve?"aprovar":"rejeitar")+" a avaliação.\nCódigo: "+(error.code||"não informado")+"\nDetalhe: "+(error.message||"Erro desconhecido"));
+  button.disabled=false;
+  button.textContent=originalText;
+ }
 });
 $("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
 $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
