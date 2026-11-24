@@ -158,10 +158,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 .real-photo{background-repeat:no-repeat;background-size:200% 200%;background-color:#e8ddd0}
 .hero-real-photo{width:100%;height:100%;position:relative;z-index:1;background-image:url("https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg");background-position:100% 100%;background-size:200% 200%}
 .product-photo{width:100%;height:190px;display:block}
-.product-real-1{background-image:url("https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg");background-position:100% 0}
-.product-real-2{background-image:url("https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg");background-position:0 0}
-.product-real-3{background-image:url("https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg");background-position:100% 0}
-.product-real-4{background-image:url("https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg");background-position:100% 100%}
+.product-real-1{background-image:url("https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg");background-position:0 100%;background-size:200% 200%}
+.product-real-2{background-image:url("https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg");background-position:0 0;background-size:200% 200%}
+.product-real-3{background-image:url("https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg");background-position:0 0;background-size:200% 200%}
+.product-real-4{background-image:url("https://img02.restaurantguru.com/c863-Restaurant-Padaria-Verena-Unidade-Brasileia-pizza.jpg");background-position:center;background-size:cover}
 .gallery-real{width:100%;height:100%;background-size:200% 200%}
 .gallery-real-1{background-image:url("https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg");background-position:0 0}
 .gallery-real-2{background-image:url("https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg");background-position:100% 0}
