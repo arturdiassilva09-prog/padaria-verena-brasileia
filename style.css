@@ -395,3 +395,29 @@ body{letter-spacing:.005em;-webkit-font-smoothing:antialiased}
 .review-item{padding:18px 0;border-bottom:1px solid var(--line)}
 .review-item-stars{margin-top:8px;color:#bd8a52;letter-spacing:2px}
 @media(max-width:600px){.review-filter select{max-width:none}}
+
+
+/* Tela inicial de login e cadastro — identidade Padaria Verena */
+.verena-auth-screen{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 15% 10%,#ead8c1 0,transparent 36%),linear-gradient(135deg,#f8f3eb,#eee2d3);overflow:auto}
+.verena-auth-screen[hidden]{display:none!important}
+.verena-auth-card{width:min(100%,420px);padding:38px 34px 30px;background:#fffdf9;border:1px solid #e7d9c8;border-radius:22px;box-shadow:0 24px 70px rgba(70,43,27,.16);display:flex;flex-direction:column;animation:verenaAuthIn .35s ease both}
+.verena-auth-mark{width:58px;height:58px;display:grid;place-items:center;margin:0 auto 13px;border:1.5px solid #bd8a52;border-radius:50%;font:700 34px "Playfair Display",serif;color:#542d20}
+.verena-auth-eyebrow{text-align:center;color:#bd8a52;font-size:9px;font-weight:700;letter-spacing:.22em}
+.verena-auth-card h1{font:700 30px "Playfair Display",serif;text-align:center;color:#542d20;margin:15px 0 7px;letter-spacing:-.03em}
+.verena-auth-card>p:not(.verena-auth-status){font-size:12px;line-height:1.6;text-align:center;color:#817367;margin:0 0 22px}
+.verena-auth-card label{font-size:11px;font-weight:700;color:#542d20;margin:11px 0 6px}
+.verena-auth-card input{width:100%;height:48px;padding:0 14px;border:1px solid #e1d4c5;border-radius:10px;background:#fff;color:#29231f;font:13px "DM Sans",sans-serif;outline:none}
+.verena-auth-card input:focus{border-color:#bd8a52;box-shadow:0 0 0 3px rgba(189,138,82,.13)}
+.verena-auth-submit{height:49px;margin-top:21px;border:0;border-radius:10px;background:#542d20;color:#fff;font:700 12px "DM Sans",sans-serif;cursor:pointer;transition:.2s}
+.verena-auth-submit:hover{background:#754b38;transform:translateY(-1px)}
+.verena-auth-submit:disabled{opacity:.6;cursor:wait}
+.verena-auth-switch,.verena-auth-forgot{border:0;background:transparent;color:#65452f;font:600 11px "DM Sans",sans-serif;cursor:pointer;padding:12px 5px 3px}
+.verena-auth-forgot{font-weight:500;color:#8a7868;padding-top:10px}
+.verena-auth-switch:hover,.verena-auth-forgot:hover{text-decoration:underline}
+.verena-auth-status{min-height:18px;margin:12px 0 0;color:#9b453b;font-size:11px;line-height:1.5;text-align:center;overflow-wrap:anywhere}
+.verena-auth-card>small{text-align:center;color:#a3978b;font-size:9px;margin-top:12px}
+.site-logout{border:1px solid #d8c7b4;background:transparent;color:#542d20;padding:10px 13px;border-radius:4px;font:700 10px "DM Sans",sans-serif;cursor:pointer}
+.site-logout[hidden]{display:none!important}
+@keyframes verenaAuthIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:650px){.verena-auth-card{padding:30px 23px 25px;border-radius:18px}.verena-auth-card h1{font-size:27px}.site-logout{width:100%;margin-top:10px}}
+@media(prefers-reduced-motion:reduce){.verena-auth-card{animation:none}}
