@@ -2,13 +2,36 @@ const toggle=document.getElementById("menuToggle"),nav=document.getElementById("
 if(toggle&&nav){toggle.addEventListener("click",()=>{const opened=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(opened));toggle.textContent=opened?"×":"☰";});nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));}
 const $=id=>document.getElementById(id),KEY="verena_catalog_v1",CART="verena_cart_v1",PROMO="verena_promo_v1";
 const seed=[
-{id:"foto-paes",name:"Pães variados",category:"Pães",description:"Imagem ilustrativa de uma seleção de pães",price:""},
-{id:"foto-sanduiche",name:"Sanduíche natural",category:"Lanches",description:"Imagem ilustrativa de sanduíche natural",price:""},
+{id:"foto-paes",name:"Pães variados",category:"Pães",description:"Seleção ilustrativa de pães de padaria",price:""},
+{id:"foto-frances",name:"Pão francês",category:"Pães",description:"Imagem ilustrativa de pão francês",price:""},
+{id:"foto-integral",name:"Pão integral",category:"Pães",description:"Imagem ilustrativa de pão integral",price:""},
+{id:"foto-batata",name:"Pão de batata",category:"Pães",description:"Imagem ilustrativa de pão de batata",price:""},
+{id:"foto-croissant",name:"Croissant",category:"Pães",description:"Imagem ilustrativa de croissant",price:""},
+{id:"foto-baguete",name:"Baguete",category:"Pães",description:"Imagem ilustrativa de baguete",price:""},
+{id:"foto-broa",name:"Broa de fubá",category:"Pães",description:"Imagem ilustrativa de broa",price:""},
+{id:"foto-queijo",name:"Pão de queijo",category:"Salgados",description:"Imagem ilustrativa de pão de queijo",price:""},
+{id:"foto-coxinha",name:"Coxinha de frango",category:"Salgados",description:"Imagem ilustrativa de coxinha",price:""},
+{id:"foto-empada",name:"Empada",category:"Salgados",description:"Imagem ilustrativa de empada",price:""},
+{id:"foto-esfirra",name:"Esfirra",category:"Salgados",description:"Imagem ilustrativa de esfirra",price:""},
+{id:"foto-pastel",name:"Pastel",category:"Salgados",description:"Imagem ilustrativa de pastel",price:""},
+{id:"foto-bolo-chocolate",name:"Bolo de chocolate",category:"Bolos",description:"Imagem ilustrativa de bolo de chocolate",price:""},
+{id:"foto-bolo-cenoura",name:"Bolo de cenoura",category:"Bolos",description:"Imagem ilustrativa de bolo de cenoura",price:""},
+{id:"foto-pudim",name:"Pudim",category:"Doces",description:"Imagem ilustrativa de pudim",price:""},
+{id:"foto-brownie",name:"Brownie",category:"Doces",description:"Imagem ilustrativa de brownie",price:""},
+{id:"foto-cafe",name:"Café espresso",category:"Cafés",description:"Imagem ilustrativa de café espresso",price:""},
+{id:"foto-cappuccino",name:"Cappuccino",category:"Cafés",description:"Imagem ilustrativa de cappuccino",price:""},
+{id:"foto-suco-laranja",name:"Suco de laranja",category:"Sucos e vitaminas",description:"Imagem ilustrativa de suco de laranja",price:""},
+{id:"foto-limonada",name:"Limonada",category:"Sucos e vitaminas",description:"Imagem ilustrativa de limonada",price:""},
 {id:"foto-agua",name:"Água engarrafada",category:"Bebidas",description:"Imagem ilustrativa de água engarrafada",price:""},
-{id:"foto-tortinhas",name:"Tortinhas doces",category:"Doces",description:"Imagem ilustrativa de tortinhas doces",price:""},
-{id:"foto-paes-recheados",name:"Pães recheados",category:"Pães",description:"Imagem ilustrativa de pães recheados",price:""},
+{id:"foto-refrigerante",name:"Refrigerante gelado",category:"Bebidas",description:"Imagem ilustrativa de refrigerante",price:""},
+{id:"foto-sanduiche",name:"Sanduíche natural",category:"Lanches",description:"Imagem ilustrativa de sanduíche natural",price:""},
+{id:"foto-misto",name:"Misto quente",category:"Lanches",description:"Imagem ilustrativa de misto quente",price:""},
+{id:"foto-hamburguer",name:"Hambúrguer",category:"Lanches",description:"Imagem ilustrativa de hambúrguer",price:""},
+{id:"foto-pizza",name:"Pizza",category:"Lanches",description:"Imagem ilustrativa de pizza",price:""},
 {id:"foto-refeicao",name:"Refeição no prato",category:"Refeições",description:"Imagem ilustrativa de refeição",price:""},
-{id:"foto-pizza",name:"Pizza",category:"Lanches",description:"Imagem ilustrativa de pizza",price:""}
+{id:"foto-marmita",name:"Marmita",category:"Refeições",description:"Imagem ilustrativa de refeição em marmita",price:""},
+{id:"foto-paes-recheados",name:"Pães recheados",category:"Encomendas",description:"Imagem ilustrativa de pães recheados",price:""},
+{id:"foto-tortinhas",name:"Tortinhas doces",category:"Encomendas",description:"Imagem ilustrativa de tortinhas doces",price:""}
 ];
 
 function normalizeCart(value){if(!Array.isArray(value))return[];return value.filter(x=>x&&x.id!==undefined&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).map(x=>({id:String(x.id),qty:Number(x.qty)}));}
