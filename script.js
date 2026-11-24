@@ -2,13 +2,13 @@ const toggle=document.getElementById("menuToggle"),nav=document.getElementById("
 if(toggle&&nav){toggle.addEventListener("click",()=>{const opened=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(opened));toggle.textContent=opened?"×":"☰";});nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));}
 const $=id=>document.getElementById(id),KEY="verena_catalog_v1",CART="verena_cart_v1",PROMO="verena_promo_v1";
 const seed=[
-{id:"foto-paes",name:"Pães variados",category:"Pães",description:"Foto da seleção de pães publicada pela unidade",price:""},
-{id:"foto-sanduiche",name:"Sanduíche natural",category:"Lanches",description:"Sanduíches fotografados na galeria da unidade",price:""},
-{id:"foto-agua",name:"Água engarrafada",category:"Bebidas",description:"Garrafa de água visível na foto da unidade",price:""},
-{id:"foto-tortinhas",name:"Tortinhas doces",category:"Doces",description:"Tortinhas e sobremesas fotografadas na unidade",price:""},
-{id:"foto-paes-recheados",name:"Pães recheados",category:"Pães",description:"Pães recheados fotografados na galeria",price:""},
-{id:"foto-refeicao",name:"Refeição no prato",category:"Refeições",description:"Prato de refeição fotografado na unidade",price:""},
-{id:"foto-pizza",name:"Pizza",category:"Lanches",description:"Pizza fotografada na unidade",price:""}
+{id:"foto-paes",name:"Pães variados",category:"Pães",description:"Imagem ilustrativa de uma seleção de pães",price:""},
+{id:"foto-sanduiche",name:"Sanduíche natural",category:"Lanches",description:"Imagem ilustrativa de sanduíche natural",price:""},
+{id:"foto-agua",name:"Água engarrafada",category:"Bebidas",description:"Imagem ilustrativa de água engarrafada",price:""},
+{id:"foto-tortinhas",name:"Tortinhas doces",category:"Doces",description:"Imagem ilustrativa de tortinhas doces",price:""},
+{id:"foto-paes-recheados",name:"Pães recheados",category:"Pães",description:"Imagem ilustrativa de pães recheados",price:""},
+{id:"foto-refeicao",name:"Refeição no prato",category:"Refeições",description:"Imagem ilustrativa de refeição",price:""},
+{id:"foto-pizza",name:"Pizza",category:"Lanches",description:"Imagem ilustrativa de pizza",price:""}
 ];
 
 function normalizeCart(value){if(!Array.isArray(value))return[];return value.filter(x=>x&&x.id!==undefined&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).map(x=>({id:String(x.id),qty:Number(x.qty)}));}
@@ -16,24 +16,61 @@ let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>String(p.
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
 function money(v){return v!==undefined&&v!==null&&String(v).trim()!==""?"R$ "+escapeHtml(String(v).trim()):"Consultar"}
-const catalogCategories=["Todos","Pães","Lanches","Doces","Bebidas","Refeições"];
+const catalogCategories=["Todos","Pães","Salgados","Bolos","Doces","Cafés","Sucos e vitaminas","Bebidas","Lanches","Refeições","Encomendas"];
 const productPhotos={
- "Pães variados":{url:"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg",size:"200% 200%",position:"0% 100%",alt:"Seleção de pães fotografada na unidade"},
- "Sanduíche natural":{url:"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg",size:"200% 200%",position:"0% 0%",alt:"Sanduíches fotografados na unidade"},
- "Água engarrafada":{url:"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg",size:"400% 400%",position:"66.7% 100%",alt:"Garrafa de água fotografada na unidade"},
- "Tortinhas doces":{url:"https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg",size:"200% 200%",position:"0% 0%",alt:"Tortinhas e sobremesas fotografadas na unidade"},
- "Pães recheados":{url:"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg",size:"200% 200%",position:"100% 0%",alt:"Pães recheados fotografados na unidade"},
- "Refeição no prato":{url:"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg",size:"200% 200%",position:"0% 100%",alt:"Prato de refeição fotografado na unidade"},
- "Pizza":{url:"https://img02.restaurantguru.com/c863-Restaurant-Padaria-Verena-Unidade-Brasileia-pizza.jpg",size:"cover",position:"center",alt:"Pizza fotografada na unidade"}
+ bread:{url:"https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=85",alt:"Pães artesanais"},
+ croissant:{url:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=85",alt:"Croissants"},
+ cheeseBread:{url:"https://images.unsplash.com/photo-1608198093002-ad4e0054841a?auto=format&fit=crop&w=900&q=85",alt:"Pães assados"},
+ savory:{url:"https://images.unsplash.com/photo-1641848421554-f692b9dc9d8e?auto=format&fit=crop&w=900&q=85",alt:"Salgado brasileiro"},
+ cake:{url:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85",alt:"Bolo decorado"},
+ dessert:{url:"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=85",alt:"Sobremesa"},
+ coffee:{url:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85",alt:"Café servido em xícara"},
+ juice:{url:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=85",alt:"Suco de frutas"},
+ water:{url:"https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=900&q=85",alt:"Garrafa de água"},
+ soda:{url:"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=85",alt:"Bebida gelada"},
+ sandwich:{url:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=85",alt:"Sanduíche"},
+ burger:{url:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85",alt:"Hambúrguer"},
+ pizza:{url:"https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=85",alt:"Pizza"},
+ meal:{url:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=85",alt:"Refeição servida"},
+ order:{url:"https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&w=900&q=85",alt:"Mesa com alimentos"}
 };
-function productPhoto(product){return productPhotos[String(product?.name||"").trim()]||null;}
+function productPhoto(product){
+ const name=String(product?.name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
+ const category=String(product?.category||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
+ let key="bread";
+ if(/pizza/.test(name))key="pizza";
+ else if(/hamburguer|x-salada|burger/.test(name))key="burger";
+ else if(/sanduiche|misto quente|americano|bauru|pao com ovo|pao na chapa|cachorro-quente|tapioca|crepioca|porcao de batata/.test(name))key="sandwich";
+ else if(/coxinha|empada|esfirra|enroladinho|pastel|quibe|bolinha de queijo|risole|salgado|pao de queijo recheado|mini salgado/.test(name))key="savory";
+ else if(/cafe|cappuccino|mocha|latte|macchiato|pingado|chocolate quente|cha quente|leite com canela/.test(name))key="coffee";
+ else if(/suco|limonada|vitamina/.test(name))key="juice";
+ else if(/agua/.test(name))key="water";
+ else if(/refrigerante|energetico|cha gelado|achocolatado|iogurte/.test(name))key="soda";
+ else if(/bolo/.test(name))key="cake";
+ else if(/croissant/.test(name))key="croissant";
+ else if(/pao de queijo/.test(name))key="cheeseBread";
+ else if(/pao|baguete|broa|rosca|bisnaguinha/.test(name))key="bread";
+ else if(/pudim|brigadeiro|beijinho|torta|sonho|rocambole|quindim|gelatina|mousse|cookie|brownie|churros|pave|cupcake|doce|sobremesa/.test(name))key="dessert";
+ else if(/prato|self-service|marmita|arroz|frango|bife|omelete|salada|refeicao/.test(name))key="meal";
+ else if(/kit|cento|encomenda|festa/.test(name))key="order";
+ else if(/salgad/.test(category))key="savory";
+ else if(/bolo/.test(category))key="cake";
+ else if(/doce/.test(category))key="dessert";
+ else if(/cafe/.test(category))key="coffee";
+ else if(/suco/.test(category))key="juice";
+ else if(/bebida/.test(category))key="water";
+ else if(/lanche/.test(category))key="sandwich";
+ else if(/refeicao/.test(category))key="meal";
+ else if(/encomenda/.test(category))key="order";
+ return {...productPhotos[key],alt:"Imagem ilustrativa de "+String(product?.name||"produto")};
+}
 products=products.filter(p=>productPhoto(p));
 save(KEY,products);
 $("categoryFilters").innerHTML=catalogCategories.map((name,i)=>`<button class="filter-chip${i===0?" active":""}" data-category="${name}">${name}</button>`).join("");
 function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
  const list=products.filter(p=>productPhoto(p)&&(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
- $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:'+photo.size+';background-position:'+photo.position+';background-repeat:no-repeat"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
+ $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:cover;background-position:center;background-repeat:no-repeat"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
  $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
