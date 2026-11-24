@@ -38,7 +38,10 @@ function productPhoto(product){
  const name=String(product?.name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
  const category=String(product?.category||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
  let key="bread";
- if(/pizza/.test(name))key="pizza";
+ if(/cento de salgados|salgados para festas|torta salgada/.test(name))key="savory";
+ else if(/kit|encomenda|festa/.test(name))key="order";
+ else if(/pao de mel/.test(name))key="dessert";
+ else if(/pizza/.test(name))key="pizza";
  else if(/hamburguer|x-salada|burger/.test(name))key="burger";
  else if(/sanduiche|misto quente|americano|bauru|pao com ovo|pao na chapa|cachorro-quente|tapioca|crepioca|porcao de batata/.test(name))key="sandwich";
  else if(/coxinha|empada|esfirra|enroladinho|pastel|quibe|bolinha de queijo|risole|salgado|pao de queijo recheado|mini salgado/.test(name))key="savory";
@@ -52,7 +55,7 @@ function productPhoto(product){
  else if(/pao|baguete|broa|rosca|bisnaguinha/.test(name))key="bread";
  else if(/pudim|brigadeiro|beijinho|torta|sonho|rocambole|quindim|gelatina|mousse|cookie|brownie|churros|pave|cupcake|doce|sobremesa/.test(name))key="dessert";
  else if(/prato|self-service|marmita|arroz|frango|bife|omelete|salada|refeicao/.test(name))key="meal";
- else if(/kit|cento|encomenda|festa/.test(name))key="order";
+
  else if(/salgad/.test(category))key="savory";
  else if(/bolo/.test(category))key="cake";
  else if(/doce/.test(category))key="dessert";
