@@ -144,6 +144,61 @@ const fb=window.verenaFirebase||null;
 const db=fb?.db||null,auth=fb?.auth||null;
 const ADMIN_UID="A4N9gGjLF4WKwY6N1Uzz0jyPWns2";
 let isVerenaAdmin=false;
+
+ // Login obrigatório para acessar o site, com cadastro e recuperação de senha.
+ const authScreen=$("verenaAuthScreen"),authForm=$("verenaAuthForm");
+ let authMode="login";
+ function setAuthMode(mode){
+  authMode=mode;
+  $("verenaAuthTitle").textContent=mode==="signup"?"Crie sua conta":"Bem-vindo à Verena";
+  $("verenaAuthMessage").textContent=mode==="signup"?"Cadastre-se para acessar o site da Padaria Verena.":"Entre na sua conta para acessar o site.";
+  $("verenaAuthSubmit").textContent=mode==="signup"?"Criar conta":"Entrar";
+  $("verenaAuthSwitch").textContent=mode==="signup"?"Já tem conta? Entrar":"Não tem conta? Criar conta";
+  $("verenaAuthPassword").autocomplete=mode==="signup"?"new-password":"current-password";
+  $("verenaAuthForgot").hidden=mode==="signup";
+  $("verenaAuthStatus").textContent="";
+ }
+ $("verenaAuthSwitch").addEventListener("click",()=>setAuthMode(authMode==="login"?"signup":"login"));
+ $("verenaAuthForgot").addEventListener("click",async()=>{
+  const email=$("verenaAuthEmail").value.trim();
+  if(!email){$("verenaAuthStatus").textContent="Digite seu e-mail para receber o link de recuperação.";return;}
+  if(!auth){$("verenaAuthStatus").textContent="Serviço de autenticação indisponível. Atualize a página.";return;}
+  try{await auth.sendPasswordResetEmail(email);$("verenaAuthStatus").textContent="Enviamos um link de recuperação para seu e-mail.";}
+  catch(error){$("verenaAuthStatus").textContent="Não foi possível enviar: "+(error.message||"verifique o e-mail.");}
+ });
+ authForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!auth){$("verenaAuthStatus").textContent="Firebase indisponível. Atualize a página e tente novamente.";return;}
+  const email=$("verenaAuthEmail").value.trim(),password=$("verenaAuthPassword").value;
+  const button=$("verenaAuthSubmit");
+  button.disabled=true;button.textContent=authMode==="signup"?"Criando conta...":"Entrando...";
+  $("verenaAuthStatus").textContent="";
+  try{
+   if(authMode==="signup") await auth.createUserWithEmailAndPassword(email,password);
+   else await auth.signInWithEmailAndPassword(email,password);
+  }catch(error){
+   const messages={
+    "auth/email-already-in-use":"Este e-mail já possui uma conta. Entre nela.",
+    "auth/invalid-email":"Digite um endereço de e-mail válido.",
+    "auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.",
+    "auth/user-not-found":"Não encontramos uma conta com este e-mail.",
+    "auth/wrong-password":"Senha incorreta. Confira e tente novamente.",
+    "auth/invalid-credential":"E-mail ou senha incorretos."
+   };
+   $("verenaAuthStatus").textContent=messages[error.code]||error.message||"Não foi possível concluir o acesso.";
+  }finally{button.disabled=false;button.textContent=authMode==="signup"?"Criar conta":"Entrar";}
+ });
+ $("siteLogout").addEventListener("click",async()=>{
+  if(auth) await auth.signOut();
+ });
+ if(auth) auth.onAuthStateChanged(user=>{
+  isVerenaAdmin=!!(user&&user.uid===ADMIN_UID);
+  authScreen.hidden=!!user;
+  $("siteLogout").hidden=!user;
+  document.body.classList.toggle("verena-auth-locked",!user);
+  if(user) $("verenaAuthStatus").textContent="";
+ });
+
 async function loadPublicProducts(){
  if(!db)return;
  try{
@@ -215,10 +270,8 @@ $("adminLogout").addEventListener("click",async()=>{
  $("adminTools").hidden=true;$("adminLoginForm").hidden=false;
  $("adminEmail").value="";$("adminPassword").value="";
 });
-if(auth)auth.onAuthStateChanged(user=>{
- isVerenaAdmin=!!(user&&user.uid===ADMIN_UID);
- if(user&&!isVerenaAdmin)auth.signOut().catch(console.error);
-});
+// O listener de autenticação principal também atualiza o acesso administrativo.
+// Contas comuns permanecem conectadas e não recebem permissões administrativas.
 $("savePromo").addEventListener("click",async()=>{
  if(!isVerenaAdmin)return;
  const promo=$("promoInput").value.trim();
