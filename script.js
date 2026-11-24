@@ -396,41 +396,48 @@ $("adminReviewModeration")?.addEventListener("click",async e=>{
 $("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
 $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
 
-/* Atendimento virtual demonstrativo: respostas locais baseadas nas informações do site; não é um modelo generativo. */
+/* Assistente contextual do site: consulta o catálogo e orienta sobre as funções disponíveis. */
 (function(){
  const panel=$("assistantPanel"),launcher=$("assistantLauncher"),messages=$("assistantMessages"),form=$("assistantForm"),input=$("assistantInput");
  if(!panel||!launcher||!messages||!form||!input)return;
+ const norm=v=>String(v||"").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
+ const phone="(31) 99090-5985",address="Praça José Lino da Silva, 101, Brasiléia, Betim–MG";
  function toggle(open){panel.hidden=!open;launcher.setAttribute("aria-expanded",String(open));if(open)input.focus()}
  launcher.addEventListener("click",()=>toggle(panel.hidden));
  $("openVirtualAssistant")?.addEventListener("click",()=>{toggle(true);$("virtualAssistant").scrollIntoView({behavior:"smooth",block:"end"})});
  $("closeAssistant")?.addEventListener("click",()=>toggle(false));
  function add(text,who){const p=document.createElement("p");p.className="assistant-bubble"+(who==="user"?" user":"");p.textContent=text;messages.appendChild(p);messages.scrollTop=messages.scrollHeight}
- function answer(q){
-  const t=q.toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
-  if(/oi|ola|bom dia|boa tarde|boa noite|tudo bem/.test(t))return "Olá! ☕ Sou o atendimento virtual demonstrativo da Padaria Verena – Brasiléia. Posso ajudar com horários, localização, cardápio, bebidas, pedidos, entrega, encomendas e avaliações. O que gostaria de saber?";
-  // Perguntas gerais não devem cair no bloqueio de informações operacionais da padaria.
-  if(/pao|paes/.test(t) && /lista|tipos|exemplos|quais|sugest|ideias|aleatorio|aleatorios/.test(t)){
-   return "Claro! 🥖 Aqui estão 5 tipos de pães como exemplos gerais:\\n1. Pão francês\\n2. Pão de queijo\\n3. Pão australiano\\n4. Pão integral\\n5. Pão de batata\\n\\nEsses são exemplos; não significa que todos estejam disponíveis na Padaria Verena.";
-  }
-  if(/lista|tipos|exemplos|ideias|sugestoes/.test(t) && /bolo|salgado|doce|bebida|cafe|lanche/.test(t)){
-   return "Posso sugerir opções gerais! Para saber se algum desses itens é vendido hoje na Padaria Verena, confirme diretamente com a equipe pelo (31) 99090-5985.";
-  }
-  if(/horario|abre|fecha|funciona|domingo|feriado/.test(t))return "O horário divulgado é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme com a equipe, pois pode haver alterações.";
-  if(/endereco|onde fica|localiza|mapa|chegar/.test(t))return "A unidade fica na Praça José Lino da Silva, 101, Brasiléia, Betim–MG. Na seção Como chegar você encontra o acesso ao mapa.";
-  if(/telefone|whats|contato|falar com|numero/.test(t))return "O telefone/WhatsApp divulgado é (31) 99090-5985. O contato é uma alternativa para confirmar informações que ainda não estão disponíveis no site.";
-  if(/entrega|delivery|prazo|demora|tempo.*chegar|chega.*quanto/.test(t))return "Na sacola há uma simulação ilustrativa de prazo: escolha Entrega e uma faixa de distância aproximada. Ela não consulta trânsito, entregadores, distância real nem fila de pedidos. Cobertura, taxa e prazo precisam ser confirmados pela padaria.";
-  if(/self.?service|buffet/.test(t))return "Não tenho confirmação de que o self-service esteja disponível. Consulte a unidade sobre existência, dias, horários e valores.";
-  if(/pedido|comprar|sacola|retirada|encomenda/.test(t))return "Para montar uma seleção, adicione produtos no cardápio e abra Minha sacola. A finalização ainda é uma consulta à equipe; o site não registra nem acompanha um pedido confirmado no Firebase. Para encomendas, confirme antecedência, sabores e quantidades.";
-  if(/preco|valor|quanto custa|taxa/.test(t))return "Os preços e taxas não foram confirmados e aparecem como Consultar. Não vou inventar valores. A equipe precisa confirmar o preço e eventual taxa de entrega.";
-  if(/cappuccino|capuccino|cafe|mocha|latte|chocolate quente/.test(t))return "No catálogo demonstrativo há cappuccino tradicional, cappuccino com chocolate, cappuccino cremoso, cappuccino gelado, mocha, latte, macchiato, café espresso, café coado e chocolate quente. A unidade precisa confirmar quais prepara e os preços.";
-  if(/cardapio|comida|produto|bebida|bolo|pao|salgado|suco|vitamina|doce|lanche/.test(t))return "O catálogo demonstrativo está organizado em pães, salgados, bolos, doces, lanches, cafés, sucos e vitaminas, bebidas, refeições e encomendas. Pesquise o nome ou use os filtros. Os itens são sugestões, não estoque confirmado.";
-  if(/reclama|sugest|elogio|mensagem|ajuda|suporte/.test(t))return "Você pode enviar uma sugestão, elogio ou reclamação pelo formulário Sua opinião faz diferença no site. As mensagens ficam sujeitas à análise da equipe.";
-  if(/avaliacao|nota|estrela|comentario/.test(t))return "A seção de avaliações permite enviar uma opinião. As avaliações podem passar por moderação antes de aparecer publicamente.";
-  if(/instagram|rede social|foto/.test(t))return "O Instagram da unidade é @verenabrasileia. Use o link do menu, o botão da página inicial ou o rodapé para abrir diretamente o perfil.";
-  if(/obrigad/.test(t))return "Por nada! ☕ Se precisar, posso ajudar a encontrar informações no cardápio ou explicar como usar a sacola.";
-  return "Posso ajudar com perguntas gerais e sugestões. ☕ Se sua dúvida for sobre a operação da Padaria Verena — como disponibilidade, preço, estoque, entrega ou horário especial — não vou inventar informações: confirme com a equipe pelo (31) 99090-5985. Você também pode perguntar sobre endereço, horários, cardápio e como usar a sacola.";
+ function allProducts(){return Array.isArray(products)?products.filter(p=>p&&p.name):[]}
+ function findProducts(q){const terms=norm(q).split(" ").filter(x=>x.length>2&&!["preco","valor","quanto","custa","tem","vende","produto"].includes(x));return allProducts().filter(p=>{const hay=norm([p.name,p.category,p.description].join(" "));return terms.some(t=>hay.includes(t))})}
+ function sections(){return [...document.querySelectorAll("main section[id]")].map(el=>({id:el.id,title:el.querySelector("h1,h2,h3")?.innerText?.replace(/\s+/g," ").trim()||el.id,body:norm(el.innerText)}))}
+ function answer(question){
+  const q=norm(question);if(!q)return "Escreva sua dúvida e vou procurar no conteúdo do site.";
+  if(/\b(oi|ola|bom dia|boa tarde|boa noite|tudo bem)\b/.test(q))return "Olá! ☕ Sou o assistente virtual da Padaria Verena – Unidade Brasiléia. Posso ajudar a encontrar produtos, explicar o cardápio e a sacola, orientar sobre avaliações, mensagens, endereço, horários e outras funções do site.";
+  if(/\b(obrigado|obrigada|valeu)\b/.test(q))return "Por nada! ☕ Conte comigo para encontrar informações no site.";
+  if(/\b(endereco|localizacao|onde fica|como chegar|mapa)\b/.test(q))return "A unidade fica na "+address+". Na seção “Como chegar”, abra o mapa para consultar a rota.";
+  if(/\b(telefone|whatsapp|contato|numero|atendente)\b/.test(q))return "O contato divulgado é "+phone+". Você pode usar os botões de WhatsApp ou ligação do site.";
+  if(/\b(horario|abre|aberto|fecha|funcionamento|domingo|sabado|feriado)\b/.test(q))return "Os horários divulgados são: segunda a sábado, das 06h às 21h20; domingo, das 06h às 13h30. Em feriados, confirme pelo "+phone+".";
+  if(/\b(instagram|rede social|perfil)\b/.test(q))return "O Instagram divulgado é @verenabrasileia: https://www.instagram.com/verenabrasileia/. O link também está no menu e no rodapé.";
+  if(/\b(cardapio|catalogo|categorias|o que vende|o que tem|comidas|bebidas)\b/.test(q)){const cats=[...new Set(allProducts().map(p=>p.category).filter(Boolean))];return "O cardápio permite pesquisar e filtrar produtos. Categorias carregadas: "+(cats.join(", ")||"consulte a seção Cardápio")+". Parte dos itens e das fotos é ilustrativa; a presença no catálogo não confirma estoque do dia. Qual produto você procura?";}
+  if(/\b(preco|precos|valor|quanto custa|custa quanto|taxa)\b/.test(q)){const f=findProducts(q);if(f.length===1)return "No catálogo, "+f[0].name+" aparece por "+(f[0].price&&String(f[0].price).trim()?"R$ "+f[0].price:"“Consultar”")+". Se estiver como “Consultar”, confirme o preço atual pelo "+phone+".";return "Os preços que aparecem como “Consultar” ainda não foram informados no site. Não vou inventar valores ou taxas. Confirme pelo "+phone+".";}
+  if(/\b(entrega|delivery|entregador|prazo|frete|retirada)\b/.test(q))return "A ferramenta de entrega do site é uma simulação: não confirma cobertura, taxa, prazo real nem disponibilidade. A sacola prepara uma consulta para a equipe, que confirma as condições pelo WhatsApp "+phone+".";
+  if(/\b(pedido|comprar|sacola|adicionar|finalizar|carrinho)\b/.test(q))return "Para usar a sacola: abra o Cardápio, pesquise ou filtre um item, toque em “Adicionar +”, abra “Minha sacola” e confira os produtos. A opção de contato prepara uma mensagem para a equipe. O pedido só estará confirmado depois da resposta da padaria.";
+  if(/\b(encomenda|festa|cento|antecedencia)\b/.test(q))return "Consulte a categoria Encomendas no cardápio. Quantidade, sabores, antecedência, preço e disponibilidade precisam ser confirmados com a equipe pelo "+phone+".";
+  if(/\b(self service|selfservice|buffet|almoco|refeicao)\b/.test(q))return "A existência de itens na categoria Refeições não confirma que o self-service esteja disponível hoje. Consulte a unidade pelo "+phone+" para confirmar dias, horários e valores.";
+  if(/\b(avaliacao|avaliar|estrelas|comentario|nota)\b/.test(q))return "Na seção “Avaliações”, informe seu nome, escolha uma nota, escreva um comentário e envie. As avaliações passam por análise antes da publicação e são independentes das avaliações do Google.";
+  if(/\b(sugestao|reclamacao|elogio|mensagem|feedback)\b/.test(q))return "Na seção “Canal de atendimento”, escolha Sugestão, Reclamação ou Elogio, escreva sua mensagem e envie. Esse formulário é separado das avaliações públicas.";
+  if(/\b(foto|imagem|fotografia)\b/.test(q))return "As fotos do catálogo são ilustrativas. Elas representam o tipo de produto, mas não são necessariamente fotos dos produtos preparados nesta unidade.";
+  if(/\b(admin|administrador|painel|cadastrar produto|editar produto)\b/.test(q))return "A área administrativa é destinada à equipe autorizada para gerenciar informações do site. Para acesso ou alterações, fale com o responsável pelo site.";
+  if(/\b(ajuda|como funciona|o que posso fazer|funcoes|recursos|usar o site)\b/.test(q))return "O site permite navegar pelas seções, pesquisar e filtrar o cardápio, adicionar itens à sacola para consultar a equipe, abrir o mapa, acessar Instagram e WhatsApp, enviar avaliações e registrar sugestões, elogios ou reclamações. Posso explicar qualquer etapa.";
+  const found=findProducts(q);
+  if(found.length===1){const p=found[0];return "Encontrei “"+p.name+"” na categoria "+(p.category||"Produtos")+". Preço mostrado: "+(p.price&&String(p.price).trim()?"R$ "+p.price:"Consultar")+". "+(p.description||"")+" A presença no catálogo não confirma disponibilidade hoje.";}
+  if(found.length>1)return "Encontrei estes itens relacionados:\n"+found.slice(0,12).map(p=>"• "+p.name+" — "+(p.price&&String(p.price).trim()?"R$ "+p.price:"preço a consultar")).join("\n")+"\n\nO catálogo é ilustrativo e não confirma estoque. Quer saber sobre algum deles?";
+  const match=sections().find(x=>x.body.includes(q)||q.includes(norm(x.title)));
+  if(match)return "Esse assunto aparece na seção “"+match.title+"”. Role a página até essa seção para consultar os detalhes.";
+  return "Não encontrei essa informação no conteúdo disponível do site. Para evitar uma resposta incorreta, não vou inventar. Confirme com a equipe pelo "+phone+". Também posso ajudar com produtos, preços cadastrados, cardápio, sacola, entrega, encomendas, horários, endereço, avaliações e funções do site.";
  }
- function send(q){const clean=String(q||"").trim();if(!clean)return;add(clean,"user");input.value="";window.setTimeout(()=>add(answer(clean),"bot"),180)}
+ let busy=false;
+ function send(q){const clean=String(q||"").trim();if(!clean||busy)return;add(clean,"user");input.value="";busy=true;const btn=form.querySelector("button");if(btn)btn.disabled=true;window.setTimeout(()=>{try{add(answer(clean),"bot")}catch(err){console.error(err);add("Não consegui consultar o site agora. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}finally{busy=false;if(btn)btn.disabled=false}},100)}
  form.addEventListener("submit",e=>{e.preventDefault();send(input.value)});
  document.querySelectorAll("[data-assistant-question]").forEach(b=>b.addEventListener("click",()=>send(b.dataset.assistantQuestion)));
 })();
