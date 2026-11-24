@@ -316,3 +316,11 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .delivery-estimate-result{display:flex;flex-direction:column;gap:4px;padding:12px;margin-top:10px;background:#fff;border-radius:11px;color:#5c4534;font-size:12px}
 .delivery-estimate-result strong{font-size:22px;color:#4d754e}
 .delivery-note{display:block;margin-top:10px;color:#897968;font-size:10px;line-height:1.55}
+
+/* Fotografias reais no catálogo e acesso direto ao Instagram */
+.catalog-product-image{display:block;width:100%;height:142px;object-fit:cover;object-position:center;border-radius:12px;margin:0 0 16px;background:#eee4d8}
+.catalog-card{overflow:hidden}
+.nav-instagram{font-weight:700;color:var(--coffee);white-space:nowrap}
+.nav-instagram:hover,.instagram-hero:hover{color:var(--gold)}
+.instagram-hero{min-height:45px}
+@media(max-width:650px){.nav-instagram{padding:14px 0;border-bottom:1px solid var(--line)}.catalog-product-image{height:112px}}
