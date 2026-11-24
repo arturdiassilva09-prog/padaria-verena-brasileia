@@ -13,8 +13,6 @@ const seed=[
 
 function normalizeCart(value){if(!Array.isArray(value))return[];return value.filter(x=>x&&x.id!==undefined&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).map(x=>({id:String(x.id),qty:Number(x.qty)}));}
 let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>String(p.id)));return [...saved,...seed.filter(p=>!ids.has(String(p.id)))]})(),cart=normalizeCart(load(CART,[])),category="Todos",favorites=new Set(Array.isArray(load("verena_favs_v1",[]))?load("verena_favs_v1",[]).map(String):[]);
-products=products.filter(p=>productPhoto(p));
-save(KEY,products);
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
 function money(v){return v!==undefined&&v!==null&&String(v).trim()!==""?"R$ "+escapeHtml(String(v).trim()):"Consultar"}
@@ -29,11 +27,13 @@ const productPhotos={
  "Pizza":{url:"https://img02.restaurantguru.com/c863-Restaurant-Padaria-Verena-Unidade-Brasileia-pizza.jpg",size:"cover",position:"center",alt:"Pizza fotografada na unidade"}
 };
 function productPhoto(product){return productPhotos[String(product?.name||"").trim()]||null;}
+products=products.filter(p=>productPhoto(p));
+save(KEY,products);
 $("categoryFilters").innerHTML=catalogCategories.map((name,i)=>`<button class="filter-chip${i===0?" active":""}" data-category="${name}">${name}</button>`).join("");
 function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
  const list=products.filter(p=>productPhoto(p)&&(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
- $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:'+photo.size+';background-position:'+photo.position+'"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
+ $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:'+photo.size+';background-position:'+photo.position+';background-repeat:no-repeat"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
  $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
