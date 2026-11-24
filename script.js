@@ -139,15 +139,26 @@ if(orderMode&&addressWrap)orderMode.addEventListener("change",()=>{
  if(isDelivery)updateDeliveryEstimate();
 });
 deliveryZone?.addEventListener("change",updateDeliveryEstimate);
-$("sendOrder").addEventListener("click",()=>{if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
+$("sendOrder").addEventListener("click",()=>{if(!requestLogin("Entre ou crie uma conta para enviar seu pedido.","order"))return;if(!cart.length){alert("Adicione pelo menos um produto à sacola.");return}const lines=cart.map(x=>{const p=products.find(p=>p.id===x.id);return p?x.qty+"x "+p.name:""}).filter(Boolean);const mode=orderMode?.value||"Retirada no balcão";const address=$("deliveryAddress")?.value.trim()||"";if(mode.startsWith("Entrega")&&!address){alert("Informe o endereço para consultar a disponibilidade da entrega.");$("deliveryAddress")?.focus();return}const notes=$("orderNotes")?.value.trim()||"";const msg="Olá! Gostaria de consultar este pedido:\n"+lines.join("\n")+"\n\nModalidade: "+mode+(address?"\nEndereço: "+address:"")+(notes?"\nObservações: "+notes:"")+"\n\nPodem confirmar disponibilidade, valores, prazo e condições?";window.open("https://wa.me/5531990905985?text="+encodeURIComponent(msg),"_blank","noopener");});
 const fb=window.verenaFirebase||null;
 const db=fb?.db||null,auth=fb?.auth||null;
 const ADMIN_UID="A4N9gGjLF4WKwY6N1Uzz0jyPWns2";
 let isVerenaAdmin=false;
 
- // Login obrigatório para acessar o site, com cadastro e recuperação de senha.
+ // Login opcional para navegar; exigido somente para avaliar e enviar pedidos.
  const authScreen=$("verenaAuthScreen"),authForm=$("verenaAuthForm");
- let authMode="login";
+ let authMode="login",pendingProtectedAction=null;
+ function requestLogin(message,action){
+  if(auth?.currentUser)return true;
+  pendingProtectedAction=action||null;
+  setAuthMode("login");
+  $("verenaAuthMessage").textContent=message||"Entre ou crie sua conta para continuar.";
+  $("verenaAuthStatus").textContent="";
+  authScreen.hidden=false;
+  $("verenaAuthEmail").focus();
+  return false;
+ }
+ $("verenaAuthCancel").addEventListener("click",()=>{pendingProtectedAction=null;authScreen.hidden=true;});
  function setAuthMode(mode){
   authMode=mode;
   $("verenaAuthTitle").textContent=mode==="signup"?"Crie sua conta":"Bem-vindo à Verena";
@@ -193,10 +204,14 @@ let isVerenaAdmin=false;
  });
  if(auth) auth.onAuthStateChanged(user=>{
   isVerenaAdmin=!!(user&&user.uid===ADMIN_UID);
-  authScreen.hidden=!!user;
   $("siteLogout").hidden=!user;
-  document.body.classList.toggle("verena-auth-locked",!user);
-  if(user) $("verenaAuthStatus").textContent="";
+  if(user){
+   authScreen.hidden=true;
+   $("verenaAuthStatus").textContent="";
+   const action=pendingProtectedAction;pendingProtectedAction=null;
+   if(action==="review") reviewForm?.requestSubmit();
+   else if(action==="order") $("sendOrder")?.click();
+  }
  });
 
 async function loadPublicProducts(){
@@ -368,6 +383,7 @@ const reviewForm=$("reviewForm");
 if(reviewForm){
  reviewForm.addEventListener("submit",async e=>{
   e.preventDefault();
+  if(!requestLogin("Entre ou crie uma conta para enviar sua avaliação.","review"))return;
   const name=$("reviewName").value.trim(),comment=$("reviewComment").value.trim(),rating=Number($("reviewRating").value),categoria=$("reviewCategory").value;
   const submit=reviewForm.querySelector('button[type="submit"]');
   if(!name||!comment||rating<1||rating>5||!categoria)return;
