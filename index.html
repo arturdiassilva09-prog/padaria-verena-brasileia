@@ -9,16 +9,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261124-login1">
+  <link rel="stylesheet" href="style.css?v=20261124-acesso2">
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
   <script src="firebase-config.js" defer></script>
-  <script src="script.js?v=20261124-login1" defer></script>
+  <script src="script.js?v=20261124-acesso2" defer></script>
 </head>
 <body>
 
-  <section class="verena-auth-screen" id="verenaAuthScreen" aria-label="Acesso à Padaria Verena">
+  <section class="verena-auth-screen" id="verenaAuthScreen" aria-label="Acesso à Padaria Verena" hidden>
     <form class="verena-auth-card" id="verenaAuthForm">
       <div class="verena-auth-mark">V</div>
       <span class="verena-auth-eyebrow">PADARIA · BRASILÉIA</span>
@@ -32,7 +32,7 @@
       <button class="verena-auth-switch" type="button" id="verenaAuthSwitch">Não tem conta? Criar conta</button>
       <button class="verena-auth-forgot" type="button" id="verenaAuthForgot">Esqueci minha senha</button>
       <p class="verena-auth-status" id="verenaAuthStatus" role="status" aria-live="polite"></p>
-      <small>Seu acesso é protegido pelo Firebase.</small>
+      <button class="verena-auth-switch" type="button" id="verenaAuthCancel">Continuar navegando sem entrar</button><small>Seu acesso é protegido pelo Firebase.</small>
     </form>
   </section>
 
