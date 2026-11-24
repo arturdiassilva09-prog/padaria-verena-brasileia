@@ -2,149 +2,38 @@ const toggle=document.getElementById("menuToggle"),nav=document.getElementById("
 if(toggle&&nav){toggle.addEventListener("click",()=>{const opened=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(opened));toggle.textContent=opened?"×":"☰";});nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));}
 const $=id=>document.getElementById(id),KEY="verena_catalog_v1",CART="verena_cart_v1",PROMO="verena_promo_v1";
 const seed=[
-{id:"p1",name:"Pão francês",category:"Pães",description:"Clássico para o café da manhã",price:"",emoji:"🥖"},
-{id:"p2",name:"Pão de queijo",category:"Pães",description:"Um clássico mineiro",price:"",emoji:"🧀"},
-{id:"p3",name:"Baguete",category:"Pães",description:"Opção tradicional para compartilhar",price:"",emoji:"🥖"},
-{id:"p4",name:"Coxinha",category:"Salgados",description:"Consulte os sabores disponíveis",price:"",emoji:"🥟"},
-{id:"p5",name:"Salgado assado",category:"Salgados",description:"Consulte as opções do dia",price:"",emoji:"🥐"},
-{id:"p6",name:"Bolo caseiro",category:"Doces",description:"Consulte os sabores disponíveis",price:"",emoji:"🍰"},
-{id:"p7",name:"Café",category:"Bebidas",description:"Para acompanhar seu lanche",price:"",emoji:"☕"},
-{id:"p8",name:"Pão de batata",category:"Pães",description:"Consulte disponibilidade",price:"",emoji:"🥯"},
-{id:"p9",name:"Sonho",category:"Doces",description:"Consulte os recheios disponíveis",price:"",emoji:"🍩"},
-{id:"p10",name:"Pudim",category:"Doces",description:"Sobremesa tradicional; consulte disponibilidade",price:"",emoji:"🍮"},
-{id:"p11",name:"Torta doce",category:"Doces",description:"Consulte sabores e fatias disponíveis",price:"",emoji:"🥧"},
-{id:"p12",name:"Pão de mel",category:"Doces",description:"Consulte disponibilidade",price:"",emoji:"🍯"},
-{id:"p13",name:"Suco",category:"Bebidas",description:"Consulte sabores e tamanhos",price:"",emoji:"🧃"},
-{id:"p14",name:"Refrigerante",category:"Bebidas",description:"Consulte marcas e tamanhos",price:"",emoji:"🥤"},
-{id:"p15",name:"Água",category:"Bebidas",description:"Consulte opções disponíveis",price:"",emoji:"💧"},
-{id:"p16",name:"Chocolate quente",category:"Bebidas",description:"Consulte disponibilidade",price:"",emoji:"🍫"},
-{id:"p17",name:"Misto quente",category:"Lanches",description:"Consulte montagem e disponibilidade",price:"",emoji:"🥪"},
-{id:"p18",name:"Sanduíche natural",category:"Lanches",description:"Consulte sabores disponíveis",price:"",emoji:"🥪"},
-{id:"p19",name:"Hambúrguer",category:"Lanches",description:"Sugestão de cardápio; confirme com a unidade",price:"",emoji:"🍔"},
-{id:"p20",name:"Pizza em fatia",category:"Lanches",description:"Consulte se há disponibilidade no dia",price:"",emoji:"🍕"},
-{id:"p21",name:"Prato feito",category:"Refeições",description:"Consulte se há refeições disponíveis",price:"",emoji:"🍛"},
-{id:"p22",name:"Self-service",category:"Refeições",description:"Consulte existência, dias, horários e valores",price:"",emoji:"🥗"},
-{id:"p23",name:"Marmita",category:"Refeições",description:"Consulte disponibilidade e opções",price:"",emoji:"🍱"},
-{id:"p24",name:"Kit café da manhã",category:"Encomendas",description:"Consulte composição, prazo e valores",price:"",emoji:"🧺"},
-{id:"p25",name:"Bolo por encomenda",category:"Encomendas",description:"Consulte tamanhos, sabores e antecedência",price:"",emoji:"🎂"},
-{id:"p26",name:"Salgados para festas",category:"Encomendas",description:"Consulte quantidade mínima e prazo",price:"",emoji:"🥟"}
-].concat([
- {id:"extra1",name:"Pão integral",category:"Pães",description:"Pão macio com farinha integral",price:"",emoji:"🍞"},
- {id:"extra2",name:"Pão de milho",category:"Pães",description:"Consulte fornada e disponibilidade",price:"",emoji:"🌽"},
- {id:"extra3",name:"Pão australiano",category:"Pães",description:"Opção de pão escuro e macio",price:"",emoji:"🍞"},
- {id:"extra4",name:"Pão de forma",category:"Pães",description:"Para o café e sanduíches",price:"",emoji:"🍞"},
- {id:"extra5",name:"Pão sovado",category:"Pães",description:"Clássico para acompanhar o café",price:"",emoji:"🥖"},
- {id:"extra6",name:"Bisnaguinha",category:"Pães",description:"Pãezinhos macios",price:"",emoji:"🥯"},
- {id:"extra7",name:"Broa de fubá",category:"Pães",description:"Quitanda tradicional",price:"",emoji:"🌽"},
- {id:"extra8",name:"Broa de queijo",category:"Pães",description:"Consulte disponibilidade",price:"",emoji:"🧀"},
- {id:"extra9",name:"Pão doce",category:"Pães",description:"Consulte os tipos do dia",price:"",emoji:"🥐"},
- {id:"extra10",name:"Rosca doce",category:"Pães",description:"Consulte sabores e tamanhos",price:"",emoji:"🍩"},
- {id:"extra11",name:"Croissant",category:"Pães",description:"Massa folhada, consulte disponibilidade",price:"",emoji:"🥐"},
- {id:"extra12",name:"Pão de alho",category:"Pães",description:"Consulte opções e preparo",price:"",emoji:"🥖"},
- {id:"extra13",name:"Empada de frango",category:"Salgados",description:"Assada e recheada",price:"",emoji:"🥧"},
- {id:"extra14",name:"Empada de palmito",category:"Salgados",description:"Consulte disponibilidade",price:"",emoji:"🥧"},
- {id:"extra15",name:"Esfirra de carne",category:"Salgados",description:"Assada, consulte a fornada",price:"",emoji:"🥟"},
- {id:"extra16",name:"Esfirra de frango",category:"Salgados",description:"Assada, consulte a fornada",price:"",emoji:"🥟"},
- {id:"extra17",name:"Enroladinho de salsicha",category:"Salgados",description:"Consulte disponibilidade",price:"",emoji:"🌭"},
- {id:"extra18",name:"Pastel assado",category:"Salgados",description:"Consulte recheios disponíveis",price:"",emoji:"🥟"},
- {id:"extra19",name:"Pastel frito",category:"Salgados",description:"Consulte sabores do dia",price:"",emoji:"🥟"},
- {id:"extra20",name:"Quibe",category:"Salgados",description:"Consulte disponibilidade",price:"",emoji:"🧆"},
- {id:"extra21",name:"Bolinha de queijo",category:"Salgados",description:"Porção ou unidade, consulte",price:"",emoji:"🧀"},
- {id:"extra22",name:"Risole",category:"Salgados",description:"Consulte recheios disponíveis",price:"",emoji:"🥟"},
- {id:"extra23",name:"Pão de queijo recheado",category:"Salgados",description:"Consulte recheios do dia",price:"",emoji:"🧀"},
- {id:"extra24",name:"Mini salgados",category:"Salgados",description:"Para reuniões e festas",price:"",emoji:"🥟"},
- {id:"extra25",name:"Bolo de cenoura",category:"Bolos",description:"Consulte cobertura e fatias",price:"",emoji:"🍰"},
- {id:"extra26",name:"Bolo de chocolate",category:"Bolos",description:"Consulte tamanho e disponibilidade",price:"",emoji:"🍫"},
- {id:"extra27",name:"Bolo de fubá",category:"Bolos",description:"Caseiro, consulte a fornada",price:"",emoji:"🍰"},
- {id:"extra28",name:"Bolo de laranja",category:"Bolos",description:"Consulte disponibilidade",price:"",emoji:"🍊"},
- {id:"extra29",name:"Bolo formigueiro",category:"Bolos",description:"Consulte disponibilidade",price:"",emoji:"🍰"},
- {id:"extra30",name:"Bolo de milho",category:"Bolos",description:"Consulte disponibilidade",price:"",emoji:"🌽"},
- {id:"extra31",name:"Bolo de coco",category:"Bolos",description:"Consulte disponibilidade",price:"",emoji:"🥥"},
- {id:"extra32",name:"Bolo gelado",category:"Bolos",description:"Consulte sabores",price:"",emoji:"🍰"},
- {id:"extra33",name:"Cupcake",category:"Bolos",description:"Consulte sabores e decoração",price:"",emoji:"🧁"},
- {id:"extra34",name:"Fatia de torta",category:"Bolos",description:"Consulte sabores do dia",price:"",emoji:"🥧"},
- {id:"extra35",name:"Brigadeiro",category:"Doces",description:"Doce tradicional, consulte unidades",price:"",emoji:"🍫"},
- {id:"extra36",name:"Beijinho",category:"Doces",description:"Doce de coco, consulte disponibilidade",price:"",emoji:"🥥"},
- {id:"extra37",name:"Pão de mel recheado",category:"Doces",description:"Consulte sabores",price:"",emoji:"🍯"},
- {id:"extra38",name:"Rocambole",category:"Doces",description:"Consulte recheios",price:"",emoji:"🍰"},
- {id:"extra39",name:"Torta de limão",category:"Doces",description:"Consulte fatias disponíveis",price:"",emoji:"🍋"},
- {id:"extra40",name:"Torta de morango",category:"Doces",description:"Consulte disponibilidade",price:"",emoji:"🍓"},
- {id:"extra41",name:"Quindim",category:"Doces",description:"Doce tradicional",price:"",emoji:"🍮"},
- {id:"extra42",name:"Gelatina",category:"Doces",description:"Consulte sabores",price:"",emoji:"🍮"},
- {id:"extra43",name:"Mousse de maracujá",category:"Doces",description:"Consulte disponibilidade",price:"",emoji:"🍮"},
- {id:"extra44",name:"Mousse de chocolate",category:"Doces",description:"Consulte disponibilidade",price:"",emoji:"🍫"},
- {id:"extra45",name:"Cookie",category:"Doces",description:"Consulte sabores",price:"",emoji:"🍪"},
- {id:"extra46",name:"Brownie",category:"Doces",description:"Consulte disponibilidade",price:"",emoji:"🍫"},
- {id:"extra47",name:"Churros",category:"Doces",description:"Consulte recheios",price:"",emoji:"🍩"},
- {id:"extra48",name:"Pavê",category:"Doces",description:"Consulte sobremesas do dia",price:"",emoji:"🍨"},
- {id:"extra49",name:"Café espresso",category:"Cafés",description:"Consulte tamanhos",price:"",emoji:"☕"},
- {id:"extra50",name:"Café com leite",category:"Cafés",description:"Quente, consulte tamanhos",price:"",emoji:"☕"},
- {id:"extra51",name:"Cappuccino",category:"Cafés",description:"Consulte versões disponíveis",price:"",emoji:"☕"},
- {id:"extra52",name:"Pingado",category:"Cafés",description:"Café com leite",price:"",emoji:"☕"},
- {id:"extra53",name:"Café gelado",category:"Cafés",description:"Consulte disponibilidade",price:"",emoji:"🧋"},
- {id:"extra54",name:"Chá quente",category:"Cafés",description:"Consulte sabores",price:"",emoji:"🍵"},
- {id:"extra55",name:"Suco de laranja",category:"Sucos e vitaminas",description:"Consulte tamanho e preparo",price:"",emoji:"🍊"},
- {id:"extra56",name:"Suco de limão",category:"Sucos e vitaminas",description:"Consulte disponibilidade",price:"",emoji:"🍋"},
- {id:"extra57",name:"Suco de maracujá",category:"Sucos e vitaminas",description:"Consulte disponibilidade",price:"",emoji:"🥭"},
- {id:"extra58",name:"Suco de abacaxi",category:"Sucos e vitaminas",description:"Consulte disponibilidade",price:"",emoji:"🍍"},
- {id:"extra59",name:"Suco de acerola",category:"Sucos e vitaminas",description:"Consulte disponibilidade",price:"",emoji:"🍒"},
- {id:"extra60",name:"Limonada",category:"Sucos e vitaminas",description:"Consulte preparo",price:"",emoji:"🍋"},
- {id:"extra61",name:"Vitamina de banana",category:"Sucos e vitaminas",description:"Consulte tamanho e adicionais",price:"",emoji:"🍌"},
- {id:"extra62",name:"Vitamina de mamão",category:"Sucos e vitaminas",description:"Consulte disponibilidade",price:"",emoji:"🥤"},
- {id:"extra63",name:"Vitamina de morango",category:"Sucos e vitaminas",description:"Consulte disponibilidade",price:"",emoji:"🍓"},
- {id:"extra64",name:"Água com gás",category:"Bebidas",description:"Consulte tamanhos",price:"",emoji:"💧"},
- {id:"extra65",name:"Água de coco",category:"Bebidas",description:"Consulte disponibilidade",price:"",emoji:"🥥"},
- {id:"extra66",name:"Chá gelado",category:"Bebidas",description:"Consulte sabores",price:"",emoji:"🧊"},
- {id:"extra67",name:"Achocolatado",category:"Bebidas",description:"Bebida gelada ou quente, consulte",price:"",emoji:"🥛"},
- {id:"extra68",name:"Iogurte",category:"Bebidas",description:"Consulte marcas e tamanhos",price:"",emoji:"🥛"},
- {id:"extra69",name:"Energético",category:"Bebidas",description:"Consulte marcas disponíveis",price:"",emoji:"🥤"},
- {id:"extra70",name:"Americano",category:"Lanches",description:"Pão, queijo e presunto; confirme montagem",price:"",emoji:"🥪"},
- {id:"extra71",name:"Bauru",category:"Lanches",description:"Consulte composição",price:"",emoji:"🥪"},
- {id:"extra72",name:"Pão com ovo",category:"Lanches",description:"Consulte preparo",price:"",emoji:"🍳"},
- {id:"extra73",name:"Tapioca",category:"Lanches",description:"Consulte recheios disponíveis",price:"",emoji:"🫓"},
- {id:"extra74",name:"Crepioca",category:"Lanches",description:"Consulte recheios disponíveis",price:"",emoji:"🥞"},
- {id:"extra75",name:"Pão na chapa",category:"Lanches",description:"Clássico para o café",price:"",emoji:"🍞"},
- {id:"extra76",name:"Cachorro-quente",category:"Lanches",description:"Consulte disponibilidade",price:"",emoji:"🌭"},
- {id:"extra77",name:"X-salada",category:"Lanches",description:"Consulte composição",price:"",emoji:"🍔"},
- {id:"extra78",name:"Porção de batata",category:"Lanches",description:"Consulte tamanho e disponibilidade",price:"",emoji:"🍟"},
- {id:"extra79",name:"Arroz e feijão",category:"Refeições",description:"Acompanhamentos sujeitos ao cardápio do dia",price:"",emoji:"🍚"},
- {id:"extra80",name:"Frango grelhado",category:"Refeições",description:"Consulte prato e acompanhamento",price:"",emoji:"🍗"},
- {id:"extra81",name:"Bife acebolado",category:"Refeições",description:"Consulte disponibilidade",price:"",emoji:"🥩"},
- {id:"extra82",name:"Omelete",category:"Refeições",description:"Consulte opções",price:"",emoji:"🍳"},
- {id:"extra83",name:"Salada do dia",category:"Refeições",description:"Consulte ingredientes disponíveis",price:"",emoji:"🥗"},
- {id:"extra84",name:"Prato do dia",category:"Refeições",description:"Consulte o menu disponível",price:"",emoji:"🍛"},
- {id:"extra85",name:"Combo café da manhã",category:"Encomendas",description:"Consulte composição e disponibilidade",price:"",emoji:"☕"},
- {id:"extra86",name:"Kit lanche",category:"Encomendas",description:"Para compartilhar, consulte antecedência",price:"",emoji:"🧺"},
- {id:"extra87",name:"Centos de salgados",category:"Encomendas",description:"Consulte sabores, quantidade e prazo",price:"",emoji:"🥟"},
- {id:"extra88",name:"Torta salgada inteira",category:"Encomendas",description:"Consulte sabores e tamanhos",price:"",emoji:"🥧"},
- {id:"extra89",name:"Kit festa",category:"Encomendas",description:"Consulte composição e antecedência",price:"",emoji:"🎉"},
- {id:"cafe1",name:"Cappuccino tradicional",category:"Cafés",description:"Café cremoso com leite vaporizado; confirme a receita da casa",price:"",emoji:"☕"},
- {id:"cafe2",name:"Cappuccino com chocolate",category:"Cafés",description:"Cappuccino com toque de chocolate",price:"",emoji:"🍫"},
- {id:"cafe3",name:"Cappuccino cremoso",category:"Cafés",description:"Versão cremosa, consulte tamanho",price:"",emoji:"☕"},
- {id:"cafe4",name:"Cappuccino gelado",category:"Cafés",description:"Bebida gelada à base de café, consulte disponibilidade",price:"",emoji:"🧋"},
- {id:"cafe5",name:"Mocha",category:"Cafés",description:"Café com leite e chocolate",price:"",emoji:"🍫"},
- {id:"cafe6",name:"Latte",category:"Cafés",description:"Café espresso com leite",price:"",emoji:"☕"},
- {id:"cafe7",name:"Macchiato",category:"Cafés",description:"Espresso com toque de leite",price:"",emoji:"☕"},
- {id:"cafe8",name:"Café coado",category:"Cafés",description:"Café tradicional passado na hora",price:"",emoji:"☕"},
- {id:"cafe9",name:"Café duplo",category:"Cafés",description:"Consulte tamanho e disponibilidade",price:"",emoji:"☕"},
- {id:"cafe10",name:"Chocolate quente cremoso",category:"Cafés",description:"Bebida quente de chocolate",price:"",emoji:"🍫"},
- {id:"cafe11",name:"Chocolate quente com chantilly",category:"Cafés",description:"Consulte adicionais disponíveis",price:"",emoji:"🍫"},
- {id:"cafe12",name:"Leite com canela",category:"Cafés",description:"Bebida quente, consulte disponibilidade",price:"",emoji:"🥛"},
- {id:"cafe13",name:"Café com doce de leite",category:"Cafés",description:"Sugestão especial, confirme disponibilidade",price:"",emoji:"☕"}
-]);
+{id:"foto-paes",name:"Pães variados",category:"Pães",description:"Foto da seleção de pães publicada pela unidade",price:""},
+{id:"foto-sanduiche",name:"Sanduíche natural",category:"Lanches",description:"Sanduíches fotografados na galeria da unidade",price:""},
+{id:"foto-agua",name:"Água engarrafada",category:"Bebidas",description:"Garrafa de água visível na foto da unidade",price:""},
+{id:"foto-tortinhas",name:"Tortinhas doces",category:"Doces",description:"Tortinhas e sobremesas fotografadas na unidade",price:""},
+{id:"foto-paes-recheados",name:"Pães recheados",category:"Pães",description:"Pães recheados fotografados na galeria",price:""},
+{id:"foto-refeicao",name:"Refeição no prato",category:"Refeições",description:"Prato de refeição fotografado na unidade",price:""},
+{id:"foto-pizza",name:"Pizza",category:"Lanches",description:"Pizza fotografada na unidade",price:""}
+];
+
 function normalizeCart(value){if(!Array.isArray(value))return[];return value.filter(x=>x&&x.id!==undefined&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).map(x=>({id:String(x.id),qty:Number(x.qty)}));}
 let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>String(p.id)));return [...saved,...seed.filter(p=>!ids.has(String(p.id)))]})(),cart=normalizeCart(load(CART,[])),category="Todos",favorites=new Set(Array.isArray(load("verena_favs_v1",[]))?load("verena_favs_v1",[]).map(String):[]);
+products=products.filter(p=>productPhoto(p));
 save(KEY,products);
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
 function money(v){return v!==undefined&&v!==null&&String(v).trim()!==""?"R$ "+escapeHtml(String(v).trim()):"Consultar"}
-const catalogCategories=["Todos","Pães","Salgados","Bolos","Doces","Lanches","Cafés","Sucos e vitaminas","Bebidas","Refeições","Encomendas"];
-function productPhoto(category){const photos={"Pães":"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg","Salgados":"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg","Bolos":"https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg","Doces":"https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg","Cafés":"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg","Sucos e vitaminas":"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg","Bebidas":"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg","Lanches":"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg","Refeições":"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg","Encomendas":"https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg"};return photos[category]||photos["Pães"];}
+const catalogCategories=["Todos","Pães","Lanches","Doces","Bebidas","Refeições"];
+const productPhotos={
+ "Pães variados":{url:"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg",size:"200% 200%",position:"0% 100%",alt:"Seleção de pães fotografada na unidade"},
+ "Sanduíche natural":{url:"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg",size:"200% 200%",position:"0% 0%",alt:"Sanduíches fotografados na unidade"},
+ "Água engarrafada":{url:"https://img02.restaurantguru.com/c5d6-Restaurant-Padaria-Verena-Unidade-Brasileia-food-1.jpg",size:"400% 400%",position:"66.7% 100%",alt:"Garrafa de água fotografada na unidade"},
+ "Tortinhas doces":{url:"https://img02.restaurantguru.com/c4b5-Restaurant-Padaria-Verena-Unidade-Brasileia-dessert.jpg",size:"200% 200%",position:"0% 0%",alt:"Tortinhas e sobremesas fotografadas na unidade"},
+ "Pães recheados":{url:"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg",size:"200% 200%",position:"100% 0%",alt:"Pães recheados fotografados na unidade"},
+ "Refeição no prato":{url:"https://img02.restaurantguru.com/cdb7-Restaurant-Padaria-Verena-Unidade-Brasileia-food.jpg",size:"200% 200%",position:"0% 100%",alt:"Prato de refeição fotografado na unidade"},
+ "Pizza":{url:"https://img02.restaurantguru.com/c863-Restaurant-Padaria-Verena-Unidade-Brasileia-pizza.jpg",size:"cover",position:"center",alt:"Pizza fotografada na unidade"}
+};
+function productPhoto(product){return productPhotos[String(product?.name||"").trim()]||null;}
 $("categoryFilters").innerHTML=catalogCategories.map((name,i)=>`<button class="filter-chip${i===0?" active":""}" data-category="${name}">${name}</button>`).join("");
 function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
- const list=products.filter(p=>(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
- $("catalogGrid").innerHTML=list.length?list.map(p=>'<article class="catalog-card"><img class="catalog-product-image" src="'+productPhoto(p.category)+'" alt="Fotografia pública de produtos da Padaria Verena, associada à categoria '+escapeHtml(p.category)+'; não representa necessariamente este item específico" loading="lazy"><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>').join(""):'<p class="empty-state">Nenhum produto encontrado nesta seleção.</p>';
+ const list=products.filter(p=>productPhoto(p)&&(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
+ $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:'+photo.size+';background-position:'+photo.position+'"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
  $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -197,13 +86,13 @@ async function loadPublicProducts(){
   const snap=await db.collection("produtos").where("ativo","==",true).get();
   if(!snap.empty){
    const remote=snap.docs.map(d=>({id:d.id,...d.data()}));
-   
-   products=[...remote,...seed.filter(p=>!known.has(p.name.toLocaleLowerCase("pt-BR")))];
-   render();
+   const names=new Set(remote.map(p=>String(p.name||"").toLocaleLowerCase("pt-BR")));
+   products=[...remote,...seed.filter(p=>!names.has(p.name.toLocaleLowerCase("pt-BR")))].filter(p=>productPhoto(p));
   }else{
    products=seed.slice();
-   render();
   }
+  save(KEY,products);
+  render();
  }catch(error){console.error("Erro ao carregar catálogo:",error)}
 }
 async function loadAdminProducts(){
@@ -215,7 +104,8 @@ async function loadAdminProducts(){
   }
  }
  const all=await db.collection("produtos").get();
- products=all.docs.map(d=>({id:d.id,...d.data()}));
+ products=all.docs.map(d=>({id:d.id,...d.data()})).filter(p=>productPhoto(p));
+ save(KEY,products);
  render();renderAdmin();
 }
 $("openAdmin").addEventListener("click",async()=>{
