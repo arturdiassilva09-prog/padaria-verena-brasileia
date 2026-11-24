@@ -14,7 +14,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
   <script src="firebase-config.js" defer></script>
-  <script src="script.js?v=20261124-assistente-site3" defer></script>
+  <script src="script.js?v=20261124-avaliacoes-publicas1" defer></script>
 </head>
 <body>
   <div class="topline"><span>Feito para o bairro Brasiléia</span><span>Betim · Minas Gerais</span></div>
@@ -181,11 +181,12 @@
           <span class="review-form-kicker">COMPARTILHE SUA EXPERIÊNCIA</span><h3>Como foi sua visita?</h3>
           <label class="review-field">Seu nome<input id="reviewName" name="name" maxlength="50" placeholder="Como podemos chamar você?" required></label>
           <label class="review-field">Sua nota<select id="reviewRating" name="rating" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muito bom</option><option value="3">★★★☆☆ — Bom</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Precisa melhorar</option></select></label>
+          <label class="review-field">Tipo de avaliação<select id="reviewCategory" name="category" required><option value="Atendimento">Atendimento</option><option value="Produtos">Produtos</option><option value="Ambiente">Ambiente</option><option value="Limpeza e organização">Limpeza e organização</option><option value="Variedade e disponibilidade">Variedade e disponibilidade</option><option value="Experiência geral">Experiência geral</option></select></label>
           <label class="review-field">Seu comentário<textarea id="reviewComment" name="comment" rows="4" maxlength="500" placeholder="Conte um pouco sobre atendimento, produtos ou ambiente..." required></textarea></label>
           <button class="btn btn-primary" type="submit">Enviar avaliação <span>↗</span></button>
           <p class="review-form-note">As avaliações serão enviadas para análise e só aparecerão publicamente após aprovação.</p><p class="review-feedback" id="reviewFeedback" role="status" aria-live="polite"></p>
         </form>
-        <div class="review-list-panel"><div class="review-list-heading"><div><span class="eyebrow">OPINIÕES COMPARTILHADAS</span><h3>O que acharam da visita</h3></div><span class="review-count" id="reviewCount">0 avaliações</span></div><div class="review-list" id="reviewList" aria-live="polite"><div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div></div></div>
+        <div class="review-list-panel"><div class="review-list-heading"><div><span class="eyebrow">OPINIÕES COMPARTILHADAS</span><h3>O que acharam da visita</h3></div><span class="review-count" id="reviewCount">0 avaliações</span></div><label class="review-filter">Filtrar avaliações por assunto<select id="reviewCategoryFilter"><option value="Todos">Todos os assuntos</option><option>Atendimento</option><option>Produtos</option><option>Ambiente</option><option>Limpeza e organização</option><option>Variedade e disponibilidade</option><option>Experiência geral</option><option>Geral</option></select></label><div class="review-list" id="reviewList" aria-live="polite"><div class="review-empty"><span>✦</span><strong>Seja a primeira pessoa a avaliar</strong><p>As avaliações enviadas neste protótipo aparecerão aqui neste dispositivo.</p></div></div></div>
       </div>
       <p class="reviews-disclaimer">As avaliações são próprias e independentes das avaliações do Google. Comentários passam por aprovação antes da publicação.</p>
     </section>
