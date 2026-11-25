@@ -583,6 +583,10 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
   if(!q)return "Escreva sua pergunta para eu consultar as informações do site.";
   if(/^(oi|ola|bom dia|boa tarde|boa noite|e ai|tudo bem)$/.test(q))return "Olá! ☕ Sou o Assistente Verena. Posso pesquisar o cardápio, explicar pedidos e sacola, informar endereço, horários, avaliações e os recursos deste site. O que você gostaria de saber?";
   if(/\b(obrigado|obrigada|valeu|agradecido)\b/.test(q))return "Por nada! Se precisar, posso procurar produtos ou explicar alguma parte do site.";
+  if(/\b(outras unidades|outras lojas|outras filiais|filiais|outros estabelecimentos|outras padarias verena|unidades da verena|tem outra unidade|tem outras unidades)\b/.test(q)){
+   lastTopic="outras unidades";
+   return "Além da Unidade Brasiléia, encontrei cadastros públicos de estabelecimentos com o nome Padaria Verena em outros bairros de Betim:\n\n• Nossa Senhora das Graças — Rua Maria dos Anjos Ribeiro de Jesus, 221.\n• Vila Recreio — Avenida Bandeirantes, 475.\n• Cachoeira — Avenida Amazonas, 5501.\n\nAtenção: esses endereços aparecem em diretórios e registros públicos, mas o site ainda não tem confirmação oficial de que todos pertencem à mesma administração ou continuam funcionando como unidades da Verena. Para confirmar endereço e atendimento, fale com a equipe pelo "+phone+".";
+  }
   if(/\b(endereco|localizacao|onde fica|como chegar|mapa|rota)\b/.test(q)){lastTopic="endereco";return "A Padaria Verena – Unidade Brasiléia fica na "+address+". Use a seção “Como chegar” para abrir o mapa e consultar a rota.";}
   if(/\b(telefone|whatsapp|contato|numero|falar com|atendente)\b/.test(q)){lastTopic="contato";return "O telefone/WhatsApp divulgado no site é "+phone+". O botão de WhatsApp abre uma conversa com a equipe.";}
   if(/\b(horario|abre|aberto|fecha|funcionamento|domingo|sabado|feriado)\b/.test(q)){lastTopic="horarios";return "Conforme as informações cadastradas no site, o funcionamento é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme diretamente pelo "+phone+".";}
