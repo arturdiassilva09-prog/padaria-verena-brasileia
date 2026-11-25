@@ -533,3 +533,20 @@ body{letter-spacing:.005em;-webkit-font-smoothing:antialiased}
  .catalog-card{padding:14px}
  .catalog-product-image{height:150px}
 }
+
+
+/* Aba Produtos: a vitrine e o catálogo aparecem somente quando a pessoa abre essa aba. */
+body:not(.products-only) main>#produtos,
+body:not(.products-only) main>#cardapio{display:none!important}
+body.products-only main>:not(#produtos):not(#cardapio){display:none!important}
+body.products-only .footer{display:none!important}
+.products-home-link,.products-cart-link{display:none}
+body.products-only .products-home-link{display:inline-flex!important;align-items:center}
+body.products-only .products-cart-link{display:inline-flex!important;align-items:center;gap:7px;border:1px solid var(--line);background:var(--paper);color:var(--coffee);padding:10px 13px;border-radius:5px;font:700 10px "DM Sans",sans-serif;cursor:pointer}
+.products-cart-link span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:20px;background:var(--coffee);color:#fff}
+body.products-only #produtos{padding-top:42px;padding-bottom:34px}
+body.products-only #cardapio{padding-top:34px;min-height:70vh}
+@media(max-width:650px){
+ body.products-only .products-home-link{padding:12px 0;border-bottom:1px solid var(--line)}
+ body.products-only .products-cart-link{width:100%;justify-content:center;margin-top:8px}
+}
