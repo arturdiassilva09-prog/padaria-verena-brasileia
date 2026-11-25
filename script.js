@@ -535,49 +535,103 @@ $("adminReviewModeration")?.addEventListener("click",async e=>{
 $("refreshAdminInbox")?.addEventListener("click",loadAdminInbox);
 $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
 
-/* Assistente contextual do site: consulta o catálogo e orienta sobre as funções disponíveis. */
+/* Assistente Verena: mecanismo contextual com consulta ao conteúdo real da página e ao catálogo carregado. */
 (function(){
  const panel=$("assistantPanel"),launcher=$("assistantLauncher"),messages=$("assistantMessages"),form=$("assistantForm"),input=$("assistantInput");
  if(!panel||!launcher||!messages||!form||!input)return;
- const norm=v=>String(v||"").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
  const phone="(31) 99090-5985",address="Praça José Lino da Silva, 101, Brasiléia, Betim–MG";
+ const norm=v=>String(v||"").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
+ const stop=new Set(["qual","quais","como","onde","quando","quanto","para","pela","pelo","tem","ter","uma","uns","umas","que","dos","das","com","sem","site","padaria","verena","produto","produtos","quero","saber","sobre","isso","essa","esse","mais","pode","vocês","voces","preco","precos","valor"]);
+ let busy=false,lastTopic="",history=[];
  function toggle(open){panel.hidden=!open;launcher.setAttribute("aria-expanded",String(open));if(open)input.focus()}
  launcher.addEventListener("click",()=>toggle(panel.hidden));
  $("openVirtualAssistant")?.addEventListener("click",()=>{toggle(true);$("virtualAssistant").scrollIntoView({behavior:"smooth",block:"end"})});
  $("closeAssistant")?.addEventListener("click",()=>toggle(false));
- function add(text,who){const p=document.createElement("p");p.className="assistant-bubble"+(who==="user"?" user":"");p.textContent=text;messages.appendChild(p);messages.scrollTop=messages.scrollHeight}
- function allProducts(){return Array.isArray(products)?products.filter(p=>p&&p.name):[]}
- function findProducts(q){const terms=norm(q).split(" ").filter(x=>x.length>2&&!["preco","valor","quanto","custa","tem","vende","produto"].includes(x));return allProducts().filter(p=>{const hay=norm([p.name,p.category,p.description].join(" "));return terms.some(t=>hay.includes(t))})}
- function sections(){return [...document.querySelectorAll("main section[id]")].map(el=>({id:el.id,title:el.querySelector("h1,h2,h3")?.innerText?.replace(/\s+/g," ").trim()||el.id,body:norm(el.innerText)}))}
- function answer(question){
-  const q=norm(question);if(!q)return "Escreva sua dúvida e vou procurar no conteúdo do site.";
-  if(/\b(oi|ola|bom dia|boa tarde|boa noite|tudo bem)\b/.test(q))return "Olá! ☕ Sou o assistente virtual da Padaria Verena – Unidade Brasiléia. Posso ajudar a encontrar produtos, explicar o cardápio e a sacola, orientar sobre avaliações, mensagens, endereço, horários e outras funções do site.";
-  if(/\b(obrigado|obrigada|valeu)\b/.test(q))return "Por nada! ☕ Conte comigo para encontrar informações no site.";
-  if(/\b(endereco|localizacao|onde fica|como chegar|mapa)\b/.test(q))return "A unidade fica na "+address+". Na seção “Como chegar”, abra o mapa para consultar a rota.";
-  if(/\b(telefone|whatsapp|contato|numero|atendente)\b/.test(q))return "O contato divulgado é "+phone+". Você pode usar os botões de WhatsApp ou ligação do site.";
-  if(/\b(horario|abre|aberto|fecha|funcionamento|domingo|sabado|feriado)\b/.test(q))return "Os horários divulgados são: segunda a sábado, das 06h às 21h20; domingo, das 06h às 13h30. Em feriados, confirme pelo "+phone+".";
-  if(/\b(instagram|rede social|perfil)\b/.test(q))return "O Instagram divulgado é @verenabrasileia: https://www.instagram.com/verenabrasileia/. O link também está no menu e no rodapé.";
-  if(/\b(cardapio|catalogo|categorias|o que vende|o que tem|comidas|bebidas)\b/.test(q)){const cats=[...new Set(allProducts().map(p=>p.category).filter(Boolean))];return "O cardápio permite pesquisar e filtrar produtos. Categorias carregadas: "+(cats.join(", ")||"consulte a seção Cardápio")+". Parte dos itens e das fotos é ilustrativa; a presença no catálogo não confirma estoque do dia. Qual produto você procura?";}
-  if(/\b(preco|precos|valor|quanto custa|custa quanto|taxa)\b/.test(q)){const f=findProducts(q);if(f.length===1)return "No catálogo, "+f[0].name+" aparece por "+(f[0].price&&String(f[0].price).trim()?"R$ "+f[0].price:"“Consultar”")+". Se estiver como “Consultar”, confirme o preço atual pelo "+phone+".";return "Os preços que aparecem como “Consultar” ainda não foram informados no site. Não vou inventar valores ou taxas. Confirme pelo "+phone+".";}
-  if(/\b(entrega|delivery|entregador|prazo|frete|retirada)\b/.test(q))return "A ferramenta de entrega do site é uma simulação: não confirma cobertura, taxa, prazo real nem disponibilidade. A sacola prepara uma consulta para a equipe, que confirma as condições pelo WhatsApp "+phone+".";
-  if(/\b(pedido|comprar|sacola|adicionar|finalizar|carrinho)\b/.test(q))return "Para usar a sacola: abra o Cardápio, pesquise ou filtre um item, toque em “Adicionar +”, abra “Minha sacola” e confira os produtos. A opção de contato prepara uma mensagem para a equipe. O pedido só estará confirmado depois da resposta da padaria.";
-  if(/\b(encomenda|festa|cento|antecedencia)\b/.test(q))return "Consulte a categoria Encomendas no cardápio. Quantidade, sabores, antecedência, preço e disponibilidade precisam ser confirmados com a equipe pelo "+phone+".";
-  if(/\b(self service|selfservice|buffet|almoco|refeicao)\b/.test(q))return "A existência de itens na categoria Refeições não confirma que o self-service esteja disponível hoje. Consulte a unidade pelo "+phone+" para confirmar dias, horários e valores.";
-  if(/\b(avaliacao|avaliar|estrelas|comentario|nota)\b/.test(q))return "Na seção “Avaliações”, informe seu nome, escolha uma nota, escreva um comentário e envie. As avaliações passam por análise antes da publicação e são independentes das avaliações do Google.";
-  if(/\b(sugestao|reclamacao|elogio|mensagem|feedback)\b/.test(q))return "Na seção “Canal de atendimento”, escolha Sugestão, Reclamação ou Elogio, escreva sua mensagem e envie. Esse formulário é separado das avaliações públicas.";
-  if(/\b(foto|imagem|fotografia)\b/.test(q))return "As fotos do catálogo são ilustrativas. Elas representam o tipo de produto, mas não são necessariamente fotos dos produtos preparados nesta unidade.";
-  if(/\b(admin|administrador|painel|cadastrar produto|editar produto)\b/.test(q))return "A área administrativa é destinada à equipe autorizada para gerenciar informações do site. Para acesso ou alterações, fale com o responsável pelo site.";
-  if(/\b(ajuda|como funciona|o que posso fazer|funcoes|recursos|usar o site)\b/.test(q))return "O site permite navegar pelas seções, pesquisar e filtrar o cardápio, adicionar itens à sacola para consultar a equipe, abrir o mapa, acessar Instagram e WhatsApp, enviar avaliações e registrar sugestões, elogios ou reclamações. Posso explicar qualquer etapa.";
-  const found=findProducts(q);
-  if(found.length===1){const p=found[0];return "Encontrei “"+p.name+"” na categoria "+(p.category||"Produtos")+". Preço mostrado: "+(p.price&&String(p.price).trim()?"R$ "+p.price:"Consultar")+". "+(p.description||"")+" A presença no catálogo não confirma disponibilidade hoje.";}
-  if(found.length>1)return "Encontrei estes itens relacionados:\n"+found.slice(0,12).map(p=>"• "+p.name+" — "+(p.price&&String(p.price).trim()?"R$ "+p.price:"preço a consultar")).join("\n")+"\n\nO catálogo é ilustrativo e não confirma estoque. Quer saber sobre algum deles?";
-  const match=sections().find(x=>x.body.includes(q)||q.includes(norm(x.title)));
-  if(match)return "Esse assunto aparece na seção “"+match.title+"”. Role a página até essa seção para consultar os detalhes.";
-  return "Não encontrei essa informação no conteúdo disponível do site. Para evitar uma resposta incorreta, não vou inventar. Confirme com a equipe pelo "+phone+". Também posso ajudar com produtos, preços cadastrados, cardápio, sacola, entrega, encomendas, horários, endereço, avaliações e funções do site.";
+ function persist(){try{sessionStorage.setItem("verena_assistant_chat_v2",JSON.stringify(history.slice(-30)))}catch(e){}}
+ function bubble(text,who){
+  const p=document.createElement("p");p.className="assistant-bubble"+(who==="user"?" user":"");
+  p.textContent=text;messages.appendChild(p);messages.scrollTop=messages.scrollHeight;
  }
- let busy=false;
- function send(q){const clean=String(q||"").trim();if(!clean||busy)return;add(clean,"user");input.value="";busy=true;const btn=form.querySelector("button");if(btn)btn.disabled=true;window.setTimeout(()=>{try{add(answer(clean),"bot")}catch(err){console.error(err);add("Não consegui consultar o site agora. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}finally{busy=false;if(btn)btn.disabled=false}},100)}
+ function welcome(){
+  messages.innerHTML='<div class="assistant-welcome"><span>✦</span><strong>Olá! Como posso ajudar?</strong><p>Posso pesquisar produtos, consultar informações da padaria e explicar como usar o site.</p></div>';
+ }
+ function restore(){
+  try{const saved=JSON.parse(sessionStorage.getItem("verena_assistant_chat_v2")||"[]");if(Array.isArray(saved)){history=saved.slice(-30);if(history.length){messages.innerHTML="";history.forEach(x=>bubble(x.text,x.who));}}}catch(e){history=[]}
+ }
+ function add(text,who){bubble(text,who);history.push({text,who});history=history.slice(-30);persist()}
+ function allProducts(){return Array.isArray(products)?products.filter(p=>p&&p.name):[]}
+ function findProducts(question){
+  const words=norm(question).split(" ").filter(w=>w.length>2&&!stop.has(w));
+  if(!words.length)return [];
+  return allProducts().map(p=>{
+   const name=norm(p.name),cat=norm(p.category),desc=norm(p.description),hay=name+" "+cat+" "+desc;
+   let score=0;
+   words.forEach(w=>{if(name.includes(w))score+=5;else if(cat.includes(w))score+=3;else if(desc.includes(w))score+=1;});
+   if(words.length===1&&name===words[0])score+=5;
+   return {p,score};
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).map(x=>x.p);
+ }
+ function siteSections(){
+  return [...document.querySelectorAll("main section[id]")].map(el=>({id:el.id,title:el.querySelector("h1,h2,h3")?.innerText?.replace(/\s+/g," ").trim()||el.id,text:el.innerText.replace(/\s+/g," ").trim()}));
+ }
+ function money(p){return p.price&&String(p.price).trim()?"R$ "+String(p.price).trim():"preço a consultar"}
+ function productSummary(list){
+  return list.slice(0,8).map(p=>"• "+p.name+" ("+(p.category||"Produtos")+") — "+money(p)).join("\n");
+ }
+ function answer(question){
+  const q=norm(question),raw=String(question||"").trim();
+  if(!q)return "Escreva sua pergunta para eu consultar as informações do site.";
+  if(/^(oi|ola|bom dia|boa tarde|boa noite|e ai|tudo bem)$/.test(q))return "Olá! ☕ Sou o Assistente Verena. Posso pesquisar o cardápio, explicar pedidos e sacola, informar endereço, horários, avaliações e os recursos deste site. O que você gostaria de saber?";
+  if(/\b(obrigado|obrigada|valeu|agradecido)\b/.test(q))return "Por nada! Se precisar, posso procurar produtos ou explicar alguma parte do site.";
+  if(/\b(endereco|localizacao|onde fica|como chegar|mapa|rota)\b/.test(q)){lastTopic="endereco";return "A Padaria Verena – Unidade Brasiléia fica na "+address+". Use a seção “Como chegar” para abrir o mapa e consultar a rota.";}
+  if(/\b(telefone|whatsapp|contato|numero|falar com|atendente)\b/.test(q)){lastTopic="contato";return "O telefone/WhatsApp divulgado no site é "+phone+". O botão de WhatsApp abre uma conversa com a equipe.";}
+  if(/\b(horario|abre|aberto|fecha|funcionamento|domingo|sabado|feriado)\b/.test(q)){lastTopic="horarios";return "Conforme as informações cadastradas no site, o funcionamento é de segunda a sábado, das 06h às 21h20, e domingo, das 06h às 13h30. Em feriados, confirme diretamente pelo "+phone+".";}
+  if(/\b(instagram|rede social|perfil)\b/.test(q))return "O Instagram divulgado é @verenabrasileia: https://www.instagram.com/verenabrasileia/.";
+  if(/\b(cardapio|catalogo|categorias|o que vende|o que tem|lista de produtos|produtos disponiveis)\b/.test(q)){
+   lastTopic="catalogo";const list=allProducts(),cats=[...new Set(list.map(p=>p.category).filter(Boolean))];
+   return "Consultei o catálogo carregado agora: encontrei "+list.length+" itens cadastrados, organizados nas categorias "+cats.join(", ")+".\n\nAlguns itens e fotos são ilustrativos; isso não confirma estoque ou disponibilidade de hoje. Se quiser, diga o nome de um produto ou uma categoria.";
+  }
+  if(/\b(preco|precos|valor|quanto custa|custa quanto)\b/.test(q)){
+   const found=findProducts(raw);
+   if(found.length===1){lastTopic=found[0].name;return "No catálogo, "+found[0].name+" aparece com "+money(found[0])+". "+(found[0].description||"")+" "+(found[0].price&&String(found[0].price).trim()?"Confirme se o valor continua atualizado pelo WhatsApp "+phone+".":"O preço ainda não foi informado no site; confirme com a equipe pelo "+phone+".");}
+   if(found.length>1)return "Encontrei estes produtos relacionados:\n"+productSummary(found)+"\n\nQual deles você quer consultar?";
+   return "Não encontrei um preço cadastrado que corresponda à sua pergunta. Não vou inventar valores. Diga o nome exato do produto ou confirme pelo WhatsApp "+phone+".";
+  }
+  if(/\b(entrega|delivery|entregador|prazo|frete|taxa de entrega|retirada)\b/.test(q)){lastTopic="entrega";return "O site oferece uma simulação de entrega e permite preparar uma consulta pelo WhatsApp. A simulação não confirma cobertura, taxa, prazo real ou disponibilidade. Informe o endereço no fluxo do pedido e aguarde a confirmação da equipe pelo "+phone+".";}
+  if(/\b(pedido|comprar|sacola|adicionar|finalizar|carrinho)\b/.test(q)){lastTopic="pedido";return "Para consultar um pedido pelo site:\n1. Abra a aba Produtos/Cardápio.\n2. Pesquise ou escolha uma categoria.\n3. Toque em “Adicionar +” nos itens desejados.\n4. Abra “Minha sacola” e confira os itens.\n5. Use a opção de contato para enviar a consulta pelo WhatsApp.\n\nO pedido só fica confirmado depois que a equipe responder.";}
+  if(/\b(encomenda|festa|cento|antecedencia|bolo personalizado)\b/.test(q)){lastTopic="encomendas";const list=findProducts("encomendas");return "O catálogo possui uma categoria Encomendas"+(list.length?":\n"+productSummary(list):".")+"\n\nQuantidade, sabores, antecedência, preço e disponibilidade precisam ser confirmados com a equipe pelo "+phone+".";}
+  if(/\b(self service|selfservice|buffet|almoco|refeicao)\b/.test(q)){lastTopic="refeicoes";return "Há itens cadastrados na categoria Refeições, mas isso não confirma que o self-service esteja disponível hoje. Consulte a unidade pelo "+phone+" para confirmar dias, horários e valores.";}
+  if(/\b(avaliacao|avaliar|estrelas|comentario|nota|google)\b/.test(q)){lastTopic="avaliacoes";return "Na seção “Avaliações”, informe seu nome, escolha uma nota, escreva um comentário e envie. As avaliações passam por análise antes da publicação. Elas são avaliações enviadas pelo próprio site e não representam automaticamente as avaliações do Google.";}
+  if(/\b(sugestao|reclamacao|elogio|mensagem|feedback|atendimento)\b/.test(q)){lastTopic="atendimento";return "Na seção “Canal de atendimento”, escolha Sugestão, Reclamação ou Elogio, escreva sua mensagem e envie. Esse formulário é separado das avaliações públicas.";}
+  if(/\b(foto|imagem|fotografia)\b/.test(q))return "As imagens do catálogo são ilustrativas e representam o tipo de produto. Não são necessariamente fotografias dos itens preparados nesta unidade.";
+  if(/\b(admin|administrador|painel|cadastrar produto|editar produto)\b/.test(q))return "A área administrativa é destinada à equipe autorizada para gerenciar o conteúdo do site. O acesso é restrito à conta administradora.";
+  if(/\b(ajuda|como funciona|funcoes|recursos|usar o site)\b/.test(q))return "Posso orientar sobre:\n• Produtos, categorias, pesquisa e favoritos.\n• Sacola e consulta de pedidos pelo WhatsApp.\n• Endereço, mapa, telefone e horários.\n• Avaliações e canal de sugestões/reclamações.\n• Encomendas e informações sobre entrega.\n\nQual dessas partes você quer conhecer melhor?";
+  const found=findProducts(raw);
+  if(found.length===1){const p=found[0];lastTopic=p.name;return "Encontrei este item no catálogo:\n"+p.name+"\nCategoria: "+(p.category||"Produtos")+"\nPreço: "+money(p)+"\n"+(p.description||"")+"\n\nA presença no catálogo não confirma estoque de hoje. Quer saber preço, categoria ou como adicionar à sacola?";}
+  if(found.length>1){lastTopic="produtos";return "Encontrei alguns itens relacionados à sua busca:\n"+productSummary(found)+"\n\nQual deles você quer conhecer melhor?";}
+  const sections=siteSections(),section=sections.find(s=>norm(s.title).includes(q)||q.includes(norm(s.title)));
+  if(section){lastTopic=section.id;return "Encontrei a seção “"+section.title+"” no site. Ela contém estas informações:\n"+section.text.slice(0,650)+(section.text.length>650?"…":"")+"\n\nVocê pode abrir essa seção pelo menu do site.";}
+  if(/\b(esse|essa|ele|ela|dele|dela|e esse|e essa|mais detalhes|me explica melhor|qual deles)\b/.test(q)&&lastTopic){
+   if(lastTopic==="catalogo")return "Posso filtrar o catálogo por nome ou categoria. Escreva o produto que procura, como pão de queijo, café, bebida ou bolo.";
+   if(lastTopic==="pedido")return "Na sacola, você consegue revisar os itens e preparar uma mensagem para a equipe. A confirmação final é feita pela padaria no WhatsApp "+phone+".";
+   return "Você está perguntando sobre "+lastTopic+". Pode me dizer qual detalhe deseja saber? Posso consultar as informações cadastradas, mas não vou presumir dados que não aparecem no site.";
+  }
+  return "Não encontrei essa informação nas informações cadastradas do site. Para evitar uma resposta incorreta, não vou inventar. Posso pesquisar produtos e categorias, preços cadastrados, pedidos, entrega, encomendas, horários, endereço, avaliações e funções do site. Para confirmação da operação da padaria, fale com a equipe pelo "+phone+".";
+ }
+ function send(question){
+  const clean=String(question||"").trim();if(!clean||busy)return;
+  add(clean,"user");input.value="";busy=true;form.classList.add("is-thinking");
+  const button=form.querySelector("button");if(button)button.disabled=true;
+  const typing=document.createElement("div");typing.className="assistant-typing";typing.textContent="Consultando o site…";messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
+  window.setTimeout(()=>{
+   typing.remove();
+   try{add(answer(clean),"bot")}catch(error){console.error("Assistente Verena:",error);add("Tive um problema ao consultar as informações. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}
+   finally{busy=false;form.classList.remove("is-thinking");if(button)button.disabled=false;input.focus()}
+  },180);
+ }
+ $("clearAssistant")?.addEventListener("click",()=>{history=[];lastTopic="";try{sessionStorage.removeItem("verena_assistant_chat_v2")}catch(e){}welcome();});
  form.addEventListener("submit",e=>{e.preventDefault();send(input.value)});
- document.querySelectorAll("[data-assistant-question]").forEach(b=>b.addEventListener("click",()=>send(b.dataset.assistantQuestion)));
-})();
+ document.querySelectorAll("[data-assistant-question]").forEach(button=>button.addEventListener("click",()=>send(button.dataset.assistantQuestion)));
+ restore();
+})(); 
 document.querySelectorAll("[data-menu-jump]").forEach(link=>link.addEventListener("click",()=>{const categoryName=link.dataset.menuJump;const chip=document.querySelector('[data-category="'+categoryName+'"]');if(chip)chip.click()}));
