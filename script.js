@@ -578,7 +578,7 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
  function productSummary(list){
   return list.slice(0,8).map(p=>"• "+p.name+" ("+(p.category||"Produtos")+") — "+money(p)).join("\n");
  }
- function answer(question){
+ async function answer(question){
   const q=norm(question),raw=String(question||"").trim();
   if(!q)return "Escreva sua pergunta para eu consultar as informações do site.";
   if(/^(oi|ola|bom dia|boa tarde|boa noite|e ai|tudo bem)$/.test(q))return "Olá! ☕ Sou o Assistente Verena. Posso pesquisar o cardápio, explicar pedidos e sacola, informar endereço, horários, avaliações e os recursos deste site. O que você gostaria de saber?";
@@ -605,6 +605,23 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
   if(/\b(pedido|comprar|sacola|adicionar|finalizar|carrinho)\b/.test(q)){lastTopic="pedido";return "Para consultar um pedido pelo site:\n1. Abra a aba Produtos/Cardápio.\n2. Pesquise ou escolha uma categoria.\n3. Toque em “Adicionar +” nos itens desejados.\n4. Abra “Minha sacola” e confira os itens.\n5. Use a opção de contato para enviar a consulta pelo WhatsApp.\n\nO pedido só fica confirmado depois que a equipe responder.";}
   if(/\b(encomenda|festa|cento|antecedencia|bolo personalizado)\b/.test(q)){lastTopic="encomendas";const list=findProducts("encomendas");return "O catálogo possui uma categoria Encomendas"+(list.length?":\n"+productSummary(list):".")+"\n\nQuantidade, sabores, antecedência, preço e disponibilidade precisam ser confirmados com a equipe pelo "+phone+".";}
   if(/\b(self service|selfservice|buffet|almoco|refeicao)\b/.test(q)){lastTopic="refeicoes";return "Há itens cadastrados na categoria Refeições, mas isso não confirma que o self-service esteja disponível hoje. Consulte a unidade pelo "+phone+" para confirmar dias, horários e valores.";}
+  if(/\b(quantas|quantos|numero|total|contagem|quantidade)\b/.test(q)&&/\b(avaliacoes|reviews|comentarios|notas)\b/.test(q)){
+   lastTopic="avaliacoes";
+   if(!db)return "Não consegui acessar o banco de avaliações neste momento. Tente novamente mais tarde.";
+   try{
+    const approvedSnap=await db.collection("avaliacoes").where("status","==","aprovada").get();
+    const totalApproved=approvedSnap.size;
+    const user=auth?.currentUser;
+    if(user&&user.uid===ADMIN_UID){
+     const pendingSnap=await db.collection("avaliacoes").where("status","==","pendente").get();
+     return "Consultei o Firebase agora: existem "+(totalApproved+pendingSnap.size)+" avaliações registradas — "+totalApproved+" aprovadas e publicadas, e "+pendingSnap.size+" aguardando moderação.";
+    }
+    return "Consultei as avaliações públicas no Firebase agora: existem "+totalApproved+" avaliações aprovadas e visíveis no site. As avaliações pendentes são privadas e não entram nessa contagem pública.";
+   }catch(error){
+    console.error("Falha ao consultar contagem de avaliações:",error);
+    return "Não consegui consultar a contagem de avaliações no Firebase agora. Verifique sua conexão e tente novamente.";
+   }
+  }
   if(/\b(avaliacao|avaliar|estrelas|comentario|nota|google)\b/.test(q)){lastTopic="avaliacoes";return "Na seção “Avaliações”, informe seu nome, escolha uma nota, escreva um comentário e envie. As avaliações passam por análise antes da publicação. Elas são avaliações enviadas pelo próprio site e não representam automaticamente as avaliações do Google.";}
   if(/\b(sugestao|reclamacao|elogio|mensagem|feedback|atendimento)\b/.test(q)){lastTopic="atendimento";return "Na seção “Canal de atendimento”, escolha Sugestão, Reclamação ou Elogio, escreva sua mensagem e envie. Esse formulário é separado das avaliações públicas.";}
   if(/\b(foto|imagem|fotografia)\b/.test(q))return "As imagens do catálogo são ilustrativas e representam o tipo de produto. Não são necessariamente fotografias dos itens preparados nesta unidade.";
@@ -627,9 +644,9 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
   add(clean,"user");input.value="";busy=true;form.classList.add("is-thinking");
   const button=form.querySelector("button");if(button)button.disabled=true;
   const typing=document.createElement("div");typing.className="assistant-typing";typing.textContent="Consultando o site…";messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
-  window.setTimeout(()=>{
+  window.setTimeout(async()=>{
    typing.remove();
-   try{add(answer(clean),"bot")}catch(error){console.error("Assistente Verena:",error);add("Tive um problema ao consultar as informações. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}
+   try{add(await answer(clean),"bot")}catch(error){console.error("Assistente Verena:",error);add("Tive um problema ao consultar as informações. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}
    finally{busy=false;form.classList.remove("is-thinking");if(button)button.disabled=false;input.focus()}
   },180);
  }
