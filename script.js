@@ -542,7 +542,7 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
  const phone="(31) 99090-5985",address="Praça José Lino da Silva, 101, Brasiléia, Betim–MG";
  const norm=v=>String(v||"").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
  const stop=new Set(["qual","quais","como","onde","quando","quanto","para","pela","pelo","tem","ter","uma","uns","umas","que","dos","das","com","sem","site","padaria","verena","produto","produtos","quero","saber","sobre","isso","essa","esse","mais","pode","vocês","voces","preco","precos","valor"]);
- let busy=false,lastTopic="",history=[];
+ let busy=false,lastTopic="",history=[],geminiUnavailable=false;
  function toggle(open){panel.hidden=!open;launcher.setAttribute("aria-expanded",String(open));if(open)input.focus()}
  launcher.addEventListener("click",()=>toggle(panel.hidden));
  $("openVirtualAssistant")?.addEventListener("click",()=>{toggle(true);$("virtualAssistant").scrollIntoView({behavior:"smooth",block:"end"})});
@@ -580,6 +580,23 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
  }
  async function answer(question){
   const q=norm(question),raw=String(question||"").trim();
+  geminiUnavailable=false;
+  try{
+   const token=auth?.currentUser?await auth.currentUser.getIdToken():null;
+   const prior=history.slice(0,-1).slice(-10).map(item=>({role:item.who==="user"?"user":"model",text:item.text}));
+   const response=await fetch("https://padaria-verena-assistant.onrender.com/api/assistant/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{})},
+    body:JSON.stringify({message:raw,history:prior})
+   });
+   const data=await response.json().catch(()=>({}));
+   if(response.ok&&data.answer)return data.answer;
+   geminiUnavailable=true;
+   console.warn("Gemini indisponível:",data.error||response.status);
+  }catch(error){
+   geminiUnavailable=true;
+   console.warn("Não foi possível acessar a IA generativa:",error);
+  }
   if(!q)return "Escreva sua pergunta para eu consultar as informações do site.";
   if(/^(oi|ola|bom dia|boa tarde|boa noite|e ai|tudo bem)$/.test(q))return "Olá! ☕ Sou o Assistente Verena. Posso pesquisar o cardápio, explicar pedidos e sacola, informar endereço, horários, avaliações e os recursos deste site. O que você gostaria de saber?";
   if(/\b(obrigado|obrigada|valeu|agradecido)\b/.test(q))return "Por nada! Se precisar, posso procurar produtos ou explicar alguma parte do site.";
@@ -646,7 +663,7 @@ $("refreshAdminReviews")?.addEventListener("click",loadAdminInbox);
   const typing=document.createElement("div");typing.className="assistant-typing";typing.textContent="Consultando o site…";messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
   window.setTimeout(async()=>{
    typing.remove();
-   try{add(await answer(clean),"bot")}catch(error){console.error("Assistente Verena:",error);add("Tive um problema ao consultar as informações. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}
+   try{const result=await answer(clean);add(result+(geminiUnavailable?"\n\n(Estou usando a consulta local do site enquanto a conexão com o Gemini não estiver configurada.)":""),"bot")}catch(error){console.error("Assistente Verena:",error);add("Tive um problema ao consultar as informações. Tente novamente ou fale com a equipe pelo "+phone+".","bot")}
    finally{busy=false;form.classList.remove("is-thinking");if(button)button.disabled=false;input.focus()}
   },180);
  }
