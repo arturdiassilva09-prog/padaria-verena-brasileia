@@ -558,3 +558,39 @@ body.products-only #cardapio{padding-top:34px;min-height:70vh}
 .catalog-page.active{background:#542d20;border-color:#542d20;color:#fff;box-shadow:0 5px 13px rgba(75,43,32,.14)}
 .catalog-pagination:empty{display:none}
 @media(max-width:650px){.catalog-pagination{gap:6px;margin-top:22px}.catalog-page{min-width:38px;height:38px;border-radius:9px}}
+
+
+/* Assistente Verena: interface de conversa ampliada e adaptável. */
+.virtual-assistant{right:22px;bottom:20px}
+.assistant-launcher{display:flex;align-items:center;gap:9px;padding:15px 21px;background:linear-gradient(135deg,#542d20,#80543c);letter-spacing:.01em}
+.assistant-panel{width:min(420px,calc(100vw - 28px));height:min(650px,calc(100dvh - 105px));border-radius:22px;border-color:#e3d3c2;box-shadow:0 22px 70px #25170f42}
+.assistant-head{min-height:78px;padding:16px 18px;background:linear-gradient(135deg,#4b281d,#70432f)}
+.assistant-head strong{font-size:21px}
+.assistant-online{display:flex;align-items:center;gap:6px;font-size:10px;color:#f0dfcd;margin-top:3px}
+.assistant-online i{width:7px;height:7px;border-radius:50%;background:#8bd6a0;display:inline-block;box-shadow:0 0 0 3px #8bd6a022}
+.assistant-head-actions{display:flex;align-items:center;gap:7px}
+.assistant-head-actions button{width:34px;height:34px;border-radius:50%;font-size:21px;background:#ffffff18;display:grid;place-items:center}
+.assistant-messages{padding:17px 15px;background:linear-gradient(180deg,#fbf7f0,#f8f2e9)}
+.assistant-welcome{margin:5px 0 18px;padding:18px;background:#fff;border:1px solid #eadfd2;border-radius:5px 17px 17px 17px;color:#51443b}
+.assistant-welcome>span{display:grid;place-items:center;width:34px;height:34px;margin-bottom:10px;border-radius:50%;background:#f3e7d8;color:#9b6a3d;font-size:19px}
+.assistant-welcome strong{display:block;color:#542d20;font:700 19px "Playfair Display",serif}
+.assistant-welcome p{font-size:13px;line-height:1.6;color:#766e67;margin:7px 0 0}
+.assistant-bubble{margin:0 0 12px;max-width:94%;box-shadow:0 2px 8px #38271908}
+.assistant-bubble.user{background:#eadac8;border-color:#dfc9b3;color:#493126}
+.assistant-typing{display:table;margin:0 0 12px;padding:10px 13px;border-radius:4px 14px 14px 14px;background:#fff;border:1px solid #eadfd2;color:#8a7564;font-size:12px;font-style:italic}
+.assistant-quick{padding:10px 12px;background:#fff;border-top:1px solid #eee6dd}
+.assistant-quick button{background:#fbf7f0;border-color:#e4d5c4;transition:background .15s,border-color .15s}
+.assistant-quick button:hover{background:#f0e3d4;border-color:#c9a984}
+.assistant-panel form{background:#fff;padding:11px 12px}
+.assistant-panel form input{font:13px "DM Sans",sans-serif;outline:none}
+.assistant-panel form input:focus{border-color:#b68a5e;box-shadow:0 0 0 3px #c58b4b20}
+.assistant-panel form button{flex:0 0 42px;cursor:pointer;transition:opacity .15s,transform .15s}
+.assistant-panel form button:disabled{opacity:.55;cursor:wait}
+.assistant-disclaimer{background:#fff;line-height:1.5;padding:2px 14px 12px}
+@media(max-width:600px){
+ .virtual-assistant{right:12px;bottom:12px}
+ .assistant-panel{width:min(420px,calc(100vw - 24px));height:min(690px,calc(100dvh - 92px));right:-2px;bottom:60px}
+ .assistant-launcher{padding:13px 16px}
+ .assistant-quick{gap:6px}
+ .assistant-quick button{font-size:10px;padding:8px 10px}
+}
