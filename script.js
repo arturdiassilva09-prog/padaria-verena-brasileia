@@ -12,6 +12,7 @@ document.addEventListener("click",e=>{
   requestAnimationFrame(()=>document.querySelector(target)?.scrollIntoView({behavior:"smooth",block:"start"}));
  }else if(target==="#inicio"||document.querySelector(target)){
   document.body.classList.remove("products-only");
+  if(target==="#inicio")requestAnimationFrame(()=>document.querySelector("#inicio")?.scrollIntoView({behavior:"smooth",block:"start"}));
  }
 });
 
