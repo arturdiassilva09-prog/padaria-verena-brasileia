@@ -7,12 +7,17 @@ document.addEventListener("click",e=>{
  const link=e.target.closest('a[href^="#"]');
  if(!link)return;
  const target=link.getAttribute("href");
+ if(target==="#inicio"){
+  e.preventDefault();
+  document.body.classList.remove("products-only");
+  requestAnimationFrame(()=>window.scrollTo({top:0,behavior:"smooth"}));
+  return;
+ }
  if(target==="#produtos"||target==="#cardapio"){
   document.body.classList.add("products-only");
   requestAnimationFrame(()=>document.querySelector(target)?.scrollIntoView({behavior:"smooth",block:"start"}));
- }else if(target==="#inicio"||document.querySelector(target)){
+ }else if(document.querySelector(target)){
   document.body.classList.remove("products-only");
-  if(target==="#inicio")requestAnimationFrame(()=>document.querySelector("#inicio")?.scrollIntoView({behavior:"smooth",block:"start"}));
  }
 });
 
