@@ -49,7 +49,7 @@ const seed=[
 ];
 
 function normalizeCart(value){if(!Array.isArray(value))return[];return value.filter(x=>x&&x.id!==undefined&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).map(x=>({id:String(x.id),qty:Number(x.qty)}));}
-let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>String(p.id)));return [...saved,...seed.filter(p=>!ids.has(String(p.id)))]})(),cart=normalizeCart(load(CART,[])),category="Todos",favorites=new Set(Array.isArray(load("verena_favs_v1",[]))?load("verena_favs_v1",[]).map(String):[]);
+let products=(()=>{const saved=load(KEY,seed),ids=new Set(saved.map(p=>String(p.id)));return [...saved,...seed.filter(p=>!ids.has(String(p.id)))]})(),cart=normalizeCart(load(CART,[])),category="Todos",currentPage=1,productsPerPage=12,favorites=new Set(Array.isArray(load("verena_favs_v1",[]))?load("verena_favs_v1",[]).map(String):[]);
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch{return fallback}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(error){console.warn("Não foi possível salvar neste navegador:",error)}}
 function money(v){return v!==undefined&&v!==null&&String(v).trim()!==""?"R$ "+escapeHtml(String(v).trim()):"Consultar"}
@@ -111,12 +111,18 @@ $("categoryFilters").innerHTML=catalogCategories.map((name,i)=>`<button class="f
 function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
  const list=products.filter(p=>productPhoto(p)&&(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
- $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:cover;background-position:center;background-repeat:no-repeat"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
+ const pageCount=Math.max(1,Math.ceil(list.length/productsPerPage));
+ currentPage=Math.min(currentPage,pageCount);
+ const start=(currentPage-1)*productsPerPage;
+ const pageItems=list.slice(start,start+productsPerPage);
+ $("catalogGrid").innerHTML=pageItems.length?pageItems.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:cover;background-position:center;background-repeat:no-repeat"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
+ $("catalogPagination").innerHTML=pageCount>1?Array.from({length:pageCount},(_,i)=>i+1).map(n=>'<button type="button" class="catalog-page'+(n===currentPage?' active':'')+'" data-page="'+n+'" aria-label="Página '+n+'" aria-current="'+(n===currentPage?'page':'false')+'">'+n+'</button>').join(""):'';
  $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);if($("cartCountProducts"))$("cartCountProducts").textContent=cart.reduce((n,x)=>n+x.qty,0);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-$("productSearch").addEventListener("input",()=>{window.onlyFavorites=false;render()});
-$("categoryFilters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;category=b.dataset.category;window.onlyFavorites=false;document.querySelectorAll(".filter-chip").forEach(x=>x.classList.toggle("active",x===b));render()});
+$("productSearch").addEventListener("input",()=>{window.onlyFavorites=false;currentPage=1;render()});
+$("categoryFilters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;category=b.dataset.category;currentPage=1;window.onlyFavorites=false;document.querySelectorAll(".filter-chip").forEach(x=>x.classList.toggle("active",x===b));render()});
+$("catalogPagination").addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(!b)return;currentPage=Number(b.dataset.page)||1;render();$("catalogGrid").scrollIntoView({behavior:"smooth",block:"start"});});
 function addToCart(id){
  const product=products.find(p=>String(p.id)===String(id));
  if(!product){console.error("Produto não encontrado:",id);return}
@@ -130,7 +136,7 @@ document.addEventListener("click",e=>{
  if(fav){e.preventDefault();e.stopPropagation();const id=fav.dataset.fav;favorites.has(id)?favorites.delete(id):favorites.add(id);save("verena_favs_v1",[...favorites]);render();return;}
  if(add){e.preventDefault();e.stopPropagation();addToCart(add.dataset.add);}
 },true);
-$("showFavorites").addEventListener("click",()=>{window.onlyFavorites=true;category="Todos";$("productSearch").value="";document.querySelectorAll(".filter-chip").forEach((x,i)=>x.classList.toggle("active",i===0));render();document.body.classList.add("products-only");$("cardapio").scrollIntoView({behavior:"smooth"});});
+$("showFavorites").addEventListener("click",()=>{window.onlyFavorites=true;category="Todos";currentPage=1;$("productSearch").value="";document.querySelectorAll(".filter-chip").forEach((x,i)=>x.classList.toggle("active",i===0));render();document.body.classList.add("products-only");$("cardapio").scrollIntoView({behavior:"smooth"});});
 function show(id){$(id).hidden=false;document.body.classList.add("modal-open")}
 function hide(id){$(id).hidden=true;if(document.querySelectorAll(".overlay:not([hidden])").length===0)document.body.classList.remove("modal-open")}
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>hide(b.dataset.close)));
