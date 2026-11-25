@@ -538,7 +538,7 @@ body{letter-spacing:.005em;-webkit-font-smoothing:antialiased}
 /* Aba Produtos: a vitrine e o catálogo aparecem somente quando a pessoa abre essa aba. */
 body:not(.products-only) main>#produtos,
 body:not(.products-only) main>#cardapio{display:none!important}
-body.products-only main>:not(#produtos):not(#cardapio){display:none!important}
+body.products-only main>:not(#produtos):not(#cardapio):not(#cartOverlay):not(#adminOverlay){display:none!important}
 body.products-only .footer{display:none!important}
 .products-home-link,.products-cart-link{display:none}
 body.products-only .products-home-link{display:inline-flex!important;align-items:center}
