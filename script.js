@@ -1,6 +1,20 @@
 const toggle=document.getElementById("menuToggle"),nav=document.getElementById("mainNav");
 if(toggle&&nav){toggle.addEventListener("click",()=>{const opened=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(opened));toggle.textContent=opened?"×":"☰";});nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));}
 const $=id=>document.getElementById(id),KEY="verena_catalog_v1",CART="verena_cart_v1",PROMO="verena_promo_v1";
+
+/* Aba exclusiva de produtos: mantém o catálogo fora da tela inicial sem remover recursos. */
+document.addEventListener("click",e=>{
+ const link=e.target.closest('a[href^="#"]');
+ if(!link)return;
+ const target=link.getAttribute("href");
+ if(target==="#produtos"||target==="#cardapio"){
+  document.body.classList.add("products-only");
+  requestAnimationFrame(()=>document.querySelector(target)?.scrollIntoView({behavior:"smooth",block:"start"}));
+ }else if(target==="#inicio"||document.querySelector(target)){
+  document.body.classList.remove("products-only");
+ }
+});
+
 const seed=[
 {id:"foto-paes",name:"Pães variados",category:"Pães",description:"Seleção ilustrativa de pães de padaria",price:""},
 {id:"foto-frances",name:"Pão francês",category:"Pães",description:"Imagem ilustrativa de pão francês",price:""},
@@ -98,7 +112,7 @@ function render(){
  const term=($("productSearch")?.value||"").toLocaleLowerCase("pt-BR");
  const list=products.filter(p=>productPhoto(p)&&(category==="Todos"||p.category===category)&&((p.name+" "+p.description).toLocaleLowerCase("pt-BR").includes(term))&&(!window.onlyFavorites||favorites.has(p.id)));
  $("catalogGrid").innerHTML=list.length?list.map(p=>{const photo=productPhoto(p);return '<article class="catalog-card"><div class="catalog-product-image" role="img" aria-label="'+escapeHtml(photo.alt)+'" style="background-image:url(\''+photo.url+'\');background-size:cover;background-position:center;background-repeat:no-repeat"></div><button class="favorite-button '+(favorites.has(p.id)?"selected":"")+'" data-fav="'+p.id+'" aria-label="Favoritar '+escapeHtml(p.name)+'">'+(favorites.has(p.id)?"♥":"♡")+'</button><span class="catalog-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.description)+'</p><div class="catalog-card-bottom"><strong>'+money(p.price)+'</strong><button type="button" class="add-button" data-add="'+p.id+'">Adicionar +</button></div></article>';}).join(""):'<p class="empty-state">Nenhum produto com foto correspondente encontrado nesta seleção.</p>';
- $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
+ $("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);if($("cartCountProducts"))$("cartCountProducts").textContent=cart.reduce((n,x)=>n+x.qty,0);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 $("productSearch").addEventListener("input",()=>{window.onlyFavorites=false;render()});
@@ -116,12 +130,12 @@ document.addEventListener("click",e=>{
  if(fav){e.preventDefault();e.stopPropagation();const id=fav.dataset.fav;favorites.has(id)?favorites.delete(id):favorites.add(id);save("verena_favs_v1",[...favorites]);render();return;}
  if(add){e.preventDefault();e.stopPropagation();addToCart(add.dataset.add);}
 },true);
-$("showFavorites").addEventListener("click",()=>{window.onlyFavorites=true;category="Todos";$("productSearch").value="";document.querySelectorAll(".filter-chip").forEach((x,i)=>x.classList.toggle("active",i===0));render();$("cardapio").scrollIntoView({behavior:"smooth"});});
+$("showFavorites").addEventListener("click",()=>{window.onlyFavorites=true;category="Todos";$("productSearch").value="";document.querySelectorAll(".filter-chip").forEach((x,i)=>x.classList.toggle("active",i===0));render();document.body.classList.add("products-only");$("cardapio").scrollIntoView({behavior:"smooth"});});
 function show(id){$(id).hidden=false;document.body.classList.add("modal-open")}
 function hide(id){$(id).hidden=true;if(document.querySelectorAll(".overlay:not([hidden])").length===0)document.body.classList.remove("modal-open")}
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>hide(b.dataset.close)));
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)hide(o.id)}));
-$("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});
+$("openCart").addEventListener("click",()=>{renderCart();show("cartOverlay")});$("openCartProducts")?.addEventListener("click",()=>{renderCart();show("cartOverlay")});
 function renderCart(){cart=normalizeCart(cart).filter(x=>products.some(p=>String(p.id)===String(x.id)));$("cartItems").innerHTML=cart.length?cart.map(x=>{const p=products.find(p=>String(p.id)===String(x.id));return p?'<div class="cart-line"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+money(p.price)+'</small></div><div class="qty-control"><button data-qty="'+p.id+'" data-delta="-1">−</button><b>'+x.qty+'</b><button data-qty="'+p.id+'" data-delta="1">+</button><button class="remove-line" data-remove="'+p.id+'">×</button></div></div>':''}).join(""):'<p class="empty-state">Sua sacola está vazia. Escolha algo no cardápio!</p>'}
 $("cartItems").addEventListener("click",e=>{const q=e.target.closest("[data-qty]"),r=e.target.closest("[data-remove]");if(q){const x=cart.find(v=>String(v.id)===String(q.dataset.qty));if(x){x.qty=Math.min(99,x.qty+Number(q.dataset.delta));if(x.qty<=0)cart=cart.filter(v=>String(v.id)!==String(q.dataset.qty))}}if(r)cart=cart.filter(v=>v.id!==r.dataset.remove);save(CART,cart);render();renderCart()});
 const orderMode=$("orderMode"),addressWrap=$("deliveryAddressWrap"),deliveryEstimator=$("deliveryEstimator"),deliveryZone=$("deliveryZone");
